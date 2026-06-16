@@ -13,7 +13,7 @@ const COLS: { head: string; links: { href: string; label: string }[] }[] = [
   {
     head: "How it works",
     links: [
-      { href: "#faq", label: "FAQ" },
+      { href: "#control-plane", label: "Runtime control plane" },
       { href: "#ask", label: "Integrations" },
     ],
   },

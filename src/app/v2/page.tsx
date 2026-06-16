@@ -6,7 +6,6 @@ import { NavV2 } from "@/components/v2/NavV2";
 import { HeroV2 } from "@/components/v2/HeroV2";
 import { FooterV2 } from "@/components/v2/FooterV2";
 import { TrustBand } from "@/components/v2/TrustBand";
-import { Faq } from "@/components/v2/Faq";
 import { ControlPlane } from "@/components/sections/ControlPlane";
 import { WhatTheLayerDoes } from "@/components/sections/WhatTheLayerDoes";
 import { AskInPlainLanguage } from "@/components/sections/AskInPlainLanguage";
@@ -23,7 +22,6 @@ export default function ProposalTwo() {
         <WhatTheLayerDoes />
         <TrustBand />
         <AskInPlainLanguage />
-        <Faq />
         <Team />
         <ContactCTA />
       </main>
