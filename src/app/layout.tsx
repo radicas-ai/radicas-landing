@@ -44,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script
           src="https://embeds.iubenda.com/widgets/35cba34f-d14a-410d-855a-f3733b839c35.js"
           strategy="beforeInteractive"
+          suppressHydrationWarning
         />
         {children}
       </body>

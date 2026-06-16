@@ -642,7 +642,7 @@
 
 .app-frame {
   position: relative; display: grid; grid-template-columns: 54px minmax(0,1fr) 300px;
-  min-height: 640px; max-height: 760px;
+  height: 760px;
   border: 1px solid var(--border-strong); border-radius: var(--radius-xl);
   background: var(--carbon-950); box-shadow: var(--shadow-lg); overflow: hidden;
 }
@@ -867,7 +867,7 @@
 /* ---------------- Responsive ---------------- */
 @media (max-width: 1080px) {
   .ask-grid { grid-template-columns: 1fr; gap: var(--space-12); justify-items: center; }
-  .app-frame { grid-template-columns: 1fr; max-height: none; }
+  .app-frame { grid-template-columns: 1fr; height: auto; }
   .app-rail, .app-side { display: none; }
   .layer-tabs { overflow-x: auto; }
   .hero-grid, .what-grid { grid-template-columns: 1fr; gap: var(--space-12); }
