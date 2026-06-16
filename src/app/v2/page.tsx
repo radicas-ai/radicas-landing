@@ -9,7 +9,6 @@ import { TrustBand } from "@/components/v2/TrustBand";
 import { ControlPlane } from "@/components/sections/ControlPlane";
 import { WhatTheLayerDoes } from "@/components/sections/WhatTheLayerDoes";
 import { AskInPlainLanguage } from "@/components/sections/AskInPlainLanguage";
-import { Team } from "@/components/sections/Team";
 import { ContactCTA } from "@/components/sections/ContactCTA";
 
 export default function ProposalTwo() {
@@ -22,7 +21,6 @@ export default function ProposalTwo() {
         <WhatTheLayerDoes />
         <TrustBand />
         <AskInPlainLanguage />
-        <Team />
         <ContactCTA />
       </main>
       <FooterV2 />
