@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono, Archivo_Black } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { cn } from "@/lib/cn";
@@ -37,7 +38,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={cn("dark", geist.variable, geistMono.variable, archivoBlack.variable)}
     >
-      <body>{children}</body>
+      <body>
+        {/* Iubenda Cookie Solution (consent banner + Google Consent Mode v2).
+            Must load before GA so the "denied" consent default is set first. */}
+        <Script
+          src="https://embeds.iubenda.com/widgets/35cba34f-d14a-410d-855a-f3733b839c35.js"
+          strategy="beforeInteractive"
+        />
+        {children}
+      </body>
       {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}
     </html>
   );
