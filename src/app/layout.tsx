@@ -3,13 +3,12 @@ import { Geist, Geist_Mono, Archivo_Black } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { cn } from "@/lib/cn";
 import { GA_ID } from "@/lib/analytics";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 const archivoBlack = Archivo_Black({ subsets: ["latin"], weight: "400", variable: "--font-archivo-black" });
-
-const siteUrl = "https://radicas.ai";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
