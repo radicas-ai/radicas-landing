@@ -18,6 +18,9 @@ export function Footer() {
             <a href="#ask" className="transition-colors hover:text-fg">
               How it works
             </a>
+            <a href="#team" className="transition-colors hover:text-fg">
+              Team
+            </a>
             <a href="#contact" className="transition-colors hover:text-fg">
               Contact
             </a>
