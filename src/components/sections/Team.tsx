@@ -12,10 +12,8 @@ type TeamMember = {
 };
 
 const TEAM: TeamMember[] = [
-  { name: "Add a name", role: "Co-founder & CEO", bio: "Short one-line bio goes here." },
-  { name: "Add a name", role: "Co-founder & CTO", bio: "Short one-line bio goes here." },
-  { name: "Add a name", role: "Founding Engineer", bio: "Short one-line bio goes here." },
-  { name: "Add a name", role: "Head of Design", bio: "Short one-line bio goes here." },
+  { name: "Add a name", role: "Co-founder", bio: "Short one-line bio goes here." },
+  { name: "Add a name", role: "Co-founder", bio: "Short one-line bio goes here." },
 ];
 
 function initials(name: string) {
@@ -41,7 +39,7 @@ export function Team() {
         </p>
       </div>
 
-      <ul className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="mt-12 grid max-w-3xl grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2">
         {TEAM.map((member, i) => (
           <li key={i} className="flex flex-col items-start gap-4 bg-bg-elevated p-6">
             {member.photo ? (
