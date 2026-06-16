@@ -1,6 +1,7 @@
 import { Nav } from "@/components/ui/Nav";
 import { Footer } from "@/components/ui/Footer";
 import { Hero } from "@/components/sections/Hero";
+import { ControlPlane } from "@/components/sections/ControlPlane";
 import { WhatTheLayerDoes } from "@/components/sections/WhatTheLayerDoes";
 import { AskInPlainLanguage } from "@/components/sections/AskInPlainLanguage";
 import { Team } from "@/components/sections/Team";
@@ -12,6 +13,7 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <ControlPlane />
         <WhatTheLayerDoes />
         <AskInPlainLanguage />
         <Team />
