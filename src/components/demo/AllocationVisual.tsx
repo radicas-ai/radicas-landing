@@ -194,8 +194,31 @@ const VIEWS = [
   { id: "use case", render: () => <Treemap cols={UC} /> },
 ];
 
-export function AllocationVisual() {
+export interface VisualProps {
+  /** True when this is the active outer tab and the parent is auto-cycling. */
+  playing?: boolean;
+  /** True when the parent's auto-cycle is paused (e.g. hover on the outer tab row). */
+  paused?: boolean;
+  /** Called once the inner views have cycled through, so the parent can advance. */
+  onCycleDone?: () => void;
+  /** Called when the user manually interacts, so the parent can stop auto-cycling. */
+  onInteract?: () => void;
+}
+
+export function AllocationVisual({ playing = false, paused = false, onCycleDone, onInteract }: VisualProps) {
   const [g, setG] = useState(0);
+  const [hover, setHover] = useState(false);
+  const select = (i: number) => {
+    setG(i);
+    onInteract?.();
+  };
+  // Driven by the active inner tab's timer bar finishing: advance to the next
+  // view, or hand control back to the parent once the last view has shown.
+  const tick = () => {
+    if (g < VIEWS.length - 1) setG((x) => x + 1);
+    else onCycleDone?.();
+  };
+  const frozen = paused || hover;
   return (
     <div className="pv">
       <div className="pv-bar">
@@ -209,13 +232,14 @@ export function AllocationVisual() {
           slice without restructuring the gl
         </span>
       </div>
-      <div className="groupby">
+      <div className={"groupby" + (frozen ? " paused" : "")} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
         <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--text-2xs)", color: "var(--fg-subtle)", letterSpacing: "var(--track-mono)", alignSelf: "center", marginRight: 4 }}>
           group by
         </span>
         {VIEWS.map((v, i) => (
-          <button key={i} className={"gb-tab" + (g === i ? " active" : "")} onClick={() => setG(i)}>
+          <button key={i} className={"gb-tab" + (g === i ? " active" : "")} onClick={() => select(i)}>
             {v.id}
+            {playing && g === i && <span className="gb-timer" onAnimationEnd={tick} aria-hidden="true" />}
           </button>
         ))}
       </div>
