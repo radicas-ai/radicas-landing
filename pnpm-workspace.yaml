@@ -1,0 +1,5 @@
+# sharp's native build is optional (Next.js falls back without it). Allow it, and don't let the
+# pre-run deps check abort `pnpm typecheck` / `pnpm build` over the ignored-build warning.
+onlyBuiltDependencies:
+  - sharp
+verifyDepsBeforeRun: false

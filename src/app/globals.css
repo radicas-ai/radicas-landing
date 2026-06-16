@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@import "../styles/theme.css";
+@import "../styles/demo.css";
+
+/* Dark is the default theme; `.light` flips role tokens (not toggled on this surface). */
+@custom-variant light (&:where(.light, .light *));
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: var(--leading-base);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tabular figures everywhere money/metrics are shown — columns line up. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Uppercase mono eyebrow — metric labels, badges, section kickers. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* The brand directional glyph nudges on hover inside buttons/links. */
+.arrow {
+  display: inline-block;
+  transition: transform 120ms var(--ease-out);
+}
+.group:hover .arrow,
+a:hover > .arrow,
+button:hover > .arrow {
+  transform: translateX(2px);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-rise {
+  animation: rise 360ms var(--ease-out) both;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-rise { animation: none; }
+}
