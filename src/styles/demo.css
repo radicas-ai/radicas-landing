@@ -642,7 +642,7 @@
 
 .app-frame {
   position: relative; display: grid; grid-template-columns: 54px minmax(0,1fr) 300px;
-  height: 760px;
+  height: 580px;
   border: 1px solid var(--border-strong); border-radius: var(--radius-xl);
   background: var(--carbon-950); box-shadow: var(--shadow-lg); overflow: hidden;
 }
@@ -675,7 +675,7 @@
 
 .app-side {
   border-left: 1px solid var(--border); padding: 18px 16px;
-  display: flex; flex-direction: column; gap: 14px;
+  display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
   background: linear-gradient(180deg, rgba(117,113,235,0.04), transparent 36%);
 }
 .side-search { font-family: var(--font-mono); font-size: var(--text-2xs); color: var(--fg-subtle); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 9px 11px; letter-spacing: var(--track-mono); background: var(--carbon-950); }

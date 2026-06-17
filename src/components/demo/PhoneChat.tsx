@@ -203,8 +203,8 @@ export function PhoneChat({ theme = "carbon" }: { theme?: "carbon" | "purple" })
           {show(0) && (
             <div className="msg-in u-row">
               <div className="u-bubble">
-                The CEO just asked how much we&apos;re spending on agentic AI across the company. Give me a
-                high-level overview of how it&apos;s allocated.
+                How much are we spending on agentic AI across the company? Give me a high-level overview
+                of how it&apos;s allocated.
               </div>
             </div>
           )}
@@ -235,7 +235,7 @@ export function PhoneChat({ theme = "carbon" }: { theme?: "carbon" | "purple" })
 
           {show(5) && (
             <div className="msg-in u-row">
-              <div className="u-bubble">The CEO wants to know why we&apos;re spending this. Break it down.</div>
+              <div className="u-bubble">Why are we spending this? Break it down.</div>
             </div>
           )}
           {step === 6 && <Typing />}
