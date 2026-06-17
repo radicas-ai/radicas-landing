@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { cn } from "@/lib/cn";
 import { track } from "@/lib/analytics";
 import { BookDemoButton } from "@/components/ui/BookDemoButton";
 
 type Status = "idle" | "submitting" | "success" | "error";
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 const inputCls =
   "h-10 w-full rounded-md border border-border bg-bg px-3.5 text-sm text-fg placeholder:text-fg-subtle " +
@@ -15,6 +18,12 @@ const inputCls =
 export function ContactCTA() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
+
+  // Captcha gates submit only when a site key is configured; otherwise (dev/preview
+  // without keys) it stays out of the way — mirrors the server's env-gated check.
+  const captchaReady = !turnstileSiteKey || captchaToken !== "";
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,6 +37,7 @@ export function ContactCTA() {
       lastName: String(data.get("lastName") || "").trim(),
       email: String(data.get("email") || "").trim(),
       company: String(data.get("company") || ""), // honeypot
+      captchaToken,
     };
 
     try {
@@ -44,6 +54,10 @@ export function ContactCTA() {
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      // A Turnstile token is single-use — reset so a retry gets a fresh one.
+      setCaptchaToken("");
+      turnstileRef.current?.reset();
     }
   }
 
@@ -104,13 +118,24 @@ export function ContactCTA() {
               <input id="company" name="company" tabIndex={-1} autoComplete="off" />
             </div>
 
+            {turnstileSiteKey && (
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={turnstileSiteKey}
+                onSuccess={setCaptchaToken}
+                onExpire={() => setCaptchaToken("")}
+                onError={() => setCaptchaToken("")}
+                options={{ theme: "dark" }}
+              />
+            )}
+
             {status === "error" && (
               <p className="text-sm text-semantic-deny">{error}</p>
             )}
 
             <button
               type="submit"
-              disabled={status === "submitting"}
+              disabled={status === "submitting" || !captchaReady}
               className={cn(
                 "group inline-flex h-11 items-center justify-center gap-2 rounded-md bg-brand-primary px-6 text-base font-medium text-carbon-050",
                 "transition-all hover:bg-brand-primary-hover hover:shadow-glow",
