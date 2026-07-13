@@ -53,13 +53,13 @@ export function TeamV2() {
                 <img
                   src={m.photo}
                   alt={m.name}
-                  className="h-20 w-20 rounded-pill border border-border object-cover"
-                  style={{ filter: "grayscale(1) contrast(1.02)", objectPosition: "center 22%" }}
+                  className="aspect-square w-full rounded-lg border border-border object-cover"
+                  style={{ filter: "grayscale(1) contrast(1.02)", objectPosition: "center 20%" }}
                 />
               ) : (
                 <div
                   aria-hidden="true"
-                  className="flex h-20 w-20 items-center justify-center rounded-pill border border-border bg-bg font-mono text-md uppercase tracking-caps text-brand-primary-light"
+                  className="flex aspect-square w-full items-center justify-center rounded-lg border border-border bg-bg font-mono text-2xl uppercase tracking-caps text-brand-primary-light"
                 >
                   {initials(m.name)}
                 </div>
