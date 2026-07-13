@@ -11,8 +11,8 @@ type Member = {
 };
 
 const TEAM: Member[] = [
-  { name: "Marihum Pernia", role: "Co-Founder & CEO", linkedin: "https://www.linkedin.com/in/marihum-pernia/", photo: "/team/marihum.jpg", zoom: 1.32, pos: "center 30%" },
-  { name: "Francesco Fiore", role: "Co-Founder & CTO", linkedin: "https://www.linkedin.com/in/francesco-fio/", photo: "/team/francesco.jpg", zoom: 1, pos: "center 12%" },
+  { name: "Marihum Pernia", role: "Co-Founder & CEO", linkedin: "https://www.linkedin.com/in/marihum-pernia/", photo: "/team/marihum.jpg", zoom: 1.42, pos: "center 26%" },
+  { name: "Francesco Fiore", role: "Co-Founder & CTO", linkedin: "https://www.linkedin.com/in/francesco-fio/", photo: "/team/francesco.jpg", zoom: 1.16, pos: "center 10%" },
   { name: "Meike Bingemann", role: "Co-Founder & COO", linkedin: "https://www.linkedin.com/in/meike-bingemann/", photo: "/team/meike.jpg", zoom: 1, pos: "center 18%" },
 ];
 
