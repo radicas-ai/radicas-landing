@@ -1,113 +1,99 @@
-"use client";
-
-// "What Radicas enables" — Discover / Measure / Attribute / Optimize.
-// Ported from the radicas_1 export; each pillar has a small SVG data-viz that
-// reveals on scroll.
-import { useReveal } from "./useReveal";
+// "What Radicas enables" — layout 1A from the design handoff: standardized
+// cards, each with a uniform media tile holding an inline SVG, plus a hover lift.
+// SVG coordinates/colors are copied from the prototype; hues map to tokens.
 
 function DiscoverViz() {
   return (
-    <svg className="ev" viewBox="0 0 200 64" fill="none" aria-hidden="true">
-      <g stroke="var(--border-strong)" strokeWidth="1.4">
-        <circle cx="18" cy="20" r="5" /><circle cx="52" cy="20" r="5" /><circle cx="86" cy="20" r="5" />
-        <circle cx="120" cy="20" r="5" /><circle cx="154" cy="20" r="5" />
-        <circle cx="35" cy="44" r="5" /><circle cx="69" cy="44" r="5" /><circle cx="103" cy="44" r="5" />
-        <circle cx="137" cy="44" r="5" /><circle cx="171" cy="44" r="5" />
+    <svg width="170" height="60" viewBox="0 0 170 60" fill="none" aria-hidden="true">
+      <g stroke="var(--carbon-500)" strokeWidth="1.5">
+        <circle cx="20" cy="20" r="5" /><circle cx="88" cy="20" r="5" />
+        <circle cx="20" cy="42" r="5" /><circle cx="54" cy="42" r="5" /><circle cx="88" cy="42" r="5" />
       </g>
-      <g>
-        <circle cx="52" cy="20" r="5" fill="var(--brand-primary)" stroke="none" />
-        <circle cx="120" cy="20" r="5" fill="var(--brand-primary)" stroke="none" />
-        <circle cx="69" cy="44" r="5" fill="var(--brand-primary-light)" stroke="none" />
-        <circle cx="171" cy="44" r="5" fill="var(--color-accent-cyan)" stroke="none" />
-      </g>
+      <circle cx="54" cy="20" r="5" fill="var(--brand-primary)" />
+      <circle cx="122" cy="20" r="5" fill="var(--brand-primary)" />
+      <circle cx="122" cy="42" r="5" fill="var(--brand-primary-light)" />
+      <circle cx="150" cy="20" r="5" fill="var(--accent-cyan)" />
     </svg>
   );
 }
 
 function MeasureViz() {
   return (
-    <svg className="ev" viewBox="0 0 200 64" fill="none" aria-hidden="true">
-      <g>
-        <rect x="8" y="30" width="8" height="26" rx="2" fill="var(--color-accent-cyan)" />
-        <rect x="22" y="18" width="8" height="38" rx="2" fill="var(--color-accent-orange)" />
-        <rect x="36" y="38" width="8" height="18" rx="2" fill="var(--brand-primary-light)" />
-        <rect x="50" y="24" width="8" height="32" rx="2" fill="var(--color-semantic-allow)" />
-      </g>
-      <path d="M74 32 h30 m-7 -5 l7 5 l-7 5" stroke="var(--fg-subtle)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="120" y="14" width="30" height="42" rx="4" fill="var(--brand-primary)" />
-      <text x="135" y="41" textAnchor="middle" fill="var(--color-carbon-050)" fontFamily="var(--font-mono)" fontSize="16" fontWeight="600">€</text>
+    <svg width="180" height="92" viewBox="0 0 180 92" fill="none" aria-hidden="true">
+      <line x1="12" y1="54" x2="168" y2="54" stroke="#191f30" />
+      <line x1="12" y1="34" x2="168" y2="34" stroke="#191f30" />
+      <line x1="12" y1="74" x2="168" y2="74" stroke="var(--carbon-700)" />
+      <rect x="16" y="48" width="14" height="26" rx="2" fill="var(--carbon-500)" />
+      <rect x="34" y="34" width="14" height="40" rx="2" fill="var(--accent-cyan)" />
+      <rect x="52" y="54" width="14" height="20" rx="2" fill="var(--carbon-500)" />
+      <rect x="70" y="40" width="14" height="34" rx="2" fill="var(--accent-orange)" />
+      <rect x="88" y="44" width="14" height="30" rx="2" fill="var(--carbon-500)" />
+      <line x1="116" y1="20" x2="116" y2="74" stroke="var(--carbon-600)" strokeDasharray="3 3" />
+      <rect x="132" y="24" width="22" height="50" rx="2" fill="var(--brand-primary)" />
     </svg>
   );
 }
 
 function AttributeViz() {
   return (
-    <svg className="ev" viewBox="0 0 200 64" fill="none" aria-hidden="true">
-      <g>
-        <rect x="8" y="22" width="58" height="16" rx="3" fill="var(--brand-primary)" />
-        <rect x="69" y="22" width="42" height="16" rx="3" fill="var(--color-accent-cyan)" />
-        <rect x="114" y="22" width="34" height="16" rx="3" fill="var(--color-semantic-allow)" />
-        <rect x="151" y="22" width="41" height="16" rx="3" fill="var(--color-semantic-review)" />
-      </g>
-      <g fill="var(--fg-subtle)" fontFamily="var(--font-mono)" fontSize="7">
-        <circle cx="12" cy="50" r="2.2" fill="var(--brand-primary)" /><text x="18" y="52.5">bu</text>
-        <circle cx="73" cy="50" r="2.2" fill="var(--color-accent-cyan)" /><text x="79" y="52.5">dept</text>
-        <circle cx="118" cy="50" r="2.2" fill="var(--color-semantic-allow)" /><text x="124" y="52.5">proj</text>
-        <circle cx="155" cy="50" r="2.2" fill="var(--color-semantic-review)" /><text x="161" y="52.5">use</text>
-      </g>
-    </svg>
+    <>
+      <svg width="150" height="18" viewBox="0 0 150 18" fill="none" aria-hidden="true">
+        <rect x="0" y="0" width="36" height="18" rx="4" fill="var(--brand-primary)" />
+        <rect x="40" y="0" width="30" height="18" rx="4" fill="var(--accent-cyan)" />
+        <rect x="74" y="0" width="40" height="18" rx="4" fill="var(--semantic-allow)" />
+        <rect x="118" y="0" width="32" height="18" rx="4" fill="var(--accent-orange)" />
+      </svg>
+      <svg width="150" height="10" viewBox="0 0 150 10" fill="none" aria-hidden="true">
+        <circle cx="8" cy="5" r="3" fill="var(--brand-primary)" /><rect x="16" y="2" width="20" height="6" rx="3" fill="var(--carbon-600)" />
+        <circle cx="48" cy="5" r="3" fill="var(--accent-cyan)" /><rect x="56" y="2" width="14" height="6" rx="3" fill="var(--carbon-600)" />
+        <circle cx="82" cy="5" r="3" fill="var(--semantic-allow)" /><rect x="90" y="2" width="24" height="6" rx="3" fill="var(--carbon-600)" />
+        <circle cx="126" cy="5" r="3" fill="var(--accent-orange)" /><rect x="134" y="2" width="16" height="6" rx="3" fill="var(--carbon-600)" />
+      </svg>
+    </>
   );
 }
 
 function OptimizeViz() {
   return (
-    <svg className="ev" viewBox="0 0 200 64" fill="none" aria-hidden="true">
-      <g>
-        <rect x="10" y="16" width="9" height="40" rx="2" fill="var(--brand-primary)" />
-        <rect x="26" y="24" width="9" height="32" rx="2" fill="var(--brand-primary-light)" />
-        <rect className="idle" x="42" y="20" width="9" height="36" rx="2" />
-        <rect x="58" y="34" width="9" height="22" rx="2" fill="var(--brand-primary-light)" />
-        <rect className="idle" x="74" y="30" width="9" height="26" rx="2" />
-        <rect x="90" y="42" width="9" height="14" rx="2" fill="var(--color-semantic-allow)" />
-      </g>
-      <path d="M12 22 C 40 30, 70 44, 96 48" stroke="var(--color-semantic-allow)" strokeWidth="1.8" strokeLinecap="round" fill="none" />
-      <g transform="translate(150,20)">
-        <path d="M8 0 v22 m-6 -7 l6 7 l6 -7" stroke="var(--color-semantic-allow)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        <text x="20" y="16" fill="var(--color-semantic-allow)" fontFamily="var(--font-mono)" fontSize="10" fontWeight="600">-31%</text>
-      </g>
+    <svg width="170" height="68" viewBox="0 0 130 52" fill="none" aria-hidden="true">
+      <rect x="6" y="10" width="12" height="36" rx="2" fill="var(--brand-primary)" />
+      <rect x="26" y="18" width="12" height="28" rx="2" fill="#5d5ab8" />
+      <rect x="46" y="26" width="12" height="20" rx="2" fill="var(--carbon-500)" />
+      <rect x="66" y="34" width="12" height="12" rx="2" fill="var(--carbon-600)" />
+      <path d="M12 14 L72 40" stroke="var(--semantic-allow)" strokeWidth="1.5" />
+      <circle cx="72" cy="40" r="3" fill="var(--semantic-allow)" />
     </svg>
   );
 }
 
-const PILLARS = [
+const CARDS = [
   { n: "01", Viz: DiscoverViz, h: "Discover", p: "Know every AI vendor, model, subscription, and agent running across your organization." },
   { n: "02", Viz: MeasureViz, h: "Measure", p: "Normalize token-, seat-, consumption-, and credit-based pricing into a single financial view. Real spend — not estimates." },
-  { n: "03", Viz: AttributeViz, h: "Attribute", p: "Allocate every AI cost to the right business unit, department, project, or use case. Every euro has an owner." },
+  { n: "03", Viz: AttributeViz, h: "Attribute", p: "Allocate every AI cost to the right business unit, department, project, or use case. Every euro has an owner.", stack: true },
   { n: "04", Viz: OptimizeViz, h: "Optimize", p: "Identify unused subscriptions, idle agents, expensive models, and unexpected spend before costs escalate." },
 ];
 
 export function Enables() {
-  const { ref, cls } = useReveal<HTMLElement>();
   return (
-    <section ref={ref} className={"section tg " + cls} id="enables">
+    <section className="section tg" id="enables">
       <div className="container">
         <div className="enables-head">
-          <p className="tg-eyebrow" style={{ marginBottom: 16 }}>
+          <p className="tg-eyebrow" style={{ marginBottom: 22 }}>
             <span className="dot" />
             What Radicas enables
           </p>
           <h2 className="tabs-heading">The financial confidence every organization needs to run AI.</h2>
         </div>
-        <div className="tg-grid">
-          {PILLARS.map(({ n, Viz, h, p }) => (
-            <div className="tg-col" key={n}>
-              <span className="tg-num">{n}</span>
-              <div className="enable-viz">
+        <div className="en-grid">
+          {CARDS.map(({ n, Viz, h, p, stack }) => (
+            <article className="en-card" key={n}>
+              <div className={"en-media" + (stack ? " stack" : "")}>
                 <Viz />
               </div>
-              <h3 className="tg-h">{h}</h3>
-              <p className="tg-p">{p}</p>
-            </div>
+              <span className="en-index">{n}</span>
+              <h3 className="en-h">{h}</h3>
+              <p className="en-p">{p}</p>
+            </article>
           ))}
         </div>
       </div>
