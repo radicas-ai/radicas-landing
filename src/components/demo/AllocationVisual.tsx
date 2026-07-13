@@ -3,60 +3,6 @@
 // Ported verbatim from the original landing (allocation.jsx) — Allocation surface with group-by.
 import { useState } from "react";
 
-const ENTITIES = [
-  { city: "Milan", legal: "Praxis S.p.A.", region: "IT · HQ", pct: "51.8%", amt: "€64k", color: "#6E6AE0", vendors: 7, seats: 320, qoq: "+4%", dir: "up" },
-  { city: "Hamburg", legal: "Praxis GmbH", region: "DE · SUB", pct: "31.0%", amt: "€38k", color: "#138A6B", vendors: 5, seats: 180, qoq: "+18%", dir: "up" },
-  { city: "Cambridge", legal: "Praxis Labs Ltd", region: "UK · R&D", pct: "17.3%", amt: "€21k", color: "#157C99", vendors: 4, seats: 60, qoq: "−3%", dir: "down" },
-];
-
-function LegalEntity() {
-  return (
-    <div className="alloc-view">
-      <div className="le-bar">
-        {ENTITIES.map((e, i) => (
-          <div className="le-seg" key={i} style={{ flexGrow: parseFloat(e.pct), background: e.color }}>
-            <div>
-              <div className="lbl">{e.city} HQ</div>
-              <div className="pct">{e.pct}</div>
-            </div>
-            <div className="amt">{e.amt}</div>
-          </div>
-        ))}
-      </div>
-      <div className="le-cards">
-        {ENTITIES.map((e, i) => (
-          <div className="le-card" key={i}>
-            <div className="le-card-head">
-              <span className="dot" style={{ background: e.color, boxShadow: `0 0 8px ${e.color}66` }}></span>
-              <span>
-                <span className="nm">{e.city}</span>
-                <span className="legal">{e.legal}</span>
-              </span>
-              <span className="region">{e.region}</span>
-            </div>
-            <div className="le-stats">
-              <div className="le-stat">
-                <span className="k">vendors</span>
-                <span className="v">{e.vendors}</span>
-              </div>
-              <div className="le-stat">
-                <span className="k">seats</span>
-                <span className="v">{e.seats}</span>
-              </div>
-              <div className="le-stat">
-                <span className="k">qoq</span>
-                <span className={"v " + e.dir}>
-                  {e.dir === "up" ? "↑" : "↓"} {e.qoq.replace(/[+−-]/, "")}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const FLOW = [
   { code: "01", name: "opex", amt: "€76,880", pct: 62.0, color: "#6E6AE0", desc: "subscriptions · seats", measured: true },
   { code: "02", name: "cogs", amt: "€27,280", pct: 22.0, color: "#138A6B", desc: "in-product inference", measured: true },
@@ -188,9 +134,8 @@ const UC: Cell[][] = [
 ];
 
 const VIEWS = [
-  { id: "legal entity", render: () => <LegalEntity /> },
-  { id: "cost center", render: () => <CostCenter /> },
   { id: "business unit", render: () => <Treemap cols={BU} /> },
+  { id: "cost center", render: () => <CostCenter /> },
   { id: "use case", render: () => <Treemap cols={UC} /> },
 ];
 
