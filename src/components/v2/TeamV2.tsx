@@ -5,12 +5,15 @@ type Member = {
   role: string;
   linkedin: string;
   photo?: string;
+  /** Per-photo framing so faces sit at a consistent scale. */
+  zoom?: number;
+  pos?: string;
 };
 
 const TEAM: Member[] = [
-  { name: "Marihum Pernia", role: "Co-Founder & CEO", linkedin: "https://www.linkedin.com/in/marihum-pernia/", photo: "/team/marihum.jpg" },
-  { name: "Francesco Fiore", role: "Co-Founder & CTO", linkedin: "https://www.linkedin.com/in/francesco-fio/", photo: "/team/francesco.jpg" },
-  { name: "Meike Bingemann", role: "Co-Founder & COO", linkedin: "https://www.linkedin.com/in/meike-bingemann/", photo: "/team/meike.jpg" },
+  { name: "Marihum Pernia", role: "Co-Founder & CEO", linkedin: "https://www.linkedin.com/in/marihum-pernia/", photo: "/team/marihum.jpg", zoom: 1.32, pos: "center 30%" },
+  { name: "Francesco Fiore", role: "Co-Founder & CTO", linkedin: "https://www.linkedin.com/in/francesco-fio/", photo: "/team/francesco.jpg", zoom: 1, pos: "center 12%" },
+  { name: "Meike Bingemann", role: "Co-Founder & COO", linkedin: "https://www.linkedin.com/in/meike-bingemann/", photo: "/team/meike.jpg", zoom: 1, pos: "center 18%" },
 ];
 
 function initials(name: string) {
@@ -49,13 +52,19 @@ export function TeamV2() {
           {TEAM.map((m) => (
             <li key={m.name} className="flex flex-col items-start gap-4 bg-bg-elevated p-6">
               {m.photo ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={m.photo}
-                  alt={m.name}
-                  className="aspect-square w-full rounded-lg border border-border object-cover"
-                  style={{ filter: "grayscale(1) contrast(1.02)", objectPosition: "center 20%" }}
-                />
+                <div className="aspect-square w-full overflow-hidden rounded-lg border border-border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={m.photo}
+                    alt={m.name}
+                    className="h-full w-full object-cover"
+                    style={{
+                      filter: "grayscale(1) contrast(1.02)",
+                      objectPosition: m.pos ?? "center 20%",
+                      transform: `scale(${m.zoom ?? 1})`,
+                    }}
+                  />
+                </div>
               ) : (
                 <div
                   aria-hidden="true"
