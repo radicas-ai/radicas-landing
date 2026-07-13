@@ -133,8 +133,8 @@ export function WhatTheLayerDoes({
             </div>
           </div>
           <aside className="app-side">
-            <div className="side-search">✦&nbsp;&nbsp;Ask Alyx about this view</div>
-            <div className="side-agent">✦ Alyx</div>
+            <div className="side-search">✦&nbsp;&nbsp;Ask Radicas about this view</div>
+            <div className="side-agent">✦ Radicas</div>
             <div className="side-lead">{ins.lead}</div>
             <ol className="ins" key={animKey}>
               {ins.items.map((it, i) => (

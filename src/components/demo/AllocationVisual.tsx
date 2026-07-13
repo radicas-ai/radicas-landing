@@ -13,7 +13,7 @@ const FLOW = [
 
 function CostCenter() {
   const W = 720,
-    H = 270,
+    H = 600,
     top = 12,
     bot = 12,
     H2 = H - top - bot;
@@ -130,7 +130,7 @@ const UC: Cell[][] = [
   [{ name: "In-product Praxis Assistant", pct: 25.3, amt: "€31k", color: "#138A6B" }, { name: "AP reconciliation", pct: 8.6, amt: "€11k", color: "#C25E1B" }],
   [{ name: "Engineering tooling", pct: 20.6, amt: "€26k", color: "#6E6AE0" }, { name: "Knowledge / Notion AI", pct: 6.7, amt: "€8k", color: "#8C89E6" }],
   [{ name: "Tier-1 support automation", pct: 17.3, amt: "€21k", color: "#157C99" }, { name: "Sales outreach + notes", pct: 13.1, amt: "€16k", color: "#138A6B" }],
-  [{ name: "CRM embedded (Einstein)", pct: 5.8, amt: "€7k", color: "#2C5BB8" }, { name: "Other / experimentation", pct: 2.6, amt: "€3k", color: "#39415C" }],
+  [{ name: "CRM", pct: 5.8, amt: "€7k", color: "#2C5BB8" }, { name: "Other", pct: 2.6, amt: "€3k", color: "#39415C" }],
 ];
 
 const VIEWS = [

@@ -460,15 +460,15 @@
 .commit.open .commit-pct { color: var(--fg-subtle); }
 
 /* ================= Allocation ================= */
-.groupby { display: flex; gap: 4px; padding: 12px 16px 14px; flex-wrap: wrap; }
+.groupby { display: flex; gap: 6px; padding: 12px 16px 14px; flex-wrap: wrap; align-items: center; }
 .gb-tab {
-  padding: 5px 11px; border-radius: var(--radius-sm); border: 1px solid transparent;
-  font-family: var(--font-mono); font-size: var(--text-2xs); letter-spacing: var(--track-mono); text-transform: lowercase;
-  color: var(--fg-subtle); cursor: pointer; background: transparent;
+  padding: 6px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--track-mono); text-transform: lowercase;
+  color: var(--fg-muted); cursor: pointer; background: var(--carbon-850);
   transition: all var(--dur-1) var(--ease-out);
 }
-.gb-tab:hover { color: var(--fg-muted); }
-.gb-tab.active { color: var(--fg); border-color: var(--brand-primary); background: rgba(117,113,235,0.08); }
+.gb-tab:hover { color: var(--fg); border-color: var(--border-strong); background: var(--carbon-800); }
+.gb-tab.active { color: var(--fg); border-color: var(--brand-primary); background: rgba(117,113,235,0.14); box-shadow: 0 0 0 1px var(--brand-primary); }
 .gb-tab.active::before { content: "● "; color: var(--brand-primary-light); }
 .alloc-view { padding: 0 16px 18px; min-height: 300px; }
 
@@ -502,7 +502,7 @@
 .flow-leg .measured { color: var(--semantic-allow); border: 1px solid rgba(0,200,150,0.3); border-radius: var(--radius-pill); padding: 0 6px; font-size: 8px; letter-spacing: var(--track-caps); }
 
 /* treemap */
-.tm { display: flex; gap: 4px; height: 300px; }
+.tm { display: flex; gap: 4px; height: 560px; }
 .tm-col { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .tm-cell {
   position: relative; border-radius: var(--radius-sm); padding: 11px 12px; overflow: hidden;
@@ -598,8 +598,8 @@
 .app-x { margin-left: auto; color: var(--fg-subtle); font-size: 12px; }
 
 .app-content { flex: 1; overflow: auto; padding: 18px 20px; display: flex; flex-direction: column; }
-/* Centre a short panel so its slack is balanced top/bottom; a tall panel still scrolls from the top. */
-.app-content .panel-anim { margin-block: auto; width: 100%; }
+/* Panels keep their natural height (allocation views are sized to fill); tall panels scroll. */
+.app-content > .panel-anim { flex: 0 0 auto; width: 100%; }
 .app-content .pv { border: none; background: transparent; box-shadow: none; border-radius: 0; }
 .app-content .pv-bar { display: none; }
 .app-content .pv-statline { padding-inline: 0; }
