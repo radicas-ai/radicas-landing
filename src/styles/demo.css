@@ -572,7 +572,7 @@
 
 .app-frame {
   position: relative; display: grid; grid-template-columns: 54px minmax(0,1fr) 300px;
-  min-height: 640px; max-height: 760px;
+  height: 700px;
   border: 1px solid var(--border-strong); border-radius: var(--radius-xl);
   background: var(--carbon-950); box-shadow: var(--shadow-lg); overflow: hidden;
 }
@@ -597,7 +597,9 @@
 .app-chip.alt { color: var(--brand-primary-light); border-color: rgba(117,113,235,0.3); }
 .app-x { margin-left: auto; color: var(--fg-subtle); font-size: 12px; }
 
-.app-content { flex: 1; overflow: auto; padding: 18px 20px; }
+.app-content { flex: 1; overflow: auto; padding: 18px 20px; display: flex; flex-direction: column; }
+/* Centre a short panel so its slack is balanced top/bottom; a tall panel still scrolls from the top. */
+.app-content .panel-anim { margin-block: auto; width: 100%; }
 .app-content .pv { border: none; background: transparent; box-shadow: none; border-radius: 0; }
 .app-content .pv-bar { display: none; }
 .app-content .pv-statline { padding-inline: 0; }
@@ -797,8 +799,9 @@
 /* ---------------- Responsive ---------------- */
 @media (max-width: 1080px) {
   .ask-grid { grid-template-columns: 1fr; gap: var(--space-12); justify-items: center; }
-  .app-frame { grid-template-columns: 1fr; max-height: none; }
+  .app-frame { grid-template-columns: 1fr; height: auto; max-height: none; }
   .app-rail, .app-side { display: none; }
+  .app-content .panel-anim { margin-block: 0; }
   .layer-tabs { overflow-x: auto; }
   .hero-grid, .what-grid { grid-template-columns: 1fr; gap: var(--space-12); }
   .what-grid .what-diagram { order: 2; }

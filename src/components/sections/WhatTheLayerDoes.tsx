@@ -5,7 +5,6 @@ import { useState } from "react";
 import { VendorsVisual } from "@/components/demo/VendorsVisual";
 import { AllocationVisual } from "@/components/demo/AllocationVisual";
 import { AgentFleetVisual } from "@/components/demo/AgentFleetVisual";
-import { PolicyVisual } from "@/components/demo/PolicyVisual";
 
 const TABS = [
   {
@@ -13,24 +12,19 @@ const TABS = [
     Visual: VendorsVisual,
   },
   {
-    label: "allocation",
-    Visual: AllocationVisual,
-  },
-  {
     label: "agent fleet",
     Visual: AgentFleetVisual,
   },
   {
-    label: "policy",
-    Visual: PolicyVisual,
+    label: "allocation",
+    Visual: AllocationVisual,
   },
 ];
 
 const APP_META = [
   { title: "Vendors", live: "Live", range: "01 Oct – 31 Oct", meta: "12 vendors", icon: "home" },
-  { title: "Allocation", live: "30d", range: "01 Oct – 31 Oct", meta: "5 cost centres", icon: "grid" },
   { title: "Agent fleet", live: "Live", range: "in production", meta: "6 agents", icon: "user" },
-  { title: "Policy", live: "Enforcing", range: "real-time", meta: "1 policy · 3 levels", icon: "bell" },
+  { title: "Allocation", live: "30d", range: "01 Oct – 31 Oct", meta: "5 cost centres", icon: "grid" },
 ];
 
 const INSIGHTS = [
@@ -43,14 +37,6 @@ const INSIGHTS = [
     ],
   },
   {
-    lead: "3 allocation notes:",
-    items: [
-      { h: "Hamburg up 18% QoQ", d: "fastest-growing entity" },
-      { h: "2% unmapped spend", d: "sitting in the review queue" },
-      { h: "CapEx at 9%", d: "capitalised experiments · edge infra" },
-    ],
-  },
-  {
     lead: "Fleet flags:",
     items: [
       { h: "Reg. Doc Extractor — null", d: "€6,800 · reported, pilot continuing" },
@@ -59,11 +45,11 @@ const INSIGHTS = [
     ],
   },
   {
-    lead: "Policy activity:",
+    lead: "3 allocation notes:",
     items: [
-      { h: "scraper-agent blocked", d: "before the provider call" },
-      { h: "ops-agent needs approval", d: "88% of budget used" },
-      { h: "research-agent flagged", d: "observe · alert only" },
+      { h: "Hamburg up 18% QoQ", d: "fastest-growing entity" },
+      { h: "2% unmapped spend", d: "sitting in the review queue" },
+      { h: "CapEx at 9%", d: "capitalised experiments · edge infra" },
     ],
   },
 ];
