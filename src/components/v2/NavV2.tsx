@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { track } from "@/lib/analytics";
 import { Wordmark } from "@/components/ui/Mark";
+import { bookingUrl } from "@/lib/site";
 
 const LINKS = [
   { href: "#what-it-does", label: "Product" },
@@ -16,7 +17,6 @@ const LINKS = [
 export function NavV2() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -49,9 +49,9 @@ export function NavV2() {
 
         <div className="flex items-center gap-3">
           <a
-            href={bookingUrl || "#contact"}
-            target={bookingUrl ? "_blank" : undefined}
-            rel={bookingUrl ? "noopener noreferrer" : undefined}
+            href={bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => track("cta_book_demo", { location: "nav-v2" })}
             className="group hidden h-9 items-center gap-2 rounded-md bg-brand-primary px-4 text-sm font-medium text-carbon-050 transition-all hover:bg-brand-primary-hover hover:shadow-glow sm:inline-flex"
           >

@@ -89,7 +89,10 @@ function Ico({ d }: { d: string }) {
   );
 }
 
-export function WhatTheLayerDoes() {
+export function WhatTheLayerDoes({
+  eyebrow,
+  heading = "What the layer does.",
+}: { eyebrow?: string; heading?: string } = {}) {
   const [active, setActive] = useState(0);
   const [animKey, setAnimKey] = useState(0);
   const select = (i: number) => {
@@ -106,7 +109,10 @@ export function WhatTheLayerDoes() {
     <section className="section section-hairline" id="what-it-does">
       <div className="container">
         <div className="tabs-head">
-          <h2 className="tabs-heading">What the layer does.</h2>
+          {eyebrow && <span className="eyebrow text-brand-primary-light">{eyebrow}</span>}
+          <h2 className="tabs-heading" style={eyebrow ? { marginTop: 16 } : undefined}>
+            {heading}
+          </h2>
           <p className="tabs-intro">Select a capability to see how it works.</p>
         </div>
         <div className="tabbar" role="tablist">

@@ -92,18 +92,19 @@ export function HeroV2() {
             </span>
 
             <h1 className="mt-5 max-w-2xl font-display text-4xl font-semibold leading-[1.05] tracking-tight text-fg sm:text-5xl">
-              See and control every AI tool your company runs.
+              Take control of your AI spend.
             </h1>
 
             <p className="mt-6 max-w-xl text-lg text-fg-muted">
-              Radicas is the runtime control plane for enterprise AI — a real-time layer beneath
-              every tool, model, and agent that costs, attributes, and governs every call.
+              AI spend is becoming one of the fastest-growing, least-governed line items on your P&amp;L.
+              Radicas helps organizations understand what they&apos;re spending, who owns it, and where
+              it&apos;s creating value.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3">
               <BookDemoButton location="hero-v2" />
               <ButtonLink href="#what-it-does" variant="secondary" size="lg">
-                See the product
+                See how it works
               </ButtonLink>
               <span className="font-mono text-2xs lowercase tracking-mono text-fg-subtle">
                 eu-native · no card
