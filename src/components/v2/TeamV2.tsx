@@ -8,8 +8,8 @@ type Member = {
 };
 
 const TEAM: Member[] = [
-  { name: "Marihum Pernia", role: "Co-Founder & CEO", linkedin: "https://www.linkedin.com/in/marihum-pernia/" },
-  { name: "Francesco Fiore", role: "Co-Founder & CTO", linkedin: "https://www.linkedin.com/in/francesco-fio/" },
+  { name: "Marihum Pernia", role: "Co-Founder & CEO", linkedin: "https://www.linkedin.com/in/marihum-pernia/", photo: "/team/marihum.jpg" },
+  { name: "Francesco Fiore", role: "Co-Founder & CTO", linkedin: "https://www.linkedin.com/in/francesco-fio/", photo: "/team/francesco.jpg" },
   { name: "Meike Bingemann", role: "Co-Founder & COO", linkedin: "https://www.linkedin.com/in/meike-bingemann/" },
 ];
 
@@ -50,11 +50,16 @@ export function TeamV2() {
             <li key={m.name} className="flex flex-col items-start gap-4 bg-bg-elevated p-6">
               {m.photo ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={m.photo} alt={m.name} className="h-16 w-16 rounded-pill object-cover" />
+                <img
+                  src={m.photo}
+                  alt={m.name}
+                  className="h-20 w-20 rounded-pill border border-border object-cover"
+                  style={{ filter: "grayscale(1) contrast(1.02)", objectPosition: "center 22%" }}
+                />
               ) : (
                 <div
                   aria-hidden="true"
-                  className="flex h-16 w-16 items-center justify-center rounded-pill border border-border bg-bg font-mono text-md uppercase tracking-caps text-brand-primary-light"
+                  className="flex h-20 w-20 items-center justify-center rounded-pill border border-border bg-bg font-mono text-md uppercase tracking-caps text-brand-primary-light"
                 >
                   {initials(m.name)}
                 </div>
