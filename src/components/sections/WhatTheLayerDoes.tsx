@@ -1,12 +1,14 @@
 "use client";
 
 // Ported from the original landing (app.jsx › TheLayerDoes) — capability tabs + app frame.
-import { useState } from "react";
+import { useState, type ComponentType } from "react";
 import { VendorsVisual } from "@/components/demo/VendorsVisual";
-import { AllocationVisual } from "@/components/demo/AllocationVisual";
+import { AllocationVisual, type VisualProps } from "@/components/demo/AllocationVisual";
 import { AgentFleetVisual } from "@/components/demo/AgentFleetVisual";
 
-const TABS = [
+// `cycle` tabs own their own internal stepper (e.g. allocation's group-by views);
+// the parent waits for the child's onCycleDone instead of running the 3s tab timer.
+const TABS: { label: string; Visual: ComponentType<VisualProps>; cycle?: boolean }[] = [
   {
     label: "vendors",
     Visual: VendorsVisual,
@@ -18,6 +20,7 @@ const TABS = [
   {
     label: "allocation",
     Visual: AllocationVisual,
+    cycle: true,
   },
 ];
 
@@ -81,9 +84,16 @@ export function WhatTheLayerDoes({
 }: { eyebrow?: string; heading?: string } = {}) {
   const [active, setActive] = useState(0);
   const [animKey, setAnimKey] = useState(0);
+  const [auto, setAuto] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const advance = () => {
+    setActive((i) => (i + 1) % TABS.length);
+    setAnimKey((k) => k + 1);
+  };
   const select = (i: number) => {
     setActive(i);
     setAnimKey((k) => k + 1);
+    setAuto(false);
   };
   const tab = TABS[active]!;
   const m = APP_META[active]!;
@@ -101,11 +111,12 @@ export function WhatTheLayerDoes({
           </h2>
           <p className="tabs-intro">Select a capability to see how it works.</p>
         </div>
-        <div className="tabbar" role="tablist">
+        <div className={"tabbar" + (paused ? " paused" : "")} role="tablist" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           {TABS.map((t, i) => (
             <button key={i} role="tab" aria-selected={active === i} className={"tab" + (active === i ? " active" : "")} onClick={() => select(i)}>
               <span className="tab-index">{pad(i)}</span>
               <span className="tab-label">{t.label}</span>
+              {auto && active === i && !t.cycle && <span className="tab-timer" onAnimationEnd={advance} aria-hidden="true" />}
             </button>
           ))}
         </div>
@@ -128,7 +139,7 @@ export function WhatTheLayerDoes({
             </div>
             <div className="app-content" key={animKey}>
               <div className="panel-anim">
-                <Visual />
+                <Visual playing={auto} paused={paused} onCycleDone={advance} onInteract={() => setAuto(false)} />
               </div>
             </div>
           </div>

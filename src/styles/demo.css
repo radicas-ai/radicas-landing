@@ -85,6 +85,66 @@
   border-top: 1px solid var(--border-strong);
   border-bottom: 1px solid var(--border-strong);
 }
+/* ---------------- The layer, in three guarantees ---------------- */
+.tg {
+  border-top: 1px solid var(--border);
+  color: var(--fg);
+}
+.tg-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--text-xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+  margin-bottom: var(--space-12);
+}
+.tg-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-primary); }
+.tg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.tg-col { padding-inline: var(--space-10); }
+.tg-col:first-child { padding-left: 0; }
+.tg-col + .tg-col { border-left: 1px solid var(--border); }
+.tg-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: var(--track-mono);
+  color: var(--brand-primary-light);
+  margin-bottom: var(--space-5);
+}
+.tg-h {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(26px, 2.7vw, 36px);
+  line-height: 1.04;
+  letter-spacing: var(--track-tight);
+  color: var(--fg);
+  margin-bottom: var(--space-5);
+}
+.tg-p {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: var(--leading-base);
+  color: var(--fg-muted);
+  max-width: 34ch;
+}
+@media (max-width: 860px) {
+  .tg-grid { grid-template-columns: 1fr; }
+  .tg-col { padding-inline: 0; }
+  .tg-col + .tg-col {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    margin-top: var(--space-10);
+    padding-top: var(--space-10);
+  }
+}
+
 .what-statement { padding-block: calc(var(--section-pad) * 1.4); }
 .what-statement .container { display: flex; justify-content: center; max-width: 1400px; }
 .statement-heading {
@@ -202,10 +262,6 @@
 }
 .tab:hover { background: var(--bg-overlay); border-color: var(--border-strong); }
 .tab.active { border-color: var(--brand-primary); background: var(--bg-overlay); }
-.tab.active::before {
-  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: var(--brand-primary); box-shadow: 0 0 16px var(--brand-primary-glow);
-}
 .tab-index {
   font-family: var(--font-mono); font-size: var(--text-2xs);
   letter-spacing: var(--track-caps); color: var(--carbon-500); display: block; margin-bottom: 10px;
@@ -216,6 +272,13 @@
   letter-spacing: var(--track-mono); color: var(--fg-muted); text-transform: lowercase;
 }
 .tab.active .tab-label { color: var(--fg); }
+.tab-timer {
+  position: absolute; left: 0; bottom: 0; height: 2px; width: 0;
+  background: var(--brand-primary); box-shadow: 0 0 8px var(--brand-primary-glow);
+  animation: tabTimer 3s linear both;
+}
+.tabbar.paused .tab-timer { animation-play-state: paused; }
+@keyframes tabTimer { from { width: 0; } to { width: 100%; } }
 
 .panel {
   display: grid;
@@ -462,6 +525,7 @@
 /* ================= Allocation ================= */
 .groupby { display: flex; gap: 6px; padding: 12px 16px 14px; flex-wrap: wrap; align-items: center; }
 .gb-tab {
+  position: relative; overflow: hidden;
   padding: 6px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);
   font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--track-mono); text-transform: lowercase;
   color: var(--fg-muted); cursor: pointer; background: var(--carbon-850);
@@ -470,6 +534,12 @@
 .gb-tab:hover { color: var(--fg); border-color: var(--border-strong); background: var(--carbon-800); }
 .gb-tab.active { color: var(--fg); border-color: var(--brand-primary); background: rgba(117,113,235,0.14); box-shadow: 0 0 0 1px var(--brand-primary); }
 .gb-tab.active::before { content: "● "; color: var(--brand-primary-light); }
+.gb-timer {
+  position: absolute; left: 0; bottom: 0; height: 2px; width: 0;
+  background: var(--brand-primary); box-shadow: 0 0 6px var(--brand-primary-glow);
+  animation: tabTimer 2.5s linear both;
+}
+.groupby.paused .gb-timer { animation-play-state: paused; }
 .alloc-view { padding: 0 16px 18px; min-height: 300px; }
 
 /* Business-unit bar chart — colour per category (matches the mosaic palette) */
@@ -668,7 +738,7 @@
 
 .app-side {
   border-left: 1px solid var(--border); padding: 18px 16px;
-  display: flex; flex-direction: column; gap: 14px;
+  display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
   background: linear-gradient(180deg, rgba(117,113,235,0.04), transparent 36%);
 }
 .side-search { font-family: var(--font-mono); font-size: var(--text-2xs); color: var(--fg-subtle); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 9px 11px; letter-spacing: var(--track-mono); background: var(--carbon-950); }
@@ -884,6 +954,8 @@
 @media (prefers-reduced-motion: reduce) {
   .panel-anim { animation: none; }
   .pv-live .led { animation: none; }
+  .tab-timer { animation: none; }
+  .gb-timer { animation: none; }
 }
 
 /* ── Runtime control-plane visual (ported from the standalone artifact) ───── */

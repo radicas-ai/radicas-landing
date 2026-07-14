@@ -10,6 +10,30 @@ interface LeadBody {
   lastName?: unknown;
   email?: unknown;
   company?: unknown; // honeypot
+  captchaToken?: unknown; // Cloudflare Turnstile
+}
+
+const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+
+// Verify a Turnstile token with Cloudflare. Returns true when verification passes,
+// or when no secret is configured (dev/preview fallback — mirrors notionConfigured).
+async function verifyTurnstile(token: string, remoteip: string | null): Promise<boolean> {
+  if (!turnstileSecret) return true;
+  if (!token) return false;
+  try {
+    const params = new URLSearchParams({ secret: turnstileSecret, response: token });
+    if (remoteip) params.set("remoteip", remoteip);
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params,
+    });
+    const outcome = (await res.json()) as { success: boolean };
+    return outcome.success === true;
+  } catch (err) {
+    console.error("[lead] Turnstile verification request failed:", err);
+    return false;
+  }
 }
 
 export async function POST(req: Request) {
@@ -23,6 +47,16 @@ export async function POST(req: Request) {
   // Honeypot — a filled "company" field means a bot. Pretend success, store nothing.
   if (typeof body.company === "string" && body.company.trim() !== "") {
     return NextResponse.json({ ok: true });
+  }
+
+  // Captcha — block bots that get past the honeypot. No-op when no secret is set.
+  const captchaToken = typeof body.captchaToken === "string" ? body.captchaToken : "";
+  const remoteip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? null;
+  if (!(await verifyTurnstile(captchaToken, remoteip))) {
+    return NextResponse.json(
+      { ok: false, error: "Captcha verification failed. Please retry." },
+      { status: 400 },
+    );
   }
 
   const firstName = typeof body.firstName === "string" ? body.firstName.trim() : "";

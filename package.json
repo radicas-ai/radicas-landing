@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.3",
     "@next/third-parties": "^16.2.0",
     "@notionhq/client": "^2.2.15",
     "clsx": "^2.1.1",

@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { Wordmark } from "./Mark";
 
 export function Footer() {
@@ -22,11 +23,29 @@ export function Footer() {
               Contact
             </a>
           </div>
+          <div className="flex gap-5">
+            <a
+              href="https://www.iubenda.com/privacy-policy/25436293"
+              className="iubenda-noiframe iubenda-embed transition-colors hover:text-fg"
+              title="Privacy Policy"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="https://www.iubenda.com/privacy-policy/25436293/cookie-policy"
+              className="iubenda-noiframe iubenda-embed transition-colors hover:text-fg"
+              title="Cookie Policy"
+            >
+              Cookie Policy
+            </a>
+          </div>
           <p className="font-mono text-2xs uppercase tracking-caps text-fg-subtle">
             © {new Date().getFullYear()} Radicas · the layer underneath
           </p>
         </div>
       </div>
+      {/* Turns the .iubenda-embed links above into modal-opening policy links. */}
+      <Script src="https://cdn.iubenda.com/iubenda.js" strategy="afterInteractive" />
     </footer>
   );
 }
