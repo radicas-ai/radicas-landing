@@ -961,6 +961,7 @@
   /* keep the app-frame header from overflowing on phones */
   .app-head { gap: 8px; }
   .app-chip { display: none; }
+  .app-content { padding: 16px 12px; } /* phones: every px of width counts */
 
   /* rows/cards flagged hideMobile in the demo data drop out on phones */
   .m-sm-hide { display: none !important; }
@@ -981,8 +982,12 @@
   .vt-spark, .vt-grid .commit, .vt-name .sub { display: none; } /* sparkline, commit bar, sub-label */
   .vt-name .nm { font-size: 13px; }
 
-  /* agent fleet → single column, headline metrics only */
-  .fleet-stats { grid-template-columns: 1fr; gap: 8px; }
+  /* agent fleet → KPI tiles side by side, one column of cards, headline metrics only */
+  .fleet-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .fleet-stat { padding: 10px 8px; }
+  .fleet-stat .k { font-size: 9px; letter-spacing: 0.05em; overflow-wrap: break-word; }
+  .fleet-stat .v { font-size: 13px; margin-top: 5px; }
+  .fleet-stat .sub, .fleet-stat .tags, .fleet-stat .lnk { display: none; } /* label + value only */
   .fleet-grid { grid-template-columns: 1fr; }
   .acard-grid .ametric:nth-child(n+3) { display: none; } /* delegated authority + open exceptions */
   /* nowrap badges overflow narrow cards: wrap them onto their own row */
@@ -990,15 +995,30 @@
   .acard-badges { flex-direction: row; flex-wrap: wrap; margin-left: 0; width: 100%; }
   .ametric .mtag { white-space: normal; }
 
+  /* allocation group-by → three compact tabs on one row, caption dropped;
+     columns sized to their label so "business unit" doesn't clip */
+  .groupby { display: grid; grid-template-columns: 1.25fr 1.05fr 0.85fr; gap: 6px; align-items: stretch; }
+  .groupby > span:first-child { display: none; } /* the "group by" label */
+  .gb-tab {
+    padding: 10px 2px; font-size: 10px; letter-spacing: 0.02em; text-align: center;
+    white-space: nowrap; min-width: 0; overflow: hidden;
+  }
+  .gb-tab.active::before { content: none; } /* the "● " prefix doesn't fit 3-up */
+
+  /* ask integrations → label above its chip row, left-aligned */
+  .ask-intg { gap: 14px; }
+  .intg-group { align-items: flex-start; gap: 8px; }
+  .intg-group > .gl { width: 100%; }
+  .intg { padding: 5px 10px; font-size: var(--text-xs); }
+
   /* allocation "use case" → bar list instead of the treemap */
   .tm { display: none; }
   .tm-fallback { display: block; }
 
   /* legibility: hardcoded 8–9px labels → 10px on phones */
-  .vt-group, .pchip, .fleet-stat .k, .fleet-stat .sub,
+  .vt-group, .pchip,
   .ametric .k, .ametric .sub, .acard-head .role,
   .ins-d, .app-live, .cb-meta { font-size: 10px; }
-  .gb-tab { padding: 9px 14px; }
 }
 @media (max-width: 480px) {
   .ask-phone-wrap { width: 100%; }
@@ -1307,10 +1327,12 @@
 #whats-next.in .wn-col--next { transition-delay: .24s; }
 
 @media (max-width: 760px) {
-  #whats-next .wn-road { grid-template-columns: 1fr; gap: 14px; max-width: 520px; }
-  #whats-next .wn-flow { flex-direction: row; gap: 10px; }
-  #whats-next .wn-flow-arrow { transform: rotate(90deg); }
-  #whats-next .wn-layer { flex-direction: column; align-items: flex-start; gap: 6px; }
+  /* vertical timeline: today card, centered ↓ evolving hinge, compact next rows */
+  #whats-next .wn-road { grid-template-columns: 1fr; gap: 12px; max-width: 520px; margin-inline: auto; }
+  #whats-next .wn-flow { gap: 4px; }
+  #whats-next .wn-flow-arrow { transform: rotate(90deg); font-size: 18px; }
+  #whats-next .wn-layer { padding: 13px 16px; }
+  #whats-next .wn-tier { margin-bottom: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

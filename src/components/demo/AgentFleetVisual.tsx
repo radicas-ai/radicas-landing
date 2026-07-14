@@ -47,7 +47,7 @@ interface Agent {
 }
 
 const AGENTS: Agent[] = [
-  { name: "Claims Triage Agent", role: "Group Claims Lead", risk: "high", border: "#FF3B5C", cost: "€4,200", costSub: "50.4k annualised", margin: "+€11,200", mTag: ["measured", "MEASURED"], dau: "23%", dauSub: "intentional low — <b>pilot mode</b>, human-in-loop", exc: "2", prov: ["openai", "pinecone", "guidewire"] },
+  { name: "Claims Triage Agent", role: "Group Claims Lead", risk: "high", border: "#FF3B5C", cost: "€4,200", costSub: "50.4k annualised", margin: "+€11,200", mTag: ["measured", "MEASURED"], dau: "23%", dauSub: "intentional low — <b>pilot mode</b>, human-in-loop", exc: "2", prov: ["openai", "pinecone", "guidewire"], hideMobile: true },
   { name: "Customer Service Knowledge Agent", role: "Head of CS", risk: "limited", border: "#FF6A1A", cost: "€5,100", costSub: "61.2k annualised", margin: "+€13,400", mTag: ["measured", "MEASURED"], dau: "67%", dauSub: "target <b>70%</b>", exc: "14", prov: ["openai", "aleph"], hideMobile: true },
   { name: "Underwriting Pricing Assistant", role: "Head of Underwriting", risk: "high", border: "#7571EB", featured: true, cost: "€4,000", costSub: "48.0k annualised", margin: "+€9,000", mTag: ["measured", "MEASURED"], dau: "54%", dauSub: "on track · approval-required > <b>€25k</b>", exc: "5", prov: ["anthropic", "pinecone", "guidewire"] },
   { name: "Sales Outreach Agent", role: "Head of Sales", risk: "limited", border: "#FF6A1A", cost: "€1,000", costSub: "12.0k annualised", margin: "+€3,300", mTag: ["estimated", "ESTIMATED"], dau: "88%", dauSub: "above target · <b>review cadence raised</b>", exc: "9", prov: ["openai", "salesforce"] },
