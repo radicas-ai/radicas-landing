@@ -8,12 +8,14 @@ type Member = {
   /** Per-photo framing so faces sit at a consistent scale. */
   zoom?: number;
   pos?: string;
+  /** Fill shown around a scaled-down photo (matches its own backdrop). */
+  bg?: string;
 };
 
 const TEAM: Member[] = [
   { name: "Marihum Pernia", role: "Co-Founder & CEO", linkedin: "https://www.linkedin.com/in/marihum-pernia/", photo: "/team/marihum.jpg", zoom: 1.42, pos: "center 26%" },
   { name: "Francesco Fiore", role: "Co-Founder & CTO", linkedin: "https://www.linkedin.com/in/francesco-fio/", photo: "/team/francesco.jpg", zoom: 1.16, pos: "center 10%" },
-  { name: "Meike Bingemann", role: "Co-Founder & COO", linkedin: "https://www.linkedin.com/in/meike-bingemann/", photo: "/team/meike.png", zoom: 1, pos: "center 20%" },
+  { name: "Meike Bingemann", role: "Co-Founder & COO", linkedin: "https://www.linkedin.com/in/meike-bingemann/", photo: "/team/meike.png", zoom: 0.9, pos: "center 38%", bg: "#f4f4f6" },
 ];
 
 function initials(name: string) {
@@ -52,7 +54,10 @@ export function TeamV2() {
           {TEAM.map((m) => (
             <li key={m.name} className="flex flex-col items-start gap-4 bg-bg-elevated p-6">
               {m.photo ? (
-                <div className="aspect-square w-full overflow-hidden rounded-lg border border-border">
+                <div
+                  className="aspect-square w-full overflow-hidden rounded-lg border border-border"
+                  style={m.bg ? { background: m.bg } : undefined}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={m.photo}
