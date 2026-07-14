@@ -51,21 +51,41 @@ function Treemap({ cols }: { cols: Item[][] }) {
   );
 }
 
-const BU: Item[][] = [
-  [{ name: "Engineering", pct: 31.0, amt: "€38k", color: "#6E6AE0" }],
-  [
-    { name: "Product", pct: 18.2, amt: "€23k", color: "#8C89E6" },
-    { name: "Ops", pct: 7.7, amt: "€10k", color: "#C25E1B" },
-  ],
-  [
-    { name: "Sales", pct: 15.2, amt: "€19k", color: "#138A6B" },
-    { name: "G&A", pct: 8.7, amt: "€11k", color: "#232B45" },
-  ],
-  [
-    { name: "CS", pct: 11.5, amt: "€14k", color: "#157C99" },
-    { name: "COGS (in-product)", pct: 7.7, amt: "€10k", color: "#1E7F5C" },
-  ],
+const BU: Cell[] = [
+  { name: "Engineering", pct: 31.0, amt: "€38k", color: "#6E6AE0" },
+  { name: "Product", pct: 18.2, amt: "€23k", color: "#8C89E6" },
+  { name: "Sales", pct: 15.2, amt: "€19k", color: "#138A6B" },
+  { name: "Customer Success", pct: 11.5, amt: "€14k", color: "#157C99" },
+  { name: "G&A", pct: 8.7, amt: "€11k", color: "#4A5578" },
+  { name: "Ops", pct: 7.7, amt: "€10k", color: "#C25E1B" },
+  { name: "COGS (in-product)", pct: 7.7, amt: "€10k", color: "#1E7F5C" },
 ];
+
+function BarChart({ rows }: { rows: Cell[] }) {
+  const max = Math.max(...rows.map((r) => r.pct));
+  return (
+    <div className="bu">
+      <div className="bu-top">
+        <span className="bu-total">€124k · 30 days</span>
+        <span className="bu-cap">share of spend</span>
+      </div>
+      <div className="bu-list">
+        {rows.map((r, i) => (
+          <div className="bu-row" key={i}>
+            <div className="bu-name">{r.name}</div>
+            <div className="bu-bar-col">
+              <div className="bu-bar" style={{ width: `${(r.pct / max) * 100}%`, backgroundColor: r.color }} />
+            </div>
+            <div className="bu-val">
+              <span className="bu-amt">{r.amt}</span>
+              <span className="bu-pct">{r.pct.toFixed(1)}%</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const UC: Item[][] = [
   [
@@ -149,7 +169,7 @@ function CostBento() {
 }
 
 const VIEWS = [
-  { id: "business unit", render: () => <Treemap cols={BU} /> },
+  { id: "business unit", render: () => <BarChart rows={BU} /> },
   { id: "cost center", render: () => <CostBento /> },
   { id: "use case", render: () => <Treemap cols={UC} /> },
 ];

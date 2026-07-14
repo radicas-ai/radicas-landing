@@ -472,6 +472,28 @@
 .gb-tab.active::before { content: "● "; color: var(--brand-primary-light); }
 .alloc-view { padding: 0 16px 18px; min-height: 300px; }
 
+/* Business-unit bar chart — colour per category (matches the mosaic palette) */
+.bu { height: 560px; display: flex; flex-direction: column; padding: 4px 18px 16px; }
+.bu-top { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.bu-total { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--fg); letter-spacing: var(--track-mono); font-variant-numeric: tabular-nums; }
+.bu-cap { font-family: var(--font-mono); font-size: var(--text-2xs); color: var(--fg-subtle); letter-spacing: var(--track-caps); text-transform: uppercase; }
+.bu-list { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.bu-row { flex: 1; min-height: 0; display: grid; grid-template-columns: 150px 1fr 84px; align-items: center; gap: 16px; border-bottom: 1px solid var(--border); }
+.bu-row:last-child { border-bottom: none; }
+.bu-name { font-family: var(--font-sans); font-size: var(--text-base); font-weight: 500; color: var(--fg); line-height: 1.2; overflow: hidden; }
+.bu-bar-col { min-width: 0; display: flex; align-items: center; }
+.bu-bar {
+  height: 32px; min-width: 6px; border-radius: 8px;
+  background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04) 50%, rgba(0, 0, 0, 0.14));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: filter var(--dur-1) var(--ease-out);
+}
+.bu-row:hover .bu-bar { filter: brightness(1.12); }
+.bu-val { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.bu-amt { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--fg); font-variant-numeric: tabular-nums; }
+.bu-pct { font-family: var(--font-mono); font-size: 10px; color: var(--fg-subtle); margin-top: 3px; }
+@media (max-width: 640px) { .bu { height: auto; } }
+
 /* Cost-centre bento — hero card + ranked mini cards (sized by share) */
 .cb { display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; height: 560px; padding: 2px 16px 16px; }
 .cb-card {
