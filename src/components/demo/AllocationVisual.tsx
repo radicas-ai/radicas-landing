@@ -28,6 +28,12 @@ function CellBox({ c }: { c: Cell }) {
 }
 
 function Treemap({ cols }: { cols: Item[][] }) {
+  // Treemaps don't survive phone widths: below 640px the CSS swaps .tm for a
+  // bar-list rendering of the same cells (.tm-fallback), largest share first.
+  const flat = cols
+    .flat()
+    .flatMap((it) => ("row" in it ? it.row : [it]))
+    .sort((a, b) => b.pct - a.pct);
   return (
     <div className="alloc-view">
       <div className="tm">
@@ -46,6 +52,9 @@ function Treemap({ cols }: { cols: Item[][] }) {
             )}
           </div>
         ))}
+      </div>
+      <div className="tm-fallback">
+        <BarChart rows={flat} />
       </div>
     </div>
   );

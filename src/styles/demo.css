@@ -481,6 +481,7 @@
 
 .vt-scroll { max-height: 520px; overflow-y: auto; }
 .vt-grid { display: grid; grid-template-columns: minmax(0,1fr) 88px 74px 48px 82px 78px; align-items: center; gap: 10px; }
+.vt-spark { display: block; }
 .vt-colhead {
   padding: 9px 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 2;
   background: var(--bg-elevated);
@@ -633,6 +634,8 @@
 
 /* treemap */
 .tm { display: flex; gap: 6px; height: 560px; }
+/* mobile-only bar-list rendering of the same data; swapped in at ≤640px */
+.tm-fallback { display: none; }
 .tm-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .tm-row { display: flex; gap: 6px; min-height: 0; min-width: 0; }
 .tm-cell {
@@ -931,24 +934,78 @@
 @media (max-width: 1080px) {
   .ask-grid { grid-template-columns: 1fr; gap: var(--space-12); justify-items: center; }
   .app-frame { grid-template-columns: 1fr; height: auto; max-height: none; }
-  .app-rail, .app-side { display: none; }
+  .app-rail { display: none; }
+  /* insights re-home below the visual as a compact block */
+  .app-side {
+    border-left: none; border-top: 1px solid var(--border);
+    padding: 16px 18px 20px; overflow: visible;
+    background: linear-gradient(180deg, rgba(117,113,235,0.05), transparent 70%);
+  }
+  .side-search { display: none; }
+  .ins li:nth-child(n+3) { display: none; } /* lead + first two insights only */
   .app-content .panel-anim { margin-block: 0; }
   .layer-tabs { overflow-x: auto; }
   .hero-grid, .what-grid { grid-template-columns: 1fr; gap: var(--space-12); }
   .what-grid .what-diagram { order: 2; }
   .panel { grid-template-columns: 1fr; gap: var(--space-8); }
-  .tabbar { grid-template-columns: repeat(2, 1fr); }
+  .tabbar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
   .nav-links { display: none; }
-  .tabbar { grid-template-columns: 1fr 1fr; }
+  /* never display:none .tabbar or .groupby (or an ancestor): their timer bars
+     drive auto-advance via onAnimationEnd — hidden means the cycle stalls */
+  .tabbar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .tab { padding: 10px; }
+  .tab-label { font-size: 11px; }
   .recon-meta { grid-template-columns: 1fr; }
   /* keep the app-frame header from overflowing on phones */
   .app-head { gap: 8px; }
   .app-chip { display: none; }
-  /* treemaps stay readable on phones by scrolling horizontally */
-  .alloc-view { overflow-x: auto; padding-bottom: 12px; }
-  .tm { min-width: 540px; height: 440px; }
+
+  /* rows/cards flagged hideMobile in the demo data drop out on phones */
+  .m-sm-hide { display: none !important; }
+
+  /* vendors table → card per vendor: name+spend / chip+renewal */
+  .vt-toolbar, .vt-colhead { display: none; }
+  .vt-scroll { max-height: none; overflow-y: visible; } /* no nested scroll on touch */
+  .vt-row { padding: 12px 16px; }
+  .vt-grid {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name spend" "chip renew";
+    gap: 8px 12px;
+  }
+  .vt-name { grid-area: name; }
+  .vt-spend { grid-area: spend; }
+  .pchip { grid-area: chip; }
+  .vt-renew { grid-area: renew; justify-self: end; }
+  .vt-spark, .vt-grid .commit, .vt-name .sub { display: none; } /* sparkline, commit bar, sub-label */
+  .vt-name .nm { font-size: 13px; }
+
+  /* agent fleet → single column, headline metrics only */
+  .fleet-stats { grid-template-columns: 1fr; gap: 8px; }
+  .fleet-grid { grid-template-columns: 1fr; }
+  .acard-grid .ametric:nth-child(n+3) { display: none; } /* delegated authority + open exceptions */
+  /* nowrap badges overflow narrow cards: wrap them onto their own row */
+  .acard-head { flex-wrap: wrap; }
+  .acard-badges { flex-direction: row; flex-wrap: wrap; margin-left: 0; width: 100%; }
+  .ametric .mtag { white-space: normal; }
+
+  /* allocation "use case" → bar list instead of the treemap */
+  .tm { display: none; }
+  .tm-fallback { display: block; }
+
+  /* legibility: hardcoded 8–9px labels → 10px on phones */
+  .vt-group, .pchip, .fleet-stat .k, .fleet-stat .sub,
+  .ametric .k, .ametric .sub, .acard-head .role,
+  .ins-d, .app-live, .cb-meta { font-size: 10px; }
+  .gb-tab { padding: 9px 14px; }
+}
+@media (max-width: 480px) {
+  .ask-phone-wrap { width: 100%; }
+  .phone { width: min(392px, 100%); height: auto; aspect-ratio: 392 / 808; border-radius: 44px; padding: 10px; }
+  .phone::after { width: 104px; height: 24px; }
+  .phone-screen { border-radius: 36px; }
+  .sim-status { padding: 0 20px 0 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

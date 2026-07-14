@@ -120,41 +120,39 @@ export function HeroV2() {
                 01 oct – 31 oct · 12 vendors
               </span>
             </div>
-            <div className="overflow-x-auto">
-              <div className="min-w-[420px]">
-                <div className="grid grid-cols-[1.4fr_0.9fr_0.9fr_auto] gap-3 border-b border-border px-4 py-2 font-mono text-2xs uppercase tracking-caps text-fg-subtle">
-                  <span>vendor</span>
-                  <span className="text-right">spend</span>
-                  <span>renews</span>
-                  <span className="text-right">state</span>
-                </div>
-                {LEDGER.map((r) => (
-                  <div
-                    key={r.vendor}
-                    className="grid grid-cols-[1.4fr_0.9fr_0.9fr_auto] items-center gap-3 border-b border-border/60 px-4 py-3 font-mono text-sm last:border-0"
-                  >
-                    <span className="text-fg">{r.vendor}</span>
-                    <span className="text-right tabular text-fg">{r.spend}</span>
-                    <span className="text-fg-muted">{r.renews}</span>
-                    <span className="text-right">
-                      {r.state ? (
-                        <span
-                          className={
-                            "rounded px-1.5 py-0.5 text-2xs font-semibold " +
-                            (r.state === "ALLOW"
-                              ? "bg-semantic-allow/12 text-semantic-allow"
-                              : "bg-semantic-review/12 text-semantic-review")
-                          }
-                        >
-                          {r.state}
-                        </span>
-                      ) : (
-                        <span className="text-fg-subtle">—</span>
-                      )}
-                    </span>
-                  </div>
-                ))}
+            <div>
+              <div className="grid grid-cols-[1.4fr_0.9fr_auto] gap-3 border-b border-border px-4 py-2 font-mono text-2xs uppercase tracking-caps text-fg-subtle sm:grid-cols-[1.4fr_0.9fr_0.9fr_auto]">
+                <span>vendor</span>
+                <span className="text-right">spend</span>
+                <span className="hidden sm:block">renews</span>
+                <span className="text-right">state</span>
               </div>
+              {LEDGER.map((r) => (
+                <div
+                  key={r.vendor}
+                  className="grid grid-cols-[1.4fr_0.9fr_auto] items-center gap-3 border-b border-border/60 px-4 py-3 font-mono text-sm last:border-0 sm:grid-cols-[1.4fr_0.9fr_0.9fr_auto]"
+                >
+                  <span className="min-w-0 truncate text-fg">{r.vendor}</span>
+                  <span className="text-right tabular text-fg">{r.spend}</span>
+                  <span className="hidden text-fg-muted sm:block">{r.renews}</span>
+                  <span className="text-right">
+                    {r.state ? (
+                      <span
+                        className={
+                          "rounded px-1.5 py-0.5 text-2xs font-semibold " +
+                          (r.state === "ALLOW"
+                            ? "bg-semantic-allow/12 text-semantic-allow"
+                            : "bg-semantic-review/12 text-semantic-review")
+                        }
+                      >
+                        {r.state}
+                      </span>
+                    ) : (
+                      <span className="text-fg-subtle">—</span>
+                    )}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
