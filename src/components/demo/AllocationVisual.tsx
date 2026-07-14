@@ -1,68 +1,145 @@
 "use client";
 
-// Allocation — a ranked horizontal-bar breakdown of AI spend, sliced three ways.
-// Form: magnitude + ranking → horizontal bars (easier to read than treemap areas).
-// Colour: one periwinkle hue as a sequential ramp by rank; length carries the value.
+// Allocation — spend sliced three ways. Treemap mosaics for business unit and
+// use case; a bento breakdown (hero + ranked cards) for cost centre.
 import { useState } from "react";
 
-type Row = { name: string; amt: string; pct: number; sub?: string };
+interface Cell {
+  name: string;
+  pct: number;
+  amt: string;
+  color: string;
+}
+// A column item is either a single cell or a horizontal pair (a nested split).
+type Item = Cell | { row: Cell[] };
 
-const BU: Row[] = [
-  { name: "Engineering", amt: "€38k", pct: 31.0 },
-  { name: "Product", amt: "€23k", pct: 18.2 },
-  { name: "Sales", amt: "€19k", pct: 15.2 },
-  { name: "Customer Success", amt: "€14k", pct: 11.5 },
-  { name: "G&A", amt: "€11k", pct: 8.7 },
-  { name: "Ops", amt: "€10k", pct: 7.7 },
-  { name: "COGS (in-product)", amt: "€10k", pct: 7.7 },
-];
+const sumPct = (it: Item) => ("row" in it ? it.row.reduce((a, c) => a + c.pct, 0) : it.pct);
 
-const CC: Row[] = [
-  { name: "OpEx", amt: "€77k", pct: 62.0, sub: "subscriptions · seats" },
-  { name: "COGS", amt: "€27k", pct: 22.0, sub: "in-product inference" },
-  { name: "CapEx", amt: "€11k", pct: 9.0, sub: "edge infra" },
-  { name: "R&D", amt: "€6k", pct: 5.0, sub: "capitalised experiments" },
-  { name: "Other", amt: "€2k", pct: 2.0, sub: "unmapped · review queue" },
-];
-
-const UC: Row[] = [
-  { name: "In-product Praxis Assistant", amt: "€31k", pct: 25.3 },
-  { name: "Engineering tooling", amt: "€26k", pct: 20.6 },
-  { name: "Tier-1 support automation", amt: "€21k", pct: 17.3 },
-  { name: "Sales outreach + notes", amt: "€16k", pct: 13.1 },
-  { name: "AP reconciliation", amt: "€11k", pct: 8.6 },
-  { name: "Knowledge / Notion AI", amt: "€8k", pct: 6.7 },
-  { name: "CRM (Einstein)", amt: "€7k", pct: 5.8 },
-  { name: "Other", amt: "€3k", pct: 2.6 },
-];
-
-// periwinkle sequential ramp, brightest = largest
-const RAMP = ["#B4B1F6", "#A5A2F3", "#918EF0", "#7D7AEC", "#6E6AE0", "#5E5BC8", "#4F4DAB", "#43428A"];
-
-function Breakdown({ rows }: { rows: Row[] }) {
-  const max = Math.max(...rows.map((r) => r.pct));
+function CellBox({ c }: { c: Cell }) {
   return (
-    <div className="ab">
-      <div className="ab-top">
-        <span className="ab-total">€124k · 30 days</span>
-        <span className="ab-cap">share of spend</span>
+    <div className="tm-cell" style={{ flexGrow: c.pct, flexBasis: 0, background: c.color }}>
+      <div>
+        <div className="nm">{c.name}</div>
+        <div className="pct">{c.pct.toFixed(1)}%</div>
       </div>
-      <div className="ab-list">
-        {rows.map((r, i) => (
-          <div className="ab-row" key={i}>
-            <div className="ab-lab">
-              <span className="ab-name">{r.name}</span>
-              {r.sub && <span className="ab-sub">{r.sub}</span>}
+      <div className="amt">{c.amt}</div>
+    </div>
+  );
+}
+
+function Treemap({ cols }: { cols: Item[][] }) {
+  return (
+    <div className="alloc-view">
+      <div className="tm">
+        {cols.map((col, ci) => (
+          <div className="tm-col" key={ci} style={{ flexGrow: col.reduce((s, it) => s + sumPct(it), 0), flexBasis: 0 }}>
+            {col.map((it, i) =>
+              "row" in it ? (
+                <div className="tm-row" key={i} style={{ flexGrow: sumPct(it), flexBasis: 0 }}>
+                  {it.row.map((c, j) => (
+                    <CellBox c={c} key={j} />
+                  ))}
+                </div>
+              ) : (
+                <CellBox c={it} key={i} />
+              ),
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const BU: Item[][] = [
+  [{ name: "Engineering", pct: 31.0, amt: "€38k", color: "#6E6AE0" }],
+  [
+    { name: "Product", pct: 18.2, amt: "€23k", color: "#8C89E6" },
+    { name: "Ops", pct: 7.7, amt: "€10k", color: "#C25E1B" },
+  ],
+  [
+    { name: "Sales", pct: 15.2, amt: "€19k", color: "#138A6B" },
+    { name: "G&A", pct: 8.7, amt: "€11k", color: "#232B45" },
+  ],
+  [
+    { name: "CS", pct: 11.5, amt: "€14k", color: "#157C99" },
+    { name: "COGS (in-product)", pct: 7.7, amt: "€10k", color: "#1E7F5C" },
+  ],
+];
+
+const UC: Item[][] = [
+  [
+    { name: "In-product Praxis Assistant", pct: 25.3, amt: "€31k", color: "#138A6B" },
+    { name: "AP reconciliation", pct: 8.6, amt: "€11k", color: "#C25E1B" },
+  ],
+  [
+    { name: "Engineering tooling", pct: 20.6, amt: "€26k", color: "#6E6AE0" },
+    { name: "Knowledge / Notion AI", pct: 6.7, amt: "€8k", color: "#8C89E6" },
+  ],
+  [
+    { name: "Tier-1 support automation", pct: 17.3, amt: "€21k", color: "#157C99" },
+    { name: "Sales outreach + meeting notes", pct: 13.1, amt: "€16k", color: "#138A6B" },
+    {
+      row: [
+        { name: "CRM embedded (Einstein)", pct: 5.8, amt: "€7k", color: "#2C5BB8" },
+        { name: "Other / experimentation", pct: 2.6, amt: "€3k", color: "#39415C" },
+      ],
+    },
+  ],
+];
+
+interface Cost {
+  code: string;
+  name: string;
+  amt: string;
+  pct: string;
+  desc: string;
+  color: string;
+  tag: "measured" | "estimated";
+}
+
+const COST: Cost[] = [
+  { code: "01", name: "OpEx", amt: "€76,880", pct: "62.0", desc: "Subscriptions · seats · BU charge-back", color: "#6E6AE0", tag: "measured" },
+  { code: "02", name: "COGS", amt: "€27,280", pct: "22.0", desc: "In-product inference, vector reads", color: "#138A6B", tag: "measured" },
+  { code: "03", name: "CapEx", amt: "€11,160", pct: "9.0", desc: "Edge infrastructure", color: "#157C99", tag: "estimated" },
+  { code: "04", name: "R&D", amt: "€6,200", pct: "5.0", desc: "Capitalised experiments", color: "#C25E1B", tag: "estimated" },
+  { code: "05", name: "Other", amt: "€2,480", pct: "2.0", desc: "Unmapped, review queue", color: "#2A3350", tag: "estimated" },
+];
+
+function CostBento() {
+  const hero = COST[0]!;
+  const rest = COST.slice(1);
+  return (
+    <div className="cb">
+      <div className="cb-card cb-hero" style={{ background: hero.color }}>
+        <div className="cb-card-top">
+          <span className="cb-code">
+            {hero.code} · {hero.name}
+          </span>
+          <span className="cb-tag">{hero.tag}</span>
+        </div>
+        <div className="cb-hero-body">
+          <div className="cb-name">{hero.name}</div>
+          <div className="cb-amt-hero">{hero.amt}</div>
+          <div className="cb-pct">{hero.pct}% of total spend</div>
+          <div className="cb-desc">{hero.desc}</div>
+        </div>
+      </div>
+      <div className="cb-col">
+        {rest.map((c) => (
+          <div className="cb-card cb-mini" key={c.code} style={{ flexGrow: parseFloat(c.pct), flexBasis: 0, background: c.color }}>
+            <div className="cb-card-top">
+              <span className="cb-code">
+                {c.code} · {c.name}
+              </span>
+              <span className="cb-tag">{c.tag}</span>
             </div>
-            <div className="ab-bar-col">
-              <div
-                className="ab-bar"
-                style={{ width: `${(r.pct / max) * 100}%`, background: RAMP[Math.min(i, RAMP.length - 1)] }}
-              />
-            </div>
-            <div className="ab-val">
-              <span className="ab-amt">{r.amt}</span>
-              <span className="ab-pct">{r.pct.toFixed(1)}%</span>
+            <div className="cb-mini-body">
+              <span className="cb-name-mini">{c.name}</span>
+              <span className="cb-amt-mini">{c.amt}</span>
+              <div className="cb-meta">
+                {c.pct}% of total · {c.desc}
+              </div>
             </div>
           </div>
         ))}
@@ -72,9 +149,9 @@ function Breakdown({ rows }: { rows: Row[] }) {
 }
 
 const VIEWS = [
-  { id: "business unit", render: () => <Breakdown rows={BU} /> },
-  { id: "cost center", render: () => <Breakdown rows={CC} /> },
-  { id: "use case", render: () => <Breakdown rows={UC} /> },
+  { id: "business unit", render: () => <Treemap cols={BU} /> },
+  { id: "cost center", render: () => <CostBento /> },
+  { id: "use case", render: () => <Treemap cols={UC} /> },
 ];
 
 export function AllocationVisual() {
