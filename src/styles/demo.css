@@ -492,7 +492,19 @@
 .bu-val { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
 .bu-amt { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--fg); font-variant-numeric: tabular-nums; }
 .bu-pct { font-family: var(--font-mono); font-size: 10px; color: var(--fg-subtle); margin-top: 3px; }
-@media (max-width: 640px) { .bu { height: auto; } }
+@media (max-width: 640px) {
+  .bu { height: auto; }
+  .bu-list { gap: 4px; }
+  .bu-row {
+    grid-template-columns: 1fr auto; grid-template-areas: "name val" "bar bar";
+    row-gap: 8px; padding: 12px 0; align-items: center;
+  }
+  .bu-name { grid-area: name; }
+  .bu-val { grid-area: val; flex-direction: row; align-items: baseline; gap: 8px; }
+  .bu-val .bu-pct { margin-top: 0; }
+  .bu-bar-col { grid-area: bar; }
+  .bu-bar { height: 24px; }
+}
 
 /* Cost-centre bento — hero card + ranked mini cards (sized by share) */
 .cb { display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; height: 560px; padding: 2px 16px 16px; }
@@ -861,6 +873,12 @@
   .nav-links { display: none; }
   .tabbar { grid-template-columns: 1fr 1fr; }
   .recon-meta { grid-template-columns: 1fr; }
+  /* keep the app-frame header from overflowing on phones */
+  .app-head { gap: 8px; }
+  .app-chip { display: none; }
+  /* treemaps stay readable on phones by scrolling horizontally */
+  .alloc-view { overflow-x: auto; padding-bottom: 12px; }
+  .tm { min-width: 540px; height: 440px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
