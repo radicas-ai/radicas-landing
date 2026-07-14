@@ -85,7 +85,7 @@ export function HeroV2() {
       <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-16 sm:pt-20 lg:pb-20">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           {/* left — copy */}
-          <div>
+          <div className="min-w-0">
             <span className="inline-flex items-center gap-2.5 font-mono text-2xs uppercase tracking-caps text-fg-muted">
               <span className="h-1.5 w-1.5 rounded-pill bg-semantic-allow shadow-[0_0_10px_var(--color-semantic-allow)]" />
               finops for the ai era
@@ -113,7 +113,7 @@ export function HeroV2() {
           </div>
 
           {/* right — framed vendor-ledger artifact */}
-          <div className="rounded-xl border border-border bg-bg-elevated shadow-[0_10px_40px_rgba(0,0,0,0.55)] [box-shadow:inset_0_1px_0_rgba(255,255,255,0.04),0_10px_40px_rgba(0,0,0,0.55)]">
+          <div className="min-w-0 rounded-xl border border-border bg-bg-elevated shadow-[0_10px_40px_rgba(0,0,0,0.55)] [box-shadow:inset_0_1px_0_rgba(255,255,255,0.04),0_10px_40px_rgba(0,0,0,0.55)]">
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <span className="font-mono text-xs tracking-mono text-fg-muted">vendor ledger</span>
               <span className="font-mono text-2xs uppercase tracking-caps text-fg-subtle">
