@@ -15,7 +15,13 @@ const inputCls =
   "transition-colors hover:border-border-strong focus:border-brand-primary focus:outline-none " +
   "focus:ring-2 focus:ring-brand-primary/40";
 
-export function ContactCTA() {
+type ContactProps = {
+  eyebrow?: string;
+  heading?: React.ReactNode;
+  body?: React.ReactNode;
+};
+
+export function ContactCTA({ eyebrow, heading, body }: ContactProps = {}) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
   const [captchaToken, setCaptchaToken] = useState("");
@@ -66,13 +72,17 @@ export function ContactCTA() {
       <div className="grid gap-12 rounded-xl border border-border bg-bg-elevated p-6 sm:p-10 lg:grid-cols-2 lg:items-center">
         {/* copy */}
         <div>
-          <p className="eyebrow text-fg-subtle">get the layer</p>
+          <p className="eyebrow text-fg-subtle">{eyebrow ?? "get the layer"}</p>
           <h2 className="mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
-            See Radicas on your stack.
+            {heading ?? "See Radicas on your stack."}
           </h2>
           <p className="mt-4 max-w-md text-md text-fg-muted">
-            Book a working session and we&apos;ll map your AI spend, agents, and policy posture — or
-            leave your details and we&apos;ll reach out.
+            {body ?? (
+              <>
+                Book a working session and we&apos;ll map your AI spend, agents, and policy posture —
+                or leave your details and we&apos;ll reach out.
+              </>
+            )}
           </p>
           <div className="mt-6">
             <BookDemoButton location="contact" />

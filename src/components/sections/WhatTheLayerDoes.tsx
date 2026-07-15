@@ -5,7 +5,6 @@ import { useState, type ComponentType } from "react";
 import { VendorsVisual } from "@/components/demo/VendorsVisual";
 import { AllocationVisual, type VisualProps } from "@/components/demo/AllocationVisual";
 import { AgentFleetVisual } from "@/components/demo/AgentFleetVisual";
-import { PolicyVisual } from "@/components/demo/PolicyVisual";
 
 // `cycle` tabs own their own internal stepper (e.g. allocation's group-by views);
 // the parent waits for the child's onCycleDone instead of running the 3s tab timer.
@@ -15,25 +14,20 @@ const TABS: { label: string; Visual: ComponentType<VisualProps>; cycle?: boolean
     Visual: VendorsVisual,
   },
   {
-    label: "allocation",
-    Visual: AllocationVisual,
-    cycle: true,
-  },
-  {
     label: "agent fleet",
     Visual: AgentFleetVisual,
   },
   {
-    label: "policy",
-    Visual: PolicyVisual,
+    label: "allocation",
+    Visual: AllocationVisual,
+    cycle: true,
   },
 ];
 
 const APP_META = [
   { title: "Vendors", live: "Live", range: "01 Oct – 31 Oct", meta: "12 vendors", icon: "home" },
-  { title: "Allocation", live: "30d", range: "01 Oct – 31 Oct", meta: "5 cost centres", icon: "grid" },
   { title: "Agent fleet", live: "Live", range: "in production", meta: "6 agents", icon: "user" },
-  { title: "Policy", live: "Enforcing", range: "real-time", meta: "1 policy · 3 levels", icon: "bell" },
+  { title: "Allocation", live: "30d", range: "01 Oct – 31 Oct", meta: "5 cost centres", icon: "grid" },
 ];
 
 const INSIGHTS = [
@@ -46,14 +40,6 @@ const INSIGHTS = [
     ],
   },
   {
-    lead: "3 allocation notes:",
-    items: [
-      { h: "Hamburg up 18% QoQ", d: "fastest-growing entity" },
-      { h: "2% unmapped spend", d: "sitting in the review queue" },
-      { h: "CapEx at 9%", d: "capitalised experiments · edge infra" },
-    ],
-  },
-  {
     lead: "Fleet flags:",
     items: [
       { h: "Reg. Doc Extractor — null", d: "€6,800 · reported, pilot continuing" },
@@ -62,11 +48,11 @@ const INSIGHTS = [
     ],
   },
   {
-    lead: "Policy activity:",
+    lead: "3 allocation notes:",
     items: [
-      { h: "scraper-agent blocked", d: "before the provider call" },
-      { h: "ops-agent needs approval", d: "88% of budget used" },
-      { h: "research-agent flagged", d: "observe · alert only" },
+      { h: "Hamburg up 18% QoQ", d: "fastest-growing entity" },
+      { h: "2% unmapped spend", d: "sitting in the review queue" },
+      { h: "CapEx at 9%", d: "capitalised experiments · edge infra" },
     ],
   },
 ];
@@ -92,7 +78,10 @@ function Ico({ d }: { d: string }) {
   );
 }
 
-export function WhatTheLayerDoes() {
+export function WhatTheLayerDoes({
+  eyebrow,
+  heading = "What the layer does.",
+}: { eyebrow?: string; heading?: string } = {}) {
   const [active, setActive] = useState(0);
   const [animKey, setAnimKey] = useState(0);
   const [auto, setAuto] = useState(true);
@@ -116,7 +105,10 @@ export function WhatTheLayerDoes() {
     <section className="section section-hairline" id="what-it-does">
       <div className="container">
         <div className="tabs-head">
-          <h2 className="tabs-heading">What the layer does.</h2>
+          {eyebrow && <span className="eyebrow text-brand-primary-light">{eyebrow}</span>}
+          <h2 className="tabs-heading" style={eyebrow ? { marginTop: 16 } : undefined}>
+            {heading}
+          </h2>
           <p className="tabs-intro">Select a capability to see how it works.</p>
         </div>
         <div className={"tabbar" + (paused ? " paused" : "")} role="tablist" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
@@ -152,8 +144,8 @@ export function WhatTheLayerDoes() {
             </div>
           </div>
           <aside className="app-side">
-            <div className="side-search">✦&nbsp;&nbsp;Ask Alyx about this view</div>
-            <div className="side-agent">✦ Alyx</div>
+            <div className="side-search">✦&nbsp;&nbsp;Ask Radicas about this view</div>
+            <div className="side-agent">✦ Radicas</div>
             <div className="side-lead">{ins.lead}</div>
             <ol className="ins" key={animKey}>
               {ins.items.map((it, i) => (

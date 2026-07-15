@@ -15,12 +15,12 @@ const ICONS: Record<string, string> = {
 };
 
 const TRUST: Trust[] = [
-  { icon: "globe", title: "EU-native data residency", body: "Hosted in the EU. Your AI traffic and ledger never leave the region.", status: "shipped" },
+  { icon: "globe", title: "EU-native data residency", body: "Hosted in the EU. Your AI traffic and ledger never leave the region." },
   { icon: "shield", title: "SOC 2", body: "Type II in progress. Controls mapped; report on the near-term roadmap.", status: "roadmap" },
-  { icon: "doc", title: "GDPR", body: "Built to GDPR from the ground up — lawful basis, DPA, and deletion on request.", status: "shipped" },
-  { icon: "key", title: "SSO & RBAC", body: "SAML/OIDC single sign-on with role-based access across teams and entities.", status: "shipped" },
-  { icon: "eye", title: "Shadow mode", body: "Observe and attribute before you enforce. Turn policy on when you're ready.", status: "shipped" },
-  { icon: "list", title: "Audit trail & attribution", body: "Every call, cost, and policy decision is logged and attributable by ISO-8601.", status: "shipped" },
+  { icon: "doc", title: "GDPR", body: "Built to GDPR from the ground up — lawful basis, DPA, and deletion on request." },
+  { icon: "key", title: "SSO & RBAC", body: "SAML/OIDC single sign-on with role-based access across teams and entities." },
+  { icon: "eye", title: "Shadow mode", body: "Observe and attribute before you enforce. Turn policy on when you're ready." },
+  { icon: "list", title: "Audit trail & attribution", body: "Every call, cost, and policy decision is logged and attributable by ISO-8601." },
 ];
 
 function StatusTag({ status }: { status: Status }) {
@@ -43,12 +43,12 @@ export function TrustBand() {
     <section id="security" className="section section-hairline">
       <div className="container">
         <div className="tabs-head">
-          <span className="eyebrow text-brand-primary-light">trust</span>
+          <span className="eyebrow text-brand-primary-light">security &amp; privacy</span>
           <h2 className="tabs-heading" style={{ marginTop: 16 }}>
-            Built for teams that carry regulatory risk.
+            Trusted foundations.
           </h2>
           <p className="tabs-intro">
-            Precision over polish. Honest about what&apos;s shipped and what&apos;s on the roadmap.
+            The security and privacy foundations enterprise teams require.
           </p>
         </div>
 

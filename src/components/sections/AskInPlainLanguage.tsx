@@ -1,19 +1,29 @@
 // Ported from the original landing (app.jsx › AskRadicas).
 import { PhoneChat } from "@/components/demo/PhoneChat";
 
-export function AskInPlainLanguage() {
+type AskProps = {
+  eyebrow?: string;
+  heading?: React.ReactNode;
+  body?: React.ReactNode;
+};
+
+export function AskInPlainLanguage({ eyebrow, heading, body }: AskProps = {}) {
   return (
     <section className="section section-hairline ask-section" id="ask">
       <div className="container ask-grid">
         <div className="ask-copy">
-          <div className="eyebrow">ask, don&apos;t dig</div>
+          <div className="eyebrow">{eyebrow ?? "ask, don't dig"}</div>
           <h2 className="ask-heading" style={{ marginTop: "16px" }}>
-            Ask in plain language — wherever you already work.
+            {heading ?? "Ask in plain language — wherever you already work."}
           </h2>
           <p className="ask-body">
-            Radicas answers <em>multimodally</em>: the numbers, the chart, and the diagnosis, in the
-            tools your teams already live in. It connects to the LLMs you use and to Slack and Teams
-            over <strong>MCP</strong> — so your agents can reach Radicas the same way.
+            {body ?? (
+              <>
+                Radicas answers <em>multimodally</em>: the numbers, the chart, and the diagnosis, in
+                the tools your teams already live in. It connects to the LLMs you use and to Slack and
+                Teams over <strong>MCP</strong> — so your agents can reach Radicas the same way.
+              </>
+            )}
           </p>
           <div className="ask-intg">
             <div className="intg-group">

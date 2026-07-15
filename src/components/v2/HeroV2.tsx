@@ -85,25 +85,26 @@ export function HeroV2() {
       <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-16 sm:pt-20 lg:pb-20">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           {/* left — copy */}
-          <div>
+          <div className="min-w-0">
             <span className="inline-flex items-center gap-2.5 font-mono text-2xs uppercase tracking-caps text-fg-muted">
               <span className="h-1.5 w-1.5 rounded-pill bg-semantic-allow shadow-[0_0_10px_var(--color-semantic-allow)]" />
               finops for the ai era
             </span>
 
             <h1 className="mt-5 max-w-2xl font-display text-4xl font-semibold leading-[1.05] tracking-tight text-fg sm:text-5xl">
-              See and control every AI tool your company runs.
+              Take control of your AI spend.
             </h1>
 
             <p className="mt-6 max-w-xl text-lg text-fg-muted">
-              Radicas is the runtime control plane for enterprise AI — a real-time layer beneath
-              every tool, model, and agent that costs, attributes, and governs every call.
+              AI spend is becoming one of the fastest-growing, least-governed line items on your P&amp;L.
+              Radicas helps organizations understand what they&apos;re spending, who owns it, and where
+              it&apos;s creating value.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3">
               <BookDemoButton location="hero-v2" />
               <ButtonLink href="#what-it-does" variant="secondary" size="lg">
-                See the product
+                See how it works
               </ButtonLink>
               <span className="font-mono text-2xs lowercase tracking-mono text-fg-subtle">
                 eu-native · no card
@@ -112,48 +113,46 @@ export function HeroV2() {
           </div>
 
           {/* right — framed vendor-ledger artifact */}
-          <div className="rounded-xl border border-border bg-bg-elevated shadow-[0_10px_40px_rgba(0,0,0,0.55)] [box-shadow:inset_0_1px_0_rgba(255,255,255,0.04),0_10px_40px_rgba(0,0,0,0.55)]">
+          <div className="min-w-0 rounded-xl border border-border bg-bg-elevated shadow-[0_10px_40px_rgba(0,0,0,0.55)] [box-shadow:inset_0_1px_0_rgba(255,255,255,0.04),0_10px_40px_rgba(0,0,0,0.55)]">
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <span className="font-mono text-xs tracking-mono text-fg-muted">vendor ledger</span>
               <span className="font-mono text-2xs uppercase tracking-caps text-fg-subtle">
                 01 oct – 31 oct · 12 vendors
               </span>
             </div>
-            <div className="overflow-x-auto">
-              <div className="min-w-[420px]">
-                <div className="grid grid-cols-[1.4fr_0.9fr_0.9fr_auto] gap-3 border-b border-border px-4 py-2 font-mono text-2xs uppercase tracking-caps text-fg-subtle">
-                  <span>vendor</span>
-                  <span className="text-right">spend</span>
-                  <span>renews</span>
-                  <span className="text-right">state</span>
-                </div>
-                {LEDGER.map((r) => (
-                  <div
-                    key={r.vendor}
-                    className="grid grid-cols-[1.4fr_0.9fr_0.9fr_auto] items-center gap-3 border-b border-border/60 px-4 py-3 font-mono text-sm last:border-0"
-                  >
-                    <span className="text-fg">{r.vendor}</span>
-                    <span className="text-right tabular text-fg">{r.spend}</span>
-                    <span className="text-fg-muted">{r.renews}</span>
-                    <span className="text-right">
-                      {r.state ? (
-                        <span
-                          className={
-                            "rounded px-1.5 py-0.5 text-2xs font-semibold " +
-                            (r.state === "ALLOW"
-                              ? "bg-semantic-allow/12 text-semantic-allow"
-                              : "bg-semantic-review/12 text-semantic-review")
-                          }
-                        >
-                          {r.state}
-                        </span>
-                      ) : (
-                        <span className="text-fg-subtle">—</span>
-                      )}
-                    </span>
-                  </div>
-                ))}
+            <div>
+              <div className="grid grid-cols-[1.4fr_0.9fr_auto] gap-3 border-b border-border px-4 py-2 font-mono text-2xs uppercase tracking-caps text-fg-subtle sm:grid-cols-[1.4fr_0.9fr_0.9fr_auto]">
+                <span>vendor</span>
+                <span className="text-right">spend</span>
+                <span className="hidden sm:block">renews</span>
+                <span className="text-right">state</span>
               </div>
+              {LEDGER.map((r) => (
+                <div
+                  key={r.vendor}
+                  className="grid grid-cols-[1.4fr_0.9fr_auto] items-center gap-3 border-b border-border/60 px-4 py-3 font-mono text-sm last:border-0 sm:grid-cols-[1.4fr_0.9fr_0.9fr_auto]"
+                >
+                  <span className="min-w-0 truncate text-fg">{r.vendor}</span>
+                  <span className="text-right tabular text-fg">{r.spend}</span>
+                  <span className="hidden text-fg-muted sm:block">{r.renews}</span>
+                  <span className="text-right">
+                    {r.state ? (
+                      <span
+                        className={
+                          "rounded px-1.5 py-0.5 text-2xs font-semibold " +
+                          (r.state === "ALLOW"
+                            ? "bg-semantic-allow/12 text-semantic-allow"
+                            : "bg-semantic-review/12 text-semantic-review")
+                        }
+                      >
+                        {r.state}
+                      </span>
+                    ) : (
+                      <span className="text-fg-subtle">—</span>
+                    )}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

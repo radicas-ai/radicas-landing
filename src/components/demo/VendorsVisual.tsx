@@ -35,7 +35,7 @@ function Spark({ seed, trend }: { seed: number; trend: Trend }) {
         ? "var(--semantic-allow)"
         : "var(--carbon-400)";
   return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ display: "block" }}>
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="vt-spark">
       <polyline points={pts} fill="none" stroke={color} strokeWidth="1.3" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
@@ -53,9 +53,11 @@ interface Row {
   commit: number;
   renew: string;
   open?: boolean;
+  /** Dropped on phones (≤640px) via .m-sm-hide to keep the card list short. */
+  hideMobile?: boolean;
 }
 
-const GROUPS: { cat: string; rows: Row[] }[] = [
+const GROUPS: { cat: string; hideMobile?: boolean; rows: Row[] }[] = [
   {
     cat: "LLM Providers",
     rows: [
@@ -69,21 +71,22 @@ const GROUPS: { cat: string; rows: Row[] }[] = [
     rows: [
       { sym: "MS", bg: "#2B6FD6", name: "Microsoft 365 + Copilot", sub: "OpEx · 320 seats", price: "per-seat", pc: "perseat", spend: "€18,400", trend: "flat", commit: 44, renew: "2026-06-30" },
       { sym: "CE", bg: "#1B2230", name: "ChatGPT Enterprise", sub: "OpEx · 300 seats", price: "per-seat", pc: "perseat", spend: "€18,000", trend: "up", commit: 50, renew: "2027-02-15" },
-      { sym: "NO", bg: "#15171A", name: "Notion AI", sub: "OpEx · 480 seats", price: "bundled", pc: "bundled", spend: "€4,800", trend: "up", commit: 0, renew: "2026-10-15", open: true },
-      { sym: "SF", bg: "#2E9BE0", name: "Salesforce Einstein", sub: "OpEx", price: "bundled", pc: "bundled", spend: "€4,200", trend: "flat", commit: 0, renew: "2027-03-30", open: true },
+      { sym: "NO", bg: "#15171A", name: "Notion AI", sub: "OpEx · 480 seats", price: "bundled", pc: "bundled", spend: "€4,800", trend: "up", commit: 0, renew: "2026-10-15", open: true, hideMobile: true },
+      { sym: "SF", bg: "#2E9BE0", name: "Salesforce Einstein", sub: "OpEx", price: "bundled", pc: "bundled", spend: "€4,200", trend: "flat", commit: 0, renew: "2027-03-30", open: true, hideMobile: true },
     ],
   },
   {
     cat: "Dev AI Services",
     rows: [
       { sym: "CR", bg: "#1B2230", name: "Cursor", sub: "OpEx · 60 seats", price: "hybrid", pc: "hybrid", spend: "€5,200", trend: "up", commit: 0, renew: "open", open: true },
-      { sym: "GH", bg: "#15171A", name: "GitHub Copilot Business", sub: "OpEx · 120 seats", price: "per-seat", pc: "perseat", spend: "€4,560", trend: "up", commit: 50, renew: "2026-12-15" },
-      { sym: "VR", bg: "#0B0B0B", name: "Vercel", sub: "COGS", price: "consumption", pc: "consumption", spend: "€2,840", trend: "up", commit: 47, renew: "2026-09-05" },
+      { sym: "GH", bg: "#15171A", name: "GitHub Copilot Business", sub: "OpEx · 120 seats", price: "per-seat", pc: "perseat", spend: "€4,560", trend: "up", commit: 50, renew: "2026-12-15", hideMobile: true },
+      { sym: "VR", bg: "#0B0B0B", name: "Vercel", sub: "COGS", price: "consumption", pc: "consumption", spend: "€2,840", trend: "up", commit: 47, renew: "2026-09-05", hideMobile: true },
       { sym: "GR", bg: "#1F9E6B", name: "Granola", sub: "OpEx · 80 seats", price: "per-seat", pc: "perseat", spend: "€1,280", trend: "up", commit: 50, renew: "2026-07-01" },
     ],
   },
   {
     cat: "Agentic AI Services",
+    hideMobile: true,
     rows: [
       { sym: "PC", bg: "#3B5BDB", name: "Pinecone", sub: "COGS", price: "consumption", pc: "consumption", spend: "€3,640", trend: "up", commit: 45, renew: "2026-10-20" },
     ],
@@ -139,13 +142,13 @@ export function VendorsVisual() {
       </div>
       <div className="vt-scroll">
         {GROUPS.map((g, gi) => (
-          <div key={gi}>
+          <div key={gi} className={g.hideMobile ? "m-sm-hide" : undefined}>
             <div className="vt-group">
               {g.cat}
               <span className="n">{g.rows.length}</span>
             </div>
             {g.rows.map((v, i) => (
-              <div className="vt-row" key={i}>
+              <div className={"vt-row" + (v.hideMobile ? " m-sm-hide" : "")} key={i}>
                 <div className="vt-grid">
                   <span className="vt-name">
                     <span className="pv-vicon" style={{ background: v.bg, color: "#fff", border: "none" }}>

@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/cn";
 import { track } from "@/lib/analytics";
+import { bookingUrl } from "@/lib/site";
 
 const base =
   "group inline-flex items-center justify-center gap-2 rounded-md font-medium transition-all duration-150 ease-out " +
@@ -20,14 +21,13 @@ export function BookDemoButton({
   size?: "md" | "lg";
   className?: string;
 }) {
-  const url = process.env.NEXT_PUBLIC_BOOKING_URL;
   const sizing = size === "lg" ? "h-11 px-6 text-base" : "h-9 px-4 text-sm";
 
   return (
     <a
-      href={url || "#contact"}
-      target={url ? "_blank" : undefined}
-      rel={url ? "noopener noreferrer" : undefined}
+      href={bookingUrl}
+      target="_blank"
+      rel="noopener noreferrer"
       onClick={() => track("cta_book_demo", { location })}
       className={cn(
         base,
