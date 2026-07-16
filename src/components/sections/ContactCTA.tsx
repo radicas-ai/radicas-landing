@@ -42,7 +42,9 @@ export function ContactCTA({ eyebrow, heading, body }: ContactProps = {}) {
       firstName: String(data.get("firstName") || "").trim(),
       lastName: String(data.get("lastName") || "").trim(),
       email: String(data.get("email") || "").trim(),
-      company: String(data.get("company") || ""), // honeypot
+      company: String(data.get("company") || "").trim(),
+      jobTitle: String(data.get("jobTitle") || "").trim(),
+      website: String(data.get("website") || ""), // honeypot
       captchaToken,
     };
 
@@ -121,11 +123,25 @@ export function ContactCTA({ eyebrow, heading, body }: ContactProps = {}) {
               </label>
               <input id="email" name="email" type="email" required autoComplete="email" className={inputCls} placeholder="ada@company.com" />
             </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="company" className="text-sm font-medium text-fg">
+                  Company <span className="text-fg-subtle">(optional)</span>
+                </label>
+                <input id="company" name="company" autoComplete="organization" className={inputCls} placeholder="Analytical Engines" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="jobTitle" className="text-sm font-medium text-fg">
+                  Job title <span className="text-fg-subtle">(optional)</span>
+                </label>
+                <input id="jobTitle" name="jobTitle" autoComplete="organization-title" className={inputCls} placeholder="Head of Finance" />
+              </div>
+            </div>
 
             {/* honeypot — hidden from humans */}
             <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-              <label htmlFor="company">Company</label>
-              <input id="company" name="company" tabIndex={-1} autoComplete="off" />
+              <label htmlFor="website">Website</label>
+              <input id="website" name="website" tabIndex={-1} autoComplete="off" />
             </div>
 
             {turnstileSiteKey && (
