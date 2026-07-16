@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createLead, notionConfigured } from "@/lib/notion";
+import { createLeadInCrm, notionConfigured } from "@/lib/notion";
 
 export const runtime = "nodejs";
 
@@ -9,7 +9,9 @@ interface LeadBody {
   firstName?: unknown;
   lastName?: unknown;
   email?: unknown;
-  company?: unknown; // honeypot
+  company?: unknown; // real field — the Organization name
+  jobTitle?: unknown; // real field — the Person's Title
+  website?: unknown; // honeypot
   captchaToken?: unknown; // Cloudflare Turnstile
 }
 
@@ -44,8 +46,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Invalid request." }, { status: 400 });
   }
 
-  // Honeypot — a filled "company" field means a bot. Pretend success, store nothing.
-  if (typeof body.company === "string" && body.company.trim() !== "") {
+  // Honeypot — a filled "website" field means a bot. Pretend success, store nothing.
+  if (typeof body.website === "string" && body.website.trim() !== "") {
     return NextResponse.json({ ok: true });
   }
 
@@ -62,6 +64,8 @@ export async function POST(req: Request) {
   const firstName = typeof body.firstName === "string" ? body.firstName.trim() : "";
   const lastName = typeof body.lastName === "string" ? body.lastName.trim() : "";
   const email = typeof body.email === "string" ? body.email.trim() : "";
+  const company = typeof body.company === "string" ? body.company.trim() : "";
+  const jobTitle = typeof body.jobTitle === "string" ? body.jobTitle.trim() : "";
 
   if (!firstName || !lastName) {
     return NextResponse.json({ ok: false, error: "Please enter your name." }, { status: 400 });
@@ -83,7 +87,23 @@ export async function POST(req: Request) {
   }
 
   try {
-    await createLead({ firstName, lastName, email });
+    const result = await createLeadInCrm({ firstName, lastName, email, company, jobTitle });
+    if (!result.ok) {
+      // Person wasn't persisted — the lead is not saved. Log the full lead so it's recoverable
+      // from the server logs, and surface an error so the user can retry.
+      console.error("[lead] Lead not persisted to CRM:", { firstName, lastName, email, company });
+      return NextResponse.json(
+        { ok: false, error: "We couldn't save that just now. Please try again shortly." },
+        { status: 502 },
+      );
+    }
+    if (result.degraded.length > 0) {
+      // Person saved, but Organization and/or Activity failed. The lead is recoverable; note it.
+      console.warn("[lead] Lead saved with degraded steps:", {
+        email,
+        degraded: result.degraded,
+      });
+    }
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[lead] Failed to write to Notion:", err);
