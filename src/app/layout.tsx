@@ -15,12 +15,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Radicas — the layer underneath",
   description:
-    "The runtime control plane for enterprise AI. See every vendor, model, and agent — what it costs, and whether it's in policy. Ask in plain language, wherever you already work.",
+    "Take control of your AI spend. See what's running, what it costs, and what it returns.",
   keywords: ["FinOps for AI", "AI cost management", "AI governance", "agent observability", "MCP"],
   openGraph: {
     title: "Radicas — the layer underneath",
     description:
-      "The runtime control plane for enterprise AI. See what's running, know what it costs, prove it's in policy.",
+      "Take control of your AI spend. See what's running, what it costs, and what it returns.",
     url: siteUrl,
     siteName: "Radicas",
     type: "website",
@@ -28,7 +28,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Radicas — the layer underneath",
-    description: "The runtime control plane for enterprise AI.",
+    description:
+      "Take control of your AI spend. See what's running, what it costs, and what it returns.",
   },
 };
 
