@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How we track work (ADR-028)
+    url: https://github.com/radicas-ai/radicas-nursery/blob/main/docs/architecture/ADR-028-execution-plane-github-issues.md
+    about: Strategy — Work Streams, Features, roadmap — lives in the Notion strategic plane. Open an issue here only for actionable execution work.

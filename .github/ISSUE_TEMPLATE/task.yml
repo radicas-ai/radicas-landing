@@ -1,0 +1,63 @@
+name: Task
+description: An actionable, PR-sized execution task (ADR-028). A well-scoped task can be handed to Claude Code.
+title: "[task]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Execution-plane task (ADR-028). The *why*, priority, and roadmap live in the Notion strategic plane — link the Feature / ADR below and keep this issue about *how*. A task with a clear Definition of Done and bounded scope can get the `agent:ready` label and be implemented by Claude Code.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / why
+      description: The problem this solves and why now. One short paragraph.
+    validations:
+      required: true
+  - type: input
+    id: design-source
+    attributes:
+      label: Design source
+      description: Pointer to the Notion Feature and/or the ADR / design doc this implements. Link only — do not restate the design here.
+      placeholder: "Notion Feature URL · ADR-0NN · docs/..."
+    validations:
+      required: false
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - feature
+        - bug
+        - chore
+        - docs
+        - spike
+    validations:
+      required: true
+  - type: textarea
+    id: scope-dod
+    attributes:
+      label: Scope & Definition of Done
+      description: A verifiable checklist of what "done" means. Each box should be checkable by inspection or a test.
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What this task explicitly does NOT include — guards against scope creep during implementation.
+    validations:
+      required: false
+  - type: dropdown
+    id: agent-ready
+    attributes:
+      label: Agent-ready?
+      description: Is the scope bounded and the DoD clear enough to hand to Claude Code unattended? A maintainer confirms by adding the `agent:ready` label.
+      options:
+        - "No — needs more definition"
+        - "Yes — DoD clear, scope bounded"
+    validations:
+      required: true
