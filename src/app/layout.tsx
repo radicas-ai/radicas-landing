@@ -5,6 +5,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { cn } from "@/lib/cn";
 import { GA_ID } from "@/lib/analytics";
 import { siteUrl } from "@/lib/site";
+import { organizationSchema, websiteSchema } from "@/lib/structured-data";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
@@ -13,12 +14,15 @@ const archivoBlack = Archivo_Black({ subsets: ["latin"], weight: "400", variable
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Radicas — the layer underneath",
+  title: {
+    default: "Radicas — AI cost management & FinOps for the AI era",
+    template: "%s | Radicas",
+  },
   description:
     "Take control of your AI spend. See what's running, what it costs, and what it returns.",
-  keywords: ["FinOps for AI", "AI cost management", "AI governance", "agent observability", "MCP"],
+  alternates: { canonical: siteUrl },
   openGraph: {
-    title: "Radicas — the layer underneath",
+    title: "Radicas — AI cost management & FinOps for the AI era",
     description:
       "Take control of your AI spend. See what's running, what it costs, and what it returns.",
     url: siteUrl,
@@ -27,7 +31,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Radicas — the layer underneath",
+    title: "Radicas — AI cost management & FinOps for the AI era",
     description:
       "Take control of your AI spend. See what's running, what it costs, and what it returns.",
   },
@@ -40,6 +44,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={cn("dark", geist.variable, geistMono.variable, archivoBlack.variable)}
     >
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([organizationSchema, websiteSchema]) }}
+        />
         {/* Iubenda Cookie Solution (consent banner + Google Consent Mode v2).
             Must load before GA so the "denied" consent default is set first. */}
         <Script
