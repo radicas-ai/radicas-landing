@@ -1,9 +1,14 @@
 # CLAUDE.md — Radicas Landing
 
 Marketing landing for **Radicas — the layer underneath**. Next.js 16 (App Router),
-React 19, Tailwind v4, pnpm. Dark-first design system: periwinkle `#7571EB`,
-Geist / Geist Mono, Archivo Black wordmark — match the existing components, don't
-invent styles. Run with `pnpm dev` (copy `.env.example` → `.env.local` first);
+React 19, Tailwind v4, pnpm. Light-first design system: periwinkle `#7571EB`,
+signal cyan `#00E5FF`, Geist / Geist Mono, the vector wordmark — match the existing
+components, don't invent styles. Section styles live in a CSS Module per section
+under `src/components/landing/`; shared primitives are in `globals.css` and the
+tokens in `src/styles/theme.css`. Note a CSS Module cannot reach a global
+`@keyframes` — declare animations locally.
+
+Run with `pnpm dev` (copy `.env.example` → `.env.local` first);
 verify with `pnpm build` and `pnpm typecheck`. The contact form writes to the
 Notion CRM (see README for env vars); never commit secrets.
 

@@ -1,8 +1,8 @@
 # Radicas Landing
 
 Marketing landing for **Radicas — the layer underneath**. Next.js 16 (App Router) · React 19 ·
-Tailwind v4, built on the Radicas design system (dark-first, periwinkle `#7571EB`, Geist / Geist
-Mono, Archivo Black wordmark).
+Tailwind v4, built on the Radicas design system (light-first, periwinkle `#7571EB`, signal cyan
+`#00E5FF`, Geist / Geist Mono, the vector wordmark).
 
 ## Develop
 
