@@ -47,9 +47,9 @@ const PUBLIC_EMAIL_DOMAINS = new Set([
 const PUBLIC_EMAIL_WILDCARD_BASES = ["gmx.", "yandex."];
 
 export interface LeadInput {
-  firstName: string;
-  lastName: string;
   email: string; // already validated + trimmed by the route
+  firstName?: string;
+  lastName?: string;
   company?: string;
   jobTitle?: string;
 }
@@ -253,8 +253,9 @@ async function logActivity(input: { personId: string; fullName: string }): Promi
  * anchor, so Organization and Activity degrade gracefully. Returns a CrmResult the route reads.
  */
 export async function createLeadInCrm(input: LeadInput): Promise<CrmResult> {
-  const fullName = `${input.firstName} ${input.lastName}`.trim();
   const emailLower = input.email.toLowerCase();
+  // The one-field booking form sends an email only; it is the Person title then.
+  const fullName = [input.firstName, input.lastName].filter(Boolean).join(" ").trim() || emailLower;
   const bareDomain = extractEmailDomain(emailLower);
   const corporate = bareDomain !== null && !isPublicEmailProvider(bareDomain);
   const degraded: string[] = [];

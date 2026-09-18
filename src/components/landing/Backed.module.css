@@ -1,0 +1,43 @@
+.backed :global(.wrap) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding-block: 26px;
+  flex-wrap: wrap;
+}
+
+.ln {
+  flex: 1;
+  max-width: 180px;
+  height: 0;
+  border-top: 1px solid var(--border);
+}
+
+.lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  opacity: 0.85;
+  transition: opacity var(--dur-2);
+}
+
+.lbl:hover {
+  opacity: 1;
+}
+
+.logo {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+@media (max-width: 560px) {
+  .ln {
+    display: none;
+  }
+  .backed :global(.wrap) {
+    gap: 12px;
+    flex-direction: column;
+  }
+}

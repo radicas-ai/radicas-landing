@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono, Archivo_Black } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { cn } from "@/lib/cn";
 import { GA_ID } from "@/lib/analytics";
@@ -10,7 +10,6 @@ import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
-const archivoBlack = Archivo_Black({ subsets: ["latin"], weight: "400", variable: "--font-archivo-black" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -39,10 +38,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={cn("dark", geist.variable, geistMono.variable, archivoBlack.variable)}
-    >
+    <html lang="en" className={cn(geist.variable, geistMono.variable)}>
       <body>
         <script
           type="application/ld+json"

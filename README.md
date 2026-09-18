@@ -22,7 +22,9 @@ pnpm dev                     # http://localhost:3000
 | `NOTION_ORGS_DB_ID`       | yes\*    | Id of the "🏢 Organizations" database.                        |
 | `NOTION_PEOPLE_DB_ID`     | yes\*    | Id of the "👥 People" database.                               |
 | `NOTION_ACTIVITY_DB_ID`   | yes\*    | Id of the "⚙️ Activity log" database.                         |
-| `NEXT_PUBLIC_BOOKING_URL` | no       | Calendly/Cal.com link for "Book a demo". Falls back to `#contact`. |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | no | Cloudflare Turnstile site key. Omit to skip the captcha. |
+| `TURNSTILE_SECRET_KEY`    | no       | Cloudflare Turnstile secret (server-only). Omit to skip the captcha. |
+| `NEXT_PUBLIC_BOOKING_URL` | no       | Cal.com link the booking form opens with the email prefilled. Falls back to the link in `src/lib/site.ts`. |
 | `NEXT_PUBLIC_GA_ID`       | no       | GA4 measurement id (`G-XXXXXXXXXX`). Omit to disable analytics. |
 
 \* Without all three Notion db vars the contact form still validates input but returns a clear
@@ -54,6 +56,8 @@ What each submit writes:
   linked to the person.
 
 The form has a hidden honeypot field (`website`); submissions that fill it are silently dropped.
+When both Turnstile keys are set the submitted token is verified server-side; without them the
+captcha is skipped.
 
 ## Analytics
 

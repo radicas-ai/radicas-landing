@@ -6,9 +6,9 @@ export const runtime = "nodejs";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface LeadBody {
-  firstName?: unknown;
-  lastName?: unknown;
   email?: unknown;
+  firstName?: unknown; // optional — the booking form sends an email only
+  lastName?: unknown;
   company?: unknown; // real field — the Organization name
   jobTitle?: unknown; // real field — the Person's Title
   website?: unknown; // honeypot
@@ -67,9 +67,6 @@ export async function POST(req: Request) {
   const company = typeof body.company === "string" ? body.company.trim() : "";
   const jobTitle = typeof body.jobTitle === "string" ? body.jobTitle.trim() : "";
 
-  if (!firstName || !lastName) {
-    return NextResponse.json({ ok: false, error: "Please enter your name." }, { status: 400 });
-  }
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json(
       { ok: false, error: "Please enter a valid email address." },
