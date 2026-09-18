@@ -1,6 +1,6 @@
 import { siteUrl } from "@/lib/site";
 
-/** Founder LinkedIn profiles — keep in sync with TEAM in components/v2/TeamV2.tsx. */
+/** Founder LinkedIn profiles. */
 const founderProfiles = [
   "https://www.linkedin.com/in/marihum-pernia/",
   "https://www.linkedin.com/in/francesco-fio/",
