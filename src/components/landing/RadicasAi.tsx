@@ -167,8 +167,8 @@ function reduce(state: State, action: Action): State {
 }
 
 /** Registers the cycle's timers on mount; the parent remounts it to replay. */
-function Timeline({ steps }: { steps: readonly ScheduleStep[] }) {
-  useSchedule(steps, { run: true });
+function Timeline({ steps, paused }: { steps: readonly ScheduleStep[]; paused: boolean }) {
+  useSchedule(steps, { run: true, paused });
   return null;
 }
 
@@ -177,6 +177,7 @@ function useFlight(
   from: RefObject<HTMLElement | null>,
   to: RefObject<HTMLElement | null>,
   ms: number,
+  paused: boolean,
   onLand: () => void,
 ): void {
   const handle = useRef<FlyHandle | null>(null);
@@ -203,6 +204,11 @@ function useFlight(
       flight.cancel();
     };
   }, [active, from, to, ms]);
+
+  useEffect(() => {
+    if (paused) handle.current?.pause();
+    else handle.current?.play();
+  }, [paused]);
 }
 
 export function RadicasAi() {
@@ -248,19 +254,24 @@ export function RadicasAi() {
     [],
   );
 
-  useFlight(state.handing, answerRef, ghostRef, 1300, () => dispatch({ type: "handLanded" }));
-  useFlight(state.passFlying, passPickRef, passTileRef, 1000, () => dispatch({ type: "sendLanded" }));
+  useFlight(state.handing, answerRef, ghostRef, 1300, paused, () => dispatch({ type: "handLanded" }));
+  useFlight(state.passFlying, passPickRef, passTileRef, 1000, paused, () =>
+    dispatch({ type: "sendLanded" }),
+  );
 
-  const inView = useInView(stageRef, { threshold: 0.3, once: true });
+  const inView = useInView(stageRef, { threshold: 0.3 });
   useEffect(() => {
     if (inView && cycle === 0 && !reduced) play();
   }, [inView, cycle, reduced, play]);
 
+  // A beat of stillness before the replay, and never while the stage is off screen.
   useEffect(() => {
-    if (finished && !paused) play();
-  }, [finished, paused, play]);
+    if (!finished || paused || !inView || reduced) return;
+    const id = window.setTimeout(play, 2000);
+    return () => window.clearTimeout(id);
+  }, [finished, paused, inView, reduced, play]);
 
-  const { shown } = useTypewriter(QUESTION, { speed: 20, run: state.question });
+  const { shown } = useTypewriter(QUESTION, { speed: 20, run: state.question, paused });
   const cost = useCountUp(COST, { run: state.counting });
 
   return (
@@ -278,6 +289,7 @@ export function RadicasAi() {
 
         <div
           ref={stageRef}
+          data-stage
           className={styles.stage}
           role="img"
           aria-label="Animated: one question answered in Radicas and in your tools through MCP, then kept as a tile in a composed view"
@@ -517,7 +529,7 @@ export function RadicasAi() {
         </div>
       </div>
 
-      {cycle > 0 && !reduced && <Timeline key={cycle} steps={steps} />}
+      {cycle > 0 && !reduced && <Timeline key={cycle} steps={steps} paused={paused || !inView} />}
     </section>
   );
 }

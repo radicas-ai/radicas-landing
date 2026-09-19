@@ -445,7 +445,7 @@
 
 /* The clone is appended to <body>, so this must stay a single, top-level class. */
 .fly {
-  position: fixed;
+  position: absolute;
   z-index: 80;
   pointer-events: none;
   transform-origin: top left;
