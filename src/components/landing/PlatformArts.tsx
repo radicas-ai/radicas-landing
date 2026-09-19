@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import {
   CONTROLS,
   ESTATE_CARD,
@@ -26,16 +26,21 @@ function Fan({ w, h, ys, to }: { w: number; h: number; ys: number[]; to: number 
   );
 }
 
-function Piece({ on, children }: { on: boolean; children: ReactNode }) {
-  return <div className={cn(styles.rv, on && styles.in)}>{children}</div>;
+/** `i` staggers the reveal; the row's own `.in` class is what releases it. */
+function Piece({ i, children }: { i: number; children: ReactNode }) {
+  return (
+    <div className={styles.rv} style={{ "--i": i } as CSSProperties}>
+      {children}
+    </div>
+  );
 }
 
-function Estate({ on }: { on: boolean }) {
+function Estate() {
   return (
     <div className={styles.est}>
       <div className={styles.src}>
-        {SOURCE_GROUPS.map((g) => (
-          <Piece key={g.label} on={on}>
+        {SOURCE_GROUPS.map((g, k) => (
+          <Piece key={g.label} i={k}>
             <div className={styles.grp}>
               <span className="eyebrow">{g.label}</span>
               <span className={styles.cs}>
@@ -47,7 +52,7 @@ function Estate({ on }: { on: boolean }) {
             </div>
           </Piece>
         ))}
-        <Piece on={on}>
+        <Piece i={SOURCE_GROUPS.length}>
           <div className={cn(styles.grp, styles.etc)}>
             <span>{SOURCE_ANY}</span>
           </div>
@@ -56,7 +61,7 @@ function Estate({ on }: { on: boolean }) {
       <div className={styles.mid}>
         <Fan w={72} h={300} ys={[29, 97, 165, 233, 285]} to={150} />
       </div>
-      <Piece on={on}>
+      <Piece i={SOURCE_GROUPS.length + 1}>
         <div className={styles.inv}>
           <span className="eyebrow">{ESTATE_CARD.eyebrow}</span>
           <b>{ESTATE_CARD.title}</b>
@@ -74,12 +79,12 @@ function Estate({ on }: { on: boolean }) {
   );
 }
 
-function Map({ on }: { on: boolean }) {
+function Map() {
   return (
     <div className={styles.est}>
       <div className={styles.src}>
-        {MAP_SIDES.map((s) => (
-          <Piece key={s.label} on={on}>
+        {MAP_SIDES.map((s, k) => (
+          <Piece key={s.label} i={k}>
             <div className={cn(styles.grp, styles.pe)}>
               <span className={cn(styles.ic2, s.k === "bot" && styles.agents)}>
                 <Icon paths={PLATFORM_ICONS[s.k]} />
@@ -93,7 +98,7 @@ function Map({ on }: { on: boolean }) {
       <div className={cn(styles.mid, styles.short)}>
         <Fan w={72} h={136} ys={[29, 107]} to={68} />
       </div>
-      <Piece on={on}>
+      <Piece i={MAP_SIDES.length}>
         <div className={styles.inv}>
           <span className="eyebrow">{MAP_CARD.eyebrow}</span>
           <div className={styles.big5}>{MAP_CARD.value}</div>
@@ -104,11 +109,11 @@ function Map({ on }: { on: boolean }) {
   );
 }
 
-function Governance({ on }: { on: boolean }) {
+function Governance() {
   return (
     <div className={styles.gctl}>
-      {CONTROLS.map((c) => (
-        <Piece key={c.name} on={on}>
+      {CONTROLS.map((c, k) => (
+        <Piece key={c.name} i={k}>
           <div className={cn(styles.ctl, c.advanced && styles.advanced)}>
             <span className={styles.av}>
               <Icon paths={PLATFORM_ICONS[c.icon]} />
@@ -127,7 +132,7 @@ function Governance({ on }: { on: boolean }) {
   );
 }
 
-export const PLATFORM_ARTS: Record<PlatformRowKey, (p: { on: boolean }) => ReactNode> = {
+export const PLATFORM_ARTS: Record<PlatformRowKey, () => ReactNode> = {
   estate: Estate,
   map: Map,
   gov: Governance,

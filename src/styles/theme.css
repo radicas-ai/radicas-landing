@@ -143,6 +143,8 @@
   --dur-1: 120ms;
   --dur-2: 200ms;
   --dur-3: 320ms;
+  --dur-4: 480ms;
+  --dur-5: 800ms;
   --grad-signal: linear-gradient(135deg, #7571eb 0%, #00e5ff 100%);
 
   color-scheme: light;
