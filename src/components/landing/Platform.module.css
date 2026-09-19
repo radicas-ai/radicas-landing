@@ -103,6 +103,118 @@
   }
 }
 
+/* ── Scroll-scrubbed stack ─────────────────────────────────────────────────
+   The track is the scroll distance; the stage is what stays on screen. Rows are
+   stacked and cross-faded by scroll position, never by the pointer, so nothing here
+   can change the height of the page. `--pinned` is what the component reads to know
+   which mode CSS has chosen. */
+.track {
+  --pinned: 0;
+  --slot: 85svh;
+}
+.ticks {
+  display: none;
+}
+
+@supports (height: 100svh) {
+  @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+    .track {
+      --pinned: 1;
+      height: calc(var(--steps) * var(--slot));
+    }
+    .stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      min-height: 600px;
+      display: grid;
+      align-content: center;
+    }
+    .inner {
+      /* `.wrap` carries `margin: 0 auto`, and an auto margin cancels a grid item's
+         stretch — without this the stage sizes itself to its content. */
+      width: 100%;
+      display: grid;
+      gap: 30px;
+    }
+
+    .ticks {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: var(--tracking-caps);
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+    }
+    .ticks li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: color var(--dur-3) var(--ease-out);
+    }
+    .ticks li::before {
+      content: "";
+      width: 44px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--border-strong);
+      transform: scaleX(0.45);
+      transform-origin: left;
+      transition:
+        background var(--dur-3) var(--ease-out),
+        transform var(--dur-3) var(--ease-out);
+    }
+    .ticks li b {
+      font-weight: 500;
+      color: inherit;
+    }
+    .ticks li.on {
+      color: var(--color-brand-primary-deep);
+    }
+    .ticks li.on::before {
+      background: var(--color-brand-primary);
+      transform: scaleX(1);
+    }
+
+    .rows {
+      position: relative;
+      /* Just past the tallest row, so the stack sits centred rather than top-heavy. */
+      min-height: 340px;
+    }
+    .rows .row {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      align-content: center;
+      border-top: 0;
+      padding-block: 0;
+      opacity: var(--o, 0);
+      transform: translateY(calc(-50% + var(--y, 0px)));
+      pointer-events: none;
+      /* Three nodes that genuinely change on every scroll frame. */
+      will-change: opacity, transform;
+    }
+    /* Before hydration the first row is the one on screen. */
+    .rows .row:first-child {
+      --o: 1;
+    }
+    .rows .row.on {
+      pointer-events: auto;
+    }
+    .rows .row:hover {
+      background: transparent;
+    }
+    .rows .gov {
+      margin-top: 0;
+    }
+  }
+}
+
 /* ── 01 / 02 art ───────────────────────────────────────────────────────── */
 .est {
   display: grid;
