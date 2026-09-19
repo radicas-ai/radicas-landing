@@ -1,9 +1,16 @@
+"use client";
+
+import { useReveal } from "@/hooks/useReveal";
+import { cn } from "@/lib/cn";
+import reveal from "./reveal.module.css";
 import styles from "./Backed.module.css";
 
 export function Backed() {
+  const { ref, seen, style } = useReveal<HTMLDivElement>();
+
   return (
     <section className={styles.backed} aria-label="Backed by Vento">
-      <div className="wrap">
+      <div ref={ref} className={cn("wrap", reveal.rv, seen && reveal.in)} style={style}>
         <span className={styles.ln} />
         <a
           className={styles.lbl}

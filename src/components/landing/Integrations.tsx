@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { INTEGRATIONS_COPY, VENDORS, vendorMark, type Vendor } from "@/data/vendors";
+import { useReveal } from "@/hooks/useReveal";
 import { cn } from "@/lib/cn";
 import { SectionHead } from "./SectionHead";
+import reveal from "./reveal.module.css";
 import styles from "./Integrations.module.css";
 
 const ROW_ONE = VENDORS.filter((v) => v.cat === "ai" || v.cat === "tools" || v.cat === "fin");
@@ -31,9 +33,14 @@ function Tile({ vendor }: { vendor: Vendor }) {
 }
 
 /** The list is rendered twice so the -50% loop has no visible seam. */
-function Marquee({ list, reverse }: { list: Vendor[]; reverse?: boolean }) {
+function Marquee({ list, reverse, i }: { list: Vendor[]; reverse?: boolean; i: number }) {
+  const { ref, seen, style } = useReveal<HTMLDivElement>(i);
   return (
-    <div className={cn(styles.mq, reverse && styles.rev)}>
+    <div
+      ref={ref}
+      className={cn(styles.mq, reverse && styles.rev, reveal.rv, seen && reveal.in)}
+      style={style}
+    >
       <div className={styles.trk}>
         {[0, 1].map((pass) =>
           list.map((v) => <Tile key={`${pass}-${v.domain}`} vendor={v} />),
@@ -44,6 +51,8 @@ function Marquee({ list, reverse }: { list: Vendor[]; reverse?: boolean }) {
 }
 
 export function Integrations() {
+  const foot = useReveal<HTMLDivElement>();
+
   return (
     <section className={styles.section} id="integrations" aria-label="Integrations">
       <div className="wrap">
@@ -53,12 +62,16 @@ export function Integrations() {
       </div>
 
       <div className={styles.rows} aria-hidden>
-        <Marquee list={ROW_ONE} />
-        <Marquee list={ROW_TWO} reverse />
+        <Marquee list={ROW_ONE} i={0} />
+        <Marquee list={ROW_TWO} reverse i={1} />
       </div>
 
       <div className="wrap">
-        <div className={styles.foot}>
+        <div
+          ref={foot.ref}
+          className={cn(styles.foot, reveal.rv, foot.seen && reveal.in)}
+          style={foot.style}
+        >
           <span>{INTEGRATIONS_COPY.more}</span>
           <a className="btn btn-secondary" href="#contact">
             {INTEGRATIONS_COPY.cta}

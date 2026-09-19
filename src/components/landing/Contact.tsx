@@ -2,17 +2,20 @@
 
 import { useRef, useState, type FormEvent } from "react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import { useReveal } from "@/hooks/useReveal";
 import { cn } from "@/lib/cn";
 import { track } from "@/lib/analytics";
 import { bookingUrl } from "@/lib/site";
 import { ARROW_RIGHT, Icon } from "./icons";
 import { Footer } from "./Footer";
+import reveal from "./reveal.module.css";
 import styles from "./Contact.module.css";
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export function Contact() {
+  const cta = useReveal<HTMLDivElement>();
   const [email, setEmail] = useState("");
   const [bad, setBad] = useState(false);
   const [message, setMessage] = useState("");
@@ -68,7 +71,11 @@ export function Contact() {
   return (
     <section className={styles.section} id="contact" aria-label="Get started">
       <div className="wrap">
-        <div className={styles.cta}>
+        <div
+          ref={cta.ref}
+          className={cn(styles.cta, reveal.rv, cta.seen && reveal.in)}
+          style={cta.style}
+        >
           <div className={cn("eyebrow", styles.kick7)}>Get started</div>
           <h2 className={styles.h7}>
             Every AI euro.
