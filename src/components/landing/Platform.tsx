@@ -1,108 +1,119 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/cn";
-import { PLATFORM_ROWS } from "@/data/platform";
+import { useEffect, useRef, useState } from "react";
+import {
+  PLATFORM_COPY,
+  PLATFORM_ROWS,
+  SUPPORT,
+  SUPPORT_LABEL,
+  type PlatformRowKey,
+} from "@/data/platform";
+import { useInView } from "@/hooks/useInView";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { SectionHead } from "./SectionHead";
-import { Icon, PLATFORM_ICONS } from "./icons";
+import { cn } from "@/lib/cn";
+import { CHEVRON_DOWN, PLATFORM_ICONS, Icon } from "./icons";
 import { PLATFORM_ARTS } from "./PlatformArts";
+import { SectionHead } from "./SectionHead";
 import styles from "./Platform.module.css";
 
-const HOVER_OPEN_DELAY = 260;
+const HOVER_INTENT_MS = 260;
+const PIECES_DELAY_MS = 450;
+const CONNECTOR_DELAY_MS = 500;
 
 export function Platform() {
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const pending = useRef<number | undefined>(undefined);
   const reduced = useReducedMotion();
-  const [open, setOpen] = useState(0);
-  // Assume a pointer until the media query is readable, so the server markup matches the desktop default.
-  const [canHover, setCanHover] = useState(true);
-  const [revealed, setRevealed] = useState<boolean[]>(() => PLATFORM_ROWS.map(() => false));
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const seen = useInView(sheetRef, { threshold: 0.4, once: true });
 
-  const cancelPending = useCallback(() => {
-    window.clearTimeout(pending.current);
-    pending.current = undefined;
-  }, []);
+  const [open, setOpen] = useState<PlatformRowKey | null>(null);
+  const [built, setBuilt] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const intent = useRef<number | undefined>(undefined);
+
+  // The first row opens itself once the section arrives; after that it follows the pointer.
+  useEffect(() => {
+    if (seen && open === null) setOpen(PLATFORM_ROWS[0].k);
+  }, [seen, open]);
 
   useEffect(() => {
-    setCanHover(window.matchMedia("(hover: hover)").matches);
-  }, []);
-
-  useEffect(() => cancelPending, [cancelPending]);
-
-  useEffect(() => {
-    const sheet = sheetRef.current;
-    if (!sheet) return;
-    const rows = Array.from(sheet.querySelectorAll<HTMLElement>("[data-row]"));
-    if (reduced || typeof IntersectionObserver === "undefined") {
-      setRevealed(rows.map(() => true));
+    if (open === null) return;
+    setBuilt(false);
+    setPlaying(false);
+    if (reduced) {
+      setBuilt(true);
+      setPlaying(true);
       return;
     }
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          io.unobserve(entry.target);
-          const i = Number((entry.target as HTMLElement).dataset.row);
-          setRevealed((prev) => (prev[i] ? prev : prev.map((v, j) => (j === i ? true : v))));
-        }
-      },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.1 },
-    );
-    for (const row of rows) io.observe(row);
-    return () => io.disconnect();
-  }, [reduced]);
+    const a = window.setTimeout(() => setBuilt(true), PIECES_DELAY_MS);
+    const b = window.setTimeout(() => setPlaying(true), CONNECTOR_DELAY_MS);
+    return () => {
+      window.clearTimeout(a);
+      window.clearTimeout(b);
+    };
+  }, [open, reduced]);
+
+  function hover(k: PlatformRowKey) {
+    window.clearTimeout(intent.current);
+    intent.current = window.setTimeout(() => setOpen(k), HOVER_INTENT_MS);
+  }
+
+  useEffect(() => () => window.clearTimeout(intent.current), []);
 
   return (
-    <section className={styles.section} id="platform" aria-labelledby="g5t">
+    <section className={styles.section} id="platform" aria-label="Radicas core">
       <div className="wrap">
-        <div className={styles.head}>
-          <SectionHead
-            kicker="What the platform does"
-            lede="Connect what you already run. Map people and agents to their work. Price every unit of it. Keep every rule and action on a ledger you can read back."
-          >
-            <span id="g5t">
-              One estate, one map, one receipt, <em>one ledger.</em>
-            </span>
-          </SectionHead>
-        </div>
-        <div className={styles.sheet} ref={sheetRef}>
-          {PLATFORM_ROWS.map((row, i) => {
+        <SectionHead kicker={PLATFORM_COPY.kicker} lede={PLATFORM_COPY.lede}>
+          {PLATFORM_COPY.headingLead} <em>{PLATFORM_COPY.headingEmphasis}</em>
+        </SectionHead>
+
+        <div ref={sheetRef}>
+          {PLATFORM_ROWS.map((row) => {
+            const isOpen = open === row.k;
             const Art = PLATFORM_ARTS[row.k];
             return (
               <div
                 key={row.k}
-                data-row={i}
-                tabIndex={0}
                 className={cn(
                   styles.row,
-                  styles.rv,
-                  (!canHover || open === i) && styles.open,
-                  revealed[i] && styles.in,
+                  row.k === "gov" && styles.gov,
+                  isOpen && styles.open,
+                  isOpen && playing && styles.play,
                 )}
-                onMouseEnter={() => {
-                  if (!canHover) return;
-                  cancelPending();
-                  pending.current = window.setTimeout(() => setOpen(i), HOVER_OPEN_DELAY);
+                onMouseEnter={() => hover(row.k)}
+                onMouseLeave={() => window.clearTimeout(intent.current)}
+                onClick={() => {
+                  window.clearTimeout(intent.current);
+                  setOpen(row.k);
                 }}
-                onMouseLeave={cancelPending}
-                onFocus={() => canHover && setOpen(i)}
               >
                 <span className={styles.n}>{row.num}</span>
-                <div>
+                <div className={styles.tx}>
                   <h3>
-                    <i>
+                    <i className={styles.badge}>
                       <Icon paths={PLATFORM_ICONS[row.k]} />
                     </i>
                     {row.name}
+                    <span className={styles.chev}>
+                      <Icon paths={CHEVRON_DOWN} />
+                    </span>
                   </h3>
                   <p>{row.desc}</p>
+                  {row.k === "gov" ? (
+                    <div className={styles.sup}>
+                      <span className="eyebrow">{SUPPORT_LABEL}</span>
+                      <ul>
+                        {SUPPORT.map((s) => (
+                          <li key={s.text} className={cn(s.advanced && styles.advanced)}>
+                            <Icon paths={PLATFORM_ICONS[s.icon]} />
+                            {s.text}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </div>
                 <div className={styles.art}>
-                  <div>
-                    <Art />
-                  </div>
+                  <Art on={isOpen && built} />
                 </div>
               </div>
             );

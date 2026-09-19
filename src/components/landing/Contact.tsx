@@ -69,7 +69,7 @@ export function Contact() {
     <section className={styles.section} id="contact" aria-label="Get started">
       <div className="wrap">
         <div className={styles.cta}>
-          <div className={cn("eyebrow", styles.kick7)}>Book a call</div>
+          <div className={cn("eyebrow", styles.kick7)}>Get started</div>
           <h2 className={styles.h7}>
             Every AI euro.
             <br />

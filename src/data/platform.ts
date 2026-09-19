@@ -1,80 +1,118 @@
-export type PlatformRowKey = "estate" | "map" | "receipt" | "ledger";
+// Three foundations. Illustrative figures.
+
+export type PlatformRowKey = "estate" | "map" | "gov";
 
 export interface PlatformRow {
   k: PlatformRowKey;
-  name: string;
   num: string;
+  name: string;
   desc: string;
-  tags: string[];
-  title: string;
-  chips: string[];
-  foot: string;
-  does: string;
-  needs: string;
 }
 
 export const PLATFORM_ROWS: PlatformRow[] = [
   {
     k: "estate",
-    name: "AI estate",
     num: "01",
-    desc: "Every AI system, agent, seat and invoice, in one inventory that matches the bill.",
-    tags: ["connectors", "agent & key inventory", "billing reconciliation", "coverage state"],
-    title: "AI estate · inventory",
-    chips: ["48 entities", "91% reconciled"],
-    foot: "Inventory · reconciliation · coverage",
-    does:
-      "Connects the vendors already in place, discovers agents and keys from telemetry, reconciles usage to the invoice and keeps a coverage state on every number: billed, estimated or unknown.",
-    needs:
-      "Read access to the vendors and the identity provider; invoices or an ERP export; an owner for what the telemetry cannot name.",
+    name: "AI estate",
+    desc: "Every vendor, tool, seat and agent. One inventory that matches the bill.",
   },
   {
     k: "map",
-    name: "Humans and AI on one map",
     num: "02",
-    desc: "Who, or what, did the work, for which team, on which unit.",
-    tags: ["one identity model", "teams & ownership", "units of work", "attribution rules"],
-    title: "Attribution map · Engineering",
-    chips: ["94% of spend on a team", "89% on a unit"],
-    foot: "Identity · work · cost, joined by rules written once",
-    does:
-      "Joins identity, work and cost by rules written once: a person or an agent, the team it belongs to, the unit of work it touched. The same map for every function; the unit changes.",
-    needs:
-      "The identity provider and the agent registry; the systems where work lives (Linear, GitHub, the helpdesk, the CRM); team and ownership declared once.",
+    name: "Cost per unit of work",
+    desc:
+      "People and agents on the same work. One AI cost per unit, with how often people step in.",
   },
   {
-    k: "receipt",
-    name: "Cost of a unit of work",
+    k: "gov",
     num: "03",
-    desc: "What a task, a ticket or a deal costs, humans and AI together, failures included.",
-    tags: ["blended cost", "retry & failure cost", "completion mode", "speed & outcome"],
-    title: "Receipt · LIN-482",
-    chips: ["AI + human", "merged · first pass"],
-    foot: "One receipt per unit · computed by rules, never estimated by hand",
-    does:
-      "Prices each unit of work as agent cost plus human time plus what failed along the way, and puts completion mode, speed and outcome on the same line, so value is read next to cost.",
-    needs:
-      "A definition of the unit per function (task, ticket, stage move, query) and a rate card for human time, declared by you.",
-  },
-  {
-    k: "ledger",
-    name: "Governance that watches and acts",
-    num: "04",
-    desc: "Rules with a named owner, watched and provable. Alerts today; enforcement as the advanced step.",
-    tags: ["budgets & thresholds", "named owner", "watch · alert", "act · advanced", "append-only ledger"],
-    title: "Rule R-212 · Review-agent retries",
-    chips: ["Alert · live", "Enforce · advanced"],
-    foot: "Versioned rulebook · append-only ledger",
-    does:
-      "Watches every rule against the model, alerts the named owner the moment it fires, and writes the event to an append-only ledger under the rule version that produced it. Executors apply caps, routing and approvals within a mandate, as the advanced step.",
-    needs:
-      "Budgets and thresholds per team, agent or model; an owner per rule; for the advanced step, a mandate per scope, revocable.",
+    name: "Governance",
+    desc:
+      "The controls you get on every AI system, watched by agents, with every action on record.",
   },
 ];
 
-export const PLATFORM_NEEDS: Record<PlatformRowKey, string> = {
-  estate: "Vendor and identity access; invoices or an ERP export; an owner for what telemetry cannot name.",
-  map: "Identity provider, agent registry, the systems where work lives; team ownership declared once.",
-  receipt: "The unit per function (task, ticket, deal, query) and a rate card for human time.",
-  ledger: "Budgets and thresholds, an owner per rule; a revocable mandate per scope for the advanced step.",
+export const PLATFORM_COPY = {
+  kicker: "Radicas core",
+  headingLead: "Three foundations.",
+  headingEmphasis: "One workforce.",
+  lede:
+    "AI now works next to your people. We designed Radicas around three things that follow from that: the estate you run, the work they share, and the rules that keep it in check.",
 };
+
+/** 01 — what feeds the inventory. */
+export interface SourceGroup {
+  label: string;
+  chips: string[];
+  more: string;
+}
+
+export const SOURCE_GROUPS: SourceGroup[] = [
+  { label: "Model providers", chips: ["Anthropic", "OpenAI", "Azure OpenAI"], more: "+9" },
+  { label: "Tools and seats", chips: ["Claude Code", "Cursor", "ChatGPT"], more: "+14" },
+  { label: "Agents", chips: ["Planner", "Reviewer", "Support bot"], more: "+17" },
+  { label: "Invoices", chips: ["Monthly bills", "Commitments"], more: "+6" },
+];
+
+export const SOURCE_ANY = "+ any system you connect";
+
+export const ESTATE_CARD = {
+  eyebrow: "One AI estate",
+  title: "Every AI system, in one place.",
+  points: ["An owner for each one", "Matches the bill"],
+};
+
+/** 02 — who does the work. */
+export const MAP_CARD = {
+  eyebrow: "One unit of work",
+  value: "€2.41",
+  sub: "per shipped task",
+};
+
+export const MAP_SIDES = [
+  { k: "user" as const, label: "People" },
+  { k: "bot" as const, label: "AI agents" },
+];
+
+/** 03 — the controls, and how they are supported. */
+export interface Control {
+  icon: string;
+  name: string;
+  desc: string;
+  advanced?: boolean;
+}
+
+export const CONTROLS: Control[] = [
+  { icon: "user", name: "Ownership", desc: "A named owner for every system, agent and rule." },
+  {
+    icon: "gauge",
+    name: "Budgets and thresholds",
+    desc: "Per team, agent or model. Alerted before they break.",
+  },
+  { icon: "list", name: "Usage policies", desc: "Which models and vendors each function may use." },
+  { icon: "target", name: "Unit-cost targets", desc: "A target cost per task, ticket or deal." },
+  { icon: "book", name: "Audit trail", desc: "Every figure and action, under its rule version." },
+  {
+    icon: "zap",
+    name: "Enforcement",
+    desc: "Caps, routing and approvals, applied for you.",
+    advanced: true,
+  },
+];
+
+export interface Support {
+  icon: string;
+  text: string;
+  advanced?: boolean;
+}
+
+export const SUPPORT: Support[] = [
+  { icon: "eye", text: "Agents that watch" },
+  { icon: "ver", text: "Versioned rules" },
+  { icon: "bill", text: "Reconciled to the bill" },
+  { icon: "clip", text: "Evidence on every alert" },
+  { icon: "zap", text: "Agents that act · advanced", advanced: true },
+];
+
+export const SUPPORT_LABEL = "How we support it";
+export const ADVANCED_LABEL = "Advanced step";

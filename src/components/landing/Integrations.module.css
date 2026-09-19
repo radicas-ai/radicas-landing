@@ -1,0 +1,124 @@
+.section {
+  padding-block: 96px;
+  background: linear-gradient(180deg, rgba(117, 113, 235, 0.07), rgba(117, 113, 235, 0.02));
+  overflow-x: clip;
+}
+
+.mq {
+  position: relative;
+  overflow: hidden;
+  padding-block: 6px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.mq + .mq {
+  margin-top: 14px;
+}
+
+.trk {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  animation: mq10 70s linear infinite;
+}
+.mq.rev .trk {
+  animation-direction: reverse;
+  animation-duration: 80s;
+}
+.rows:hover .trk {
+  animation-play-state: paused;
+}
+
+/* Local copy: CSS Modules scopes animation names. */
+@keyframes mq10 {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.tile {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: 96px;
+}
+.tile .c {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 1px 2px rgba(15, 20, 36, 0.04),
+    0 8px 22px rgba(15, 20, 36, 0.06);
+  display: grid;
+  place-items: center;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s,
+    transform 0.3s var(--ease-out);
+}
+.tile .c img {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+}
+.tile .c em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg-muted);
+}
+.tile small {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+.tile:hover .c {
+  transform: translateY(-3px);
+  border-color: rgba(117, 113, 235, 0.4);
+  box-shadow: 0 12px 28px rgba(117, 113, 235, 0.16);
+}
+
+.foot {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.foot span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trk {
+    animation: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding-block: 64px;
+  }
+  .tile {
+    width: 80px;
+  }
+  .tile .c {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+  }
+  .tile .c img {
+    width: 26px;
+    height: 26px;
+  }
+}

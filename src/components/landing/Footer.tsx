@@ -4,10 +4,11 @@ import styles from "./Contact.module.css";
 
 const SECTION_LINKS = [
   { href: "#process", label: "Process" },
-  { href: "#ai", label: "Radicas AI" },
+  { href: "#functions", label: "Functions" },
   { href: "#platform", label: "Platform" },
+  { href: "#ai", label: "Copilot" },
   { href: "#framework", label: "Framework" },
-  { href: "#how", label: "How it works" },
+  { href: "#integrations", label: "Integrations" },
   { href: "#contact", label: "Contact us" },
 ];
 

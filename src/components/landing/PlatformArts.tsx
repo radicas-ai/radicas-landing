@@ -1,236 +1,134 @@
+"use client";
+
 import type { ReactNode } from "react";
+import {
+  CONTROLS,
+  ESTATE_CARD,
+  MAP_CARD,
+  MAP_SIDES,
+  SOURCE_ANY,
+  SOURCE_GROUPS,
+  type PlatformRowKey,
+} from "@/data/platform";
 import { cn } from "@/lib/cn";
-import type { PlatformRowKey } from "@/data/platform";
+import { ADVANCED_LABEL } from "@/data/platform";
+import { CHECK, PLATFORM_ICONS, Icon } from "./icons";
 import styles from "./Platform.module.css";
 
-export function EstateArt() {
+/** Curved connectors from each source row into the single card on the right. */
+function Fan({ w, h, ys, to }: { w: number; h: number; ys: number[]; to: number }) {
   return (
-    <>
-      <div className={styles.inv}>
-        <div className={cn(styles.rw, styles.hd)}>
-          <span>Entity</span>
-          <span className={styles.hide}>Owner</span>
-          <span className={styles.n}>€ / mo</span>
-          <span>State</span>
-        </div>
-        <div className={styles.rw}>
-          <b>Review agent</b>
-          <span className={styles.hide}>Platform lead</span>
-          <span className={styles.n}>412</span>
-          <span className="chip good">reconciled</span>
-        </div>
-        <div className={styles.rw}>
-          <b>Claude Code · 14 seats</b>
-          <span className={styles.hide}>Eng manager</span>
-          <span className={styles.n}>1,120</span>
-          <span className="chip good">reconciled</span>
-        </div>
-        <div className={styles.rw}>
-          <b>Planner agent</b>
-          <span className={cn(styles.none, styles.hide)}>no owner</span>
-          <span className={styles.n}>96</span>
-          <span className="chip warn">estimated</span>
-        </div>
-        <div className={styles.rw}>
-          <b>Support reply agent</b>
-          <span className={styles.hide}>Support ops</span>
-          <span className={styles.n}>1,870</span>
-          <span className="chip good">reconciled</span>
-        </div>
-      </div>
-      <div className={styles.cov}>
-        <div className={styles.bar}>
-          <i style={{ width: "91%", background: "var(--color-brand-primary)" }} />
-          <i style={{ width: "7%", background: "var(--warning)" }} />
-          <i style={{ width: "2%", background: "var(--color-carbon-300)" }} />
-        </div>
-        <div className={styles.lg}>
-          <span>
-            <i style={{ background: "var(--color-brand-primary)" }} />
-            reconciled 91%
-          </span>
-          <span>
-            <i style={{ background: "var(--warning)" }} />
-            estimated 7%
-          </span>
-          <span>
-            <i style={{ background: "var(--color-carbon-300)" }} />
-            unassigned 2%
-          </span>
-        </div>
-      </div>
-    </>
-  );
-}
-
-type MapNode = { name: string; sub: string; y: number };
-
-const PEOPLE: MapNode[] = [
-  { name: "M. Rossi", sub: "human", y: 20 },
-  { name: "Review agent", sub: "agent · Anthropic", y: 66 },
-  { name: "Planner agent", sub: "agent · OpenAI", y: 112 },
-];
-const TEAMS: MapNode[] = [
-  { name: "Platform", sub: "owner · Platform lead", y: 30 },
-  { name: "Payments", sub: "owner · Payments lead", y: 100 },
-];
-const UNITS: MapNode[] = [
-  { name: "LIN-482", sub: "task · shipped", y: 20 },
-  { name: "PR #1290", sub: "review · merged", y: 66 },
-  { name: "LIN-491", sub: "task · in progress", y: 112 },
-];
-
-/** Review agent → Platform → LIN-482 is the one lit path. */
-const LINKS: [number, number, number, number, boolean?][] = [
-  [150, 37, 230, 47],
-  [150, 83, 230, 47, true],
-  [150, 129, 230, 117],
-  [360, 47, 420, 37, true],
-  [360, 47, 420, 83],
-  [360, 117, 420, 129],
-];
-
-function Boxes({ nodes, x, hi }: { nodes: MapNode[]; x: number; hi: string }) {
-  return (
-    <>
-      {nodes.map((node) => (
-        <g key={node.name}>
-          <rect
-            className={cn(styles.nd, node.name === hi && styles.hi)}
-            x={x}
-            y={node.y}
-            width={130}
-            height={34}
-          />
-          <text x={x + 10} y={node.y + 15}>
-            {node.name}
-          </text>
-          <text className={styles.s} x={x + 10} y={node.y + 27}>
-            {node.sub}
-          </text>
-        </g>
+    <svg className={styles.lk} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden>
+      {ys.map((y) => (
+        <path key={y} d={`M0 ${y} C ${w * 0.55} ${y}, ${w * 0.45} ${to}, ${w} ${to}`} />
       ))}
-    </>
+    </svg>
   );
 }
 
-export function MapArt() {
+function Piece({ on, children }: { on: boolean; children: ReactNode }) {
+  return <div className={cn(styles.rv, on && styles.in)}>{children}</div>;
+}
+
+function Estate({ on }: { on: boolean }) {
   return (
-    <div className={styles.map}>
-      <svg viewBox="0 0 570 160" role="img" aria-label="People and agents mapped to teams and units of work">
-        <text className={styles.h} x={20} y={10}>
-          People &amp; agents
-        </text>
-        <text className={styles.h} x={230} y={10}>
-          Teams
-        </text>
-        <text className={styles.h} x={420} y={10}>
-          Units of work
-        </text>
-        {LINKS.map(([x1, y1, x2, y2, hi]) => (
-          <path
-            key={`${x1}-${y1}-${x2}-${y2}`}
-            className={cn(styles.ln, hi && styles.hi)}
-            d={`M${x1} ${y1} C ${x1 + 40} ${y1}, ${x2 - 40} ${y2}, ${x2} ${y2}`}
-          />
+    <div className={styles.est}>
+      <div className={styles.src}>
+        {SOURCE_GROUPS.map((g) => (
+          <Piece key={g.label} on={on}>
+            <div className={styles.grp}>
+              <span className="eyebrow">{g.label}</span>
+              <span className={styles.cs}>
+                {g.chips.map((c) => (
+                  <span key={c}>{c}</span>
+                ))}
+                <span className={styles.more}>{g.more}</span>
+              </span>
+            </div>
+          </Piece>
         ))}
-        <Boxes nodes={PEOPLE} x={20} hi="Review agent" />
-        <Boxes nodes={TEAMS} x={230} hi="Platform" />
-        <Boxes nodes={UNITS} x={420} hi="LIN-482" />
-      </svg>
+        <Piece on={on}>
+          <div className={cn(styles.grp, styles.etc)}>
+            <span>{SOURCE_ANY}</span>
+          </div>
+        </Piece>
+      </div>
+      <div className={styles.mid}>
+        <Fan w={72} h={300} ys={[29, 97, 165, 233, 285]} to={150} />
+      </div>
+      <Piece on={on}>
+        <div className={styles.inv}>
+          <span className="eyebrow">{ESTATE_CARD.eyebrow}</span>
+          <b>{ESTATE_CARD.title}</b>
+          <ul>
+            {ESTATE_CARD.points.map((p) => (
+              <li key={p}>
+                <Icon paths={CHECK} />
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Piece>
     </div>
   );
 }
 
-export function ReceiptArt() {
+function Map({ on }: { on: boolean }) {
   return (
-    <>
-      <div className={styles.rcp}>
-        <div className={styles.rh}>
-          <b>LIN-482 · one shipped task</b>
-        </div>
-        <div className={styles.ln}>
-          <span>Planner + implementer</span>
-          <span className={styles.d}>3 runs</span>
-          <span className={styles.n}>€1.29</span>
-        </div>
-        <div className={cn(styles.ln, styles.warn)}>
-          <span>Review agent</span>
-          <span className={styles.d}>4 runs · 2 retries</span>
-          <span className={styles.n}>€0.74</span>
-        </div>
-        <div className={cn(styles.ln, styles.sub)}>
-          <span>AI cost</span>
-          <span className={styles.d}>failed / retried €0.29</span>
-          <span className={styles.n}>€2.41</span>
-        </div>
-        <div className={styles.ln}>
-          <span>Human review</span>
-          <span className={styles.d}>12 min · rate card</span>
-          <span className={styles.n}>€11.20</span>
-        </div>
-        <div className={cn(styles.ln, styles.tot)}>
-          <span>Cost of this task</span>
-          <span className={styles.d}>3h 40m · merged first pass</span>
-          <span className={styles.n}>€13.61</span>
-        </div>
+    <div className={styles.est}>
+      <div className={styles.src}>
+        {MAP_SIDES.map((s) => (
+          <Piece key={s.label} on={on}>
+            <div className={cn(styles.grp, styles.pe)}>
+              <span className={cn(styles.ic2, s.k === "bot" && styles.agents)}>
+                <Icon paths={PLATFORM_ICONS[s.k]} />
+                <Icon paths={PLATFORM_ICONS[s.k]} />
+              </span>
+              <b>{s.label}</b>
+            </div>
+          </Piece>
+        ))}
       </div>
-      <div className={styles.meta}>
-        <span className="chip brand">AI + human</span>
-        <span className="chip">basis Linear · GitHub · invoice</span>
-        <span className="chip">coverage 94%</span>
+      <div className={cn(styles.mid, styles.short)}>
+        <Fan w={72} h={136} ys={[29, 107]} to={68} />
       </div>
-    </>
+      <Piece on={on}>
+        <div className={styles.inv}>
+          <span className="eyebrow">{MAP_CARD.eyebrow}</span>
+          <div className={styles.big5}>{MAP_CARD.value}</div>
+          <span className={styles.sub5}>{MAP_CARD.sub}</span>
+        </div>
+      </Piece>
+    </div>
   );
 }
 
-export function LedgerArt() {
+function Governance({ on }: { on: boolean }) {
   return (
-    <>
-      <div className={styles.rule}>
-        <div>
-          <b>Review-agent retries</b>
-          <span className={styles.id}>R-212 · v2 · owner Platform lead</span>
-        </div>
-        <span className="chip brand">watching</span>
-        <span className={styles.acts}>
-          <span className="chip good">Alert · live</span>
-          <span className="chip">Enforce · advanced step</span>
-        </span>
-      </div>
-      <div className={styles.chain}>
-        <div className={styles.ev}>
-          <span className={styles.t}>09:12Z</span>
-          <span className={cn(styles.d, styles.w)}>W</span>
-          <span>
-            <b>Watcher fired</b> · 4.3 retries per run, threshold 3
-          </span>
-          <span className={styles.who}>→ Platform lead</span>
-        </div>
-        <div className={styles.ev}>
-          <span className={styles.t}>09:18Z</span>
-          <span className={cn(styles.d, styles.o)}>O</span>
-          <span>
-            <b>Owner acknowledged</b> · cap approved for Platform
-          </span>
-          <span className={styles.who}>Platform lead</span>
-        </div>
-        <div className={styles.ev}>
-          <span className={styles.t}>09:40Z</span>
-          <span className={cn(styles.d, styles.x)}>X</span>
-          <span>
-            <b>Executor applied</b> · retries ≤ 3 <span className="chip">advanced</span>
-          </span>
-          <span className={styles.who}>mandate M-07</span>
-        </div>
-      </div>
-    </>
+    <div className={styles.gctl}>
+      {CONTROLS.map((c) => (
+        <Piece key={c.name} on={on}>
+          <div className={cn(styles.ctl, c.advanced && styles.advanced)}>
+            <span className={styles.av}>
+              <Icon paths={PLATFORM_ICONS[c.icon]} />
+            </span>
+            <span>
+              <b>
+                {c.name}
+                {c.advanced ? <em className={styles.lock}>{ADVANCED_LABEL}</em> : null}
+              </b>
+              <span>{c.desc}</span>
+            </span>
+          </div>
+        </Piece>
+      ))}
+    </div>
   );
 }
 
-export const PLATFORM_ARTS: Record<PlatformRowKey, () => ReactNode> = {
-  estate: EstateArt,
-  map: MapArt,
-  receipt: ReceiptArt,
-  ledger: LedgerArt,
+export const PLATFORM_ARTS: Record<PlatformRowKey, (p: { on: boolean }) => ReactNode> = {
+  estate: Estate,
+  map: Map,
+  gov: Governance,
 };

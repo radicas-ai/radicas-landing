@@ -13,7 +13,7 @@ import { cn } from "@/lib/cn";
 import { flyClone, type FlyHandle } from "@/lib/fly";
 import styles from "./RadicasAi.module.css";
 
-const QUESTION = "What did AI cost per shipped task this month, and why did it move?";
+const QUESTION = "What did AI cost per shipped task this month, and why?";
 const COST = "€2.41";
 const SPARK = sparklinePath([3.12, 2.96, 2.88, 2.71, 2.55, 2.41], 200, 30);
 const SWAP_MS = 480;
@@ -30,29 +30,29 @@ const SURFACES: readonly Surface[] = [
   {
     name: "Radicas",
     stamp: "Answered from the data model · 0.8s",
-    foot: "In Radicas · ask · request · explain",
+    foot: "In Radicas",
     placeholder: "Ask about spend, work, agents…",
     skin: styles.skinRadicas,
   },
   {
     name: "Claude",
     stamp: "Used Radicas · get_kpi through MCP",
-    foot: "Through MCP · read-only · it answers, it does not act",
+    foot: "Through MCP",
     placeholder: "Reply to Claude…",
     skin: styles.skinClaude,
   },
   {
     name: "Cursor",
-    stamp: "Ran MCP tool radicas.getKpi · 0.8s",
-    foot: "Through MCP · read-only · in your editor",
+    stamp: "Called MCP tool radicas.get_kpi",
+    foot: "Through MCP",
     placeholder: "Ask the agent…",
     skin: styles.skinCursor,
   },
   {
     name: "Slack",
-    stamp: "Queried Radicas through MCP · 0.8s",
-    foot: "Through MCP · read-only · it answers, it does not act",
-    placeholder: "Message #eng-platform…",
+    stamp: "Rule R-212 fired · owner @Head of Eng",
+    foot: "Alert · R-212",
+    placeholder: "Message #eng-ai-costs…",
   },
 ];
 
@@ -71,7 +71,6 @@ type State = {
   handing: boolean;
   costTile: boolean;
   counting: boolean;
-  costUsed: boolean;
   passLift: boolean;
   passShown: boolean;
   passFlying: boolean;
@@ -110,7 +109,6 @@ const IDLE: State = {
   handing: false,
   costTile: false,
   counting: false,
-  costUsed: false,
   passLift: false,
   passShown: false,
   passFlying: false,
@@ -131,7 +129,6 @@ const DONE: State = {
   step: 1,
   viewLive: true,
   costTile: true,
-  costUsed: true,
   passShown: true,
   passTile: true,
   passUsed: true,
@@ -157,7 +154,7 @@ function reduce(state: State, action: Action): State {
     case "hand":
       return { ...state, askLive: false, viewLive: true, handing: true };
     case "handLanded":
-      return { ...state, handing: false, dropTarget: false, costTile: true, counting: true, costUsed: true };
+      return { ...state, handing: false, dropTarget: false, costTile: true, counting: true };
     case "lift":
       return { ...state, passLift: true, dropTarget: true };
     case "send":
@@ -235,18 +232,18 @@ export function RadicasAi() {
       [300, () => dispatch({ type: "ask" })],
       [2100, () => dispatch({ type: "stamp" })],
       [2800, () => dispatch({ type: "answer" })],
-      [5200, () => dispatch({ type: "swapOut" })],
-      [5200 + SWAP_MS, () => dispatch({ type: "swapIn", surface: 1 })],
-      [7800, () => dispatch({ type: "swapOut" })],
-      [7800 + SWAP_MS, () => dispatch({ type: "swapIn", surface: 2 })],
-      [10400, () => dispatch({ type: "swapOut" })],
-      [10400 + SWAP_MS, () => dispatch({ type: "swapIn", surface: 3 })],
-      [12800, () => dispatch({ type: "connect" })],
-      [13300, () => dispatch({ type: "hand" })],
-      [16000, () => dispatch({ type: "lift" })],
-      [16700, () => dispatch({ type: "send" })],
-      [18800, () => dispatch({ type: "trend" })],
-      [23100, () => setFinished(true)],
+      [5000, () => dispatch({ type: "swapOut" })],
+      [5000 + SWAP_MS, () => dispatch({ type: "swapIn", surface: 1 })],
+      [10000, () => dispatch({ type: "swapOut" })],
+      [10000 + SWAP_MS, () => dispatch({ type: "swapIn", surface: 2 })],
+      [15000, () => dispatch({ type: "swapOut" })],
+      [15000 + SWAP_MS, () => dispatch({ type: "swapIn", surface: 3 })],
+      [19500, () => dispatch({ type: "connect" })],
+      [20100, () => dispatch({ type: "hand" })],
+      [24000, () => dispatch({ type: "trend" })],
+      [26500, () => dispatch({ type: "lift" })],
+      [27800, () => dispatch({ type: "send" })],
+      [35000, () => setFinished(true)],
     ],
     [],
   );
@@ -270,14 +267,12 @@ export function RadicasAi() {
     <section id="ai" className={styles.section} aria-labelledby="ai-title">
       <div className="wrap">
         <SectionHead
-          kicker="Radicas AI"
+          kicker="Radicas AI and Vibe Metrics"
           tone="info"
-          lede="One question, one governed answer: in Radicas, in the tools you already use, and in a view you build yourself."
+          lede="Your views, your metrics and your KPIs, in an interface that adapts to you."
         >
           <span id="ai-title">
-            Ask once. <em>Answer anywhere.</em>
-            <br />
-            Compose your own view.
+            One answer, <em>wherever you work.</em>
           </span>
         </SectionHead>
 
@@ -307,8 +302,18 @@ export function RadicasAi() {
               </span>
               <span className={styles.avatar}>
                 <RadicasMark className={styles.mark} />
-                <img className={cn(styles.vendor, styles.vendorClaude)} src="/vendors/claude.svg" alt="" />
-                <img className={cn(styles.vendor, styles.vendorCursor)} src="/vendors/cursor.svg" alt="" />
+                <img
+                  className={cn(styles.vendor, styles.vendorClaude)}
+                  src="/vendors/claude.svg"
+                  alt=""
+                  suppressHydrationWarning
+                />
+                <img
+                  className={cn(styles.vendor, styles.vendorCursor)}
+                  src="/vendors/cursor.svg"
+                  alt=""
+                  suppressHydrationWarning
+                />
               </span>
               <span className={styles.surfaceName}>{surface.name}</span>
               <span className={styles.tabs}>
@@ -369,15 +374,15 @@ export function RadicasAi() {
               <div ref={answerRef} className={cn(styles.answer, styles.el, state.answer && styles.on)}>
                 <span className="eyebrow">Cost / shipped task · September</span>
                 <div className={styles.answerValue}>
-                  €2.41<small>▼ 14% vs baseline</small>
+                  €2.41<small>▲ 15% vs Aug</small>
                 </div>
                 <div className={styles.answerWhy}>
-                  Review-agent retries doubled after the model change on Sep 9. Planner and implementer costs were flat.
+                  The Sep 9 model change made each attempt cheaper, but the review agent now rejects
+                  code twice as often.
                 </div>
                 <div className={styles.answerBasis}>
                   <span>basis Linear · GitHub · invoice</span>
                   <span>coverage 94%</span>
-                  <span>assumptions 2</span>
                 </div>
               </div>
 
@@ -408,25 +413,24 @@ export function RadicasAi() {
               <span className={styles.avatar}>
                 <RadicasMark className={styles.mark} />
               </span>
-              Your view · Engineering
+              Vibe metrics
               <span className={styles.tabs}>
-                <span className={styles.on}>Vibe metrics</span>
+                <span className={styles.on}>Engineering</span>
               </span>
             </div>
 
             <div className={styles.winBody}>
               <div className={styles.palette}>
-                <span className="eyebrow">KPIs</span>
+                <span className="eyebrow">Add a KPI</span>
                 <span className={cn(styles.pick, styles.used)}>Completion mode</span>
-                <span className={cn(styles.pick, styles.used)}>Failure burn</span>
-                <span className={cn(styles.pick, state.costUsed && styles.used)}>Cost / task</span>
+                <span className={cn(styles.pick, styles.used)}>Rework</span>
                 <span
                   ref={passPickRef}
                   className={cn(styles.pick, state.passLift && styles.lift, state.passUsed && styles.used)}
                 >
-                  First pass
+                  + First pass
                 </span>
-                <span className={styles.pick}>Projected</span>
+                <span className={styles.pick}>+ Projected</span>
               </div>
 
               <div className={styles.tiles}>
@@ -436,9 +440,9 @@ export function RadicasAi() {
                   <span className={styles.tileBasis}>AI 38 · AI+human 47 · human 15</span>
                 </div>
                 <div className={styles.tile}>
-                  <span className="eyebrow">Failure burn</span>
-                  <div className={styles.tileValue}>€312</div>
-                  <span className={styles.tileBasis}>41 failed runs · 17 retries</span>
+                  <span className="eyebrow">Rework</span>
+                  <div className={styles.tileValue}>€211</div>
+                  <span className={styles.tileBasis}>€0.46 per task · 458 tasks</span>
                 </div>
 
                 <div className={cn(styles.tile, styles.added, state.costTile && styles.on, state.trend && styles.trend)}>
@@ -480,25 +484,28 @@ export function RadicasAi() {
                 </div>
 
                 <div ref={ghostRef} className={cn(styles.tile, styles.ghost, state.dropTarget && styles.target)}>
-                  + drop a KPI here
+                  Drop a KPI here
                 </div>
               </div>
             </div>
 
-            <div className={styles.winFoot}>Adaptive view · governed KPIs · one shared truth</div>
+            <div className={styles.winFoot}>Every tile carries its basis</div>
           </div>
         </div>
 
         <div className={styles.steps}>
           <div className={cn(styles.step, state.step === 0 && styles.on)}>
-            <span className={styles.stepNum}>01 · ASK, ANYWHERE</span>
-            <b>One question, one governed answer</b>
-            <p>In Radicas, or from Claude, Cursor and Slack through MCP. Same figure, same basis, no dashboard.</p>
+            <span className={styles.stepNum}>01 · ANYWHERE</span>
+            <b>Ask, or be told, where you work</b>
+            <p>
+              Through MCP and connectors: in Radicas, Claude or Cursor, and in your team&#8217;s Slack
+              channel when a rule fires.
+            </p>
           </div>
           <div className={cn(styles.step, state.step === 1 && styles.on)}>
-            <span className={styles.stepNum}>02 · COMPOSE</span>
-            <b>A view you build yourself</b>
-            <p>Drop in the KPIs you care about, choose how each is shown. Every tile carries its basis.</p>
+            <span className={styles.stepNum}>02 · VIBE METRICS</span>
+            <b>Your views, your KPIs</b>
+            <p>Save any answer as a live tile. Pick the metrics, choose how each one shows.</p>
           </div>
         </div>
 

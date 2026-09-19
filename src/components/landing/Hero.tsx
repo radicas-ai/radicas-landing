@@ -1,14 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
-import { useFunctionState } from "@/components/landing/FunctionContext";
-import { FN_ICONS_HERO, Icon } from "@/components/landing/icons";
+import { HERO_ICONS, Icon } from "@/components/landing/icons";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { cn } from "@/lib/cn";
 import styles from "./Hero.module.css";
 
+const DWELL_MS = 3800;
+
+const WORDS = [
+  { word: "cost", c: "#7571EB", bg: "rgba(117,113,235,.12)", line: "rgba(117,113,235,.35)" },
+  { word: "governance", c: "#D69520", bg: "rgba(214,149,32,.13)", line: "rgba(214,149,32,.4)" },
+  { word: "return", c: "#00A378", bg: "rgba(0,163,120,.12)", line: "rgba(0,163,120,.38)" },
+] as const;
+
 export function Hero() {
-  const { index, fn, style, hoverStart, hoverEnd } = useFunctionState();
+  const reduced = useReducedMotion();
+  const [index, setIndex] = useState(0);
+  const style = WORDS[index];
+
   const pillRef = useRef<HTMLSpanElement>(null);
   const labRef = useRef<HTMLSpanElement>(null);
   const measRef = useRef<HTMLSpanElement>(null);
@@ -18,6 +29,12 @@ export function Hero() {
   if (!typing && index !== 0) setTyping(true);
 
   const { shown, done } = useTypewriter(style.word, { speed: 55, run: typing });
+
+  useEffect(() => {
+    if (reduced) return;
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % WORDS.length), DWELL_MS);
+    return () => window.clearInterval(id);
+  }, [reduced]);
 
   const fit = useCallback(() => {
     const pill = pillRef.current;
@@ -41,18 +58,12 @@ export function Hero() {
   }, [fit]);
 
   return (
-    <section
-      id="top"
-      className={styles.hero}
-      aria-labelledby="hero-title"
-      onMouseEnter={hoverStart}
-      onMouseLeave={hoverEnd}
-    >
+    <section id="top" className={styles.hero} aria-labelledby="hero-title">
       <div className="wrap">
         <h1 id="hero-title" className={styles.title}>
-          <span className={styles.ln}>What AI costs, how it&#8217;s governed,</span>
+          <span className={styles.ln}>Humans and AI, one workforce.</span>
           <span className={styles.ln}>
-            in{" "}
+            Master its{" "}
             <span
               ref={pillRef}
               className={cn(styles.pill, done && styles.done)}
@@ -61,7 +72,7 @@ export function Hero() {
               }
             >
               <span className={styles.dot}>
-                <Icon paths={FN_ICONS_HERO[fn.id]} />
+                <Icon paths={HERO_ICONS[style.word]} />
               </span>
               <span ref={labRef} className={styles.lab}>
                 {shown}
@@ -74,11 +85,11 @@ export function Hero() {
           {style.word}
         </span>
         <p className={styles.unit} style={{ "--pc": style.c } as CSSProperties}>
-          Measured per <b>{style.unit}</b> · every rule with a named owner
+          Radicas · <b>the layer underneath</b>
         </p>
         <p className={styles.lede}>
-          Built for the teams where AI already does the work. One unit of work per function, humans
-          and agents together, governed by rules with a named owner.
+          In every function, people and agents now do the work together. Radicas shows what that work
+          costs, keeps it governed, and proves what it returns.
         </p>
         <div className={styles.ctaRow}>
           <a className="btn btn-primary btn-lg" href="#contact">

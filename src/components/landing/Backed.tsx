@@ -14,7 +14,14 @@ export function Backed() {
         >
           <span className="eyebrow">Backed by</span>
           {/* Plain img: a fixed 22px-tall logo has no optimisation headroom worth a request to /_next/image. */}
-          <img className={styles.logo} src="/brand/vento.png" alt="Vento" width={331} height={114} />
+          <img
+            className={styles.logo}
+            src="/brand/vento.png"
+            alt="Vento"
+            width={331}
+            height={114}
+            suppressHydrationWarning
+          />
         </a>
         <span className={styles.ln} />
       </div>

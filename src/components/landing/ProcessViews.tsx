@@ -1,265 +1,238 @@
 "use client";
 
-import { projectionPath } from "@/lib/charts";
+import { useEffect, useState, type ReactNode } from "react";
+import {
+  DRIVERS,
+  DRIVER_MAX,
+  ECONOMICS,
+  GOVERNANCE,
+  RECOMMENDATIONS,
+  type ProcessStepKey,
+} from "@/data/process";
+import { useCountUp } from "@/hooks/useCountUp";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/cn";
-import type { ProcessContent, ProcessStepKey, RecKind } from "@/data/process";
-import { useTypewriter } from "@/hooks/useTypewriter";
-import { RadicasMark } from "./Brand";
-import { ARROW_RIGHT, Icon } from "./icons";
+import { REFRESH, Icon } from "./icons";
 import styles from "./Process.module.css";
 
-type ViewProps = { p: ProcessContent };
+/** True one frame after mount, so the entrance transitions actually run. */
+function useRevealed(): boolean {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setOn(true)));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  return on;
+}
 
-const REC_LABEL: Record<RecKind, string> = { opt: "Optimise", scale: "Scale", stop: "Stop" };
+function Rv({ on, i, children }: { on: boolean; i: number; children: ReactNode }) {
+  return (
+    <div className={cn(styles.rv, on && styles.in)} style={{ transitionDelay: `${80 + i * 140}ms` }}>
+      {children}
+    </div>
+  );
+}
 
-export function AskView({ p }: ViewProps) {
-  const { shown, done } = useTypewriter(p.q, { speed: 20, run: true });
+function Head({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div className={styles.ph}>
+      <div>
+        <span className="eyebrow">{eyebrow}</span>
+        <h3>{title}</h3>
+      </div>
+    </div>
+  );
+}
+
+function Economics() {
+  const on = useRevealed();
+  const value = useCountUp(`€${ECONOMICS.value}`, { run: on, duration: 1000 });
 
   return (
     <>
-      <div className={styles.convo}>
-        <div className={styles.you}>
-          <span className={styles.who}>You</span>
-          <span className={cn(styles.bub, done && styles.done)}>{shown}</span>
-        </div>
-        <div className={styles.rad}>
-          <span className={styles.av}>
-            <RadicasMark />
-          </span>
-          <div className={styles.card}>
-            <span className={styles.who}>
-              <i />
-              Radicas · answered from the data model
-            </span>
-            <p>
-              <b>{p.tiles[0][1]}</b> per {p.unit}, {p.tiles[0][2]} against the baseline.{" "}
-              {p.why.replace(/^Why /, "Mostly because ")}.
-            </p>
-            <span className={styles.next}>
-              → the numbers, the reason and the rule follow in the next steps
-            </span>
+      <Head eyebrow={ECONOMICS.eyebrow} title={ECONOMICS.title} />
+      <div className={styles.econ}>
+        <Rv on={on} i={0}>
+          <div className={styles.big}>{value}</div>
+          <p>{ECONOMICS.caption}</p>
+          <span className={styles.dlt}>{ECONOMICS.delta}</span>
+        </Rv>
+        <Rv on={on} i={1}>
+          <div className={styles.split}>
+            {ECONOMICS.split.map((s) => (
+              <i
+                key={s.label}
+                style={{
+                  width: on ? `${s.pct}%` : 0,
+                  background: s.tone === "brand" ? "var(--color-brand-primary)" : "var(--warning)",
+                }}
+              />
+            ))}
           </div>
-        </div>
+          <div className={styles.lg}>
+            {ECONOMICS.split.map((s) => (
+              <div key={s.label}>
+                <i
+                  style={{
+                    background: s.tone === "brand" ? "var(--color-brand-primary)" : "var(--warning)",
+                  }}
+                />
+                <span>
+                  {s.label}
+                  {s.note ? <small>{s.note}</small> : null}
+                </span>
+                <b>{s.value}</b>
+              </div>
+            ))}
+          </div>
+          <div className={styles.ppl}>
+            <b>{ECONOMICS.people.value}</b>
+            <span>{ECONOMICS.people.text}</span>
+          </div>
+        </Rv>
       </div>
-      <div className={styles.ask}>
-        <span className={styles.q}>Ask about spend, work, agents…</span>
-        <span className={styles.send}>
-          <Icon paths={ARROW_RIGHT} />
+    </>
+  );
+}
+
+function Drivers() {
+  const on = useRevealed();
+  const money = (v: number) => `${v < 0 ? "−" : "+"}€${Math.abs(v).toFixed(2)}`;
+
+  return (
+    <>
+      <Head eyebrow={DRIVERS.eyebrow} title={DRIVERS.title} />
+      <div className={styles.dhd}>
+        <span className={styles.pt}>
+          <small>{DRIVERS.from.label}</small>
+          <b>{DRIVERS.from.value}</b>
+        </span>
+        <span className={cn(styles.ar, on && styles.go)} />
+        <span className={cn(styles.pt, styles.end)}>
+          <small>{DRIVERS.to.label}</small>
+          <b>{DRIVERS.to.value}</b>
         </span>
       </div>
-    </>
-  );
-}
-
-export function SeeView({ p }: ViewProps) {
-  const g = projectionPath(p);
-
-  return (
-    <>
-      <div className={styles.view}>
-        {p.tiles.map(([label, value, sub, basis]) => (
-          <div key={label} className={styles.tile}>
-            <span className="eyebrow">{label}</span>
-            <span className={styles.v}>
-              {value}
-              <small>{sub}</small>
-            </span>
-            <div className={styles.basis}>
-              {basis.map((b) => (
-                <span key={b}>{b}</span>
-              ))}
+      <div className={styles.dv}>
+        {DRIVERS.rows.map((r, k) => {
+          const up = r.delta > 0;
+          return (
+            <div
+              key={r.label}
+              className={cn(styles.dr, styles.rv, on && styles.in)}
+              style={{ transitionDelay: `${80 + k * 140}ms` }}
+            >
+              <span className={styles.lb}>
+                {r.label}
+                <small>{r.note}</small>
+              </span>
+              <span className={styles.tr}>
+                <i
+                  className={up ? styles.pos : styles.neg}
+                  style={{
+                    width: on ? `${((Math.abs(r.delta) / DRIVER_MAX) * 62).toFixed(1)}%` : 0,
+                    transitionDelay: `${450 + k * 220}ms`,
+                  }}
+                />
+              </span>
+              <span className={cn(styles.v, up ? styles.pos : styles.neg)}>{money(r.delta)}</span>
             </div>
-          </div>
-        ))}
-        <div className={cn(styles.tile, styles.add)}>
-          + Add a KPI
-          <br />
-          <span className={styles.src}>from the Framework</span>
-        </div>
+          );
+        })}
       </div>
-      <div className={styles.proj}>
-        <div className={styles.hd}>
-          <span className="eyebrow">Cost per {p.unit} · last 6 months + projection</span>
-          <span className="chip mono">baseline {p.fmt(p.base)}</span>
+      <Rv on={on} i={3}>
+        <div className={styles.note}>
+          <b>{DRIVERS.note.lead}</b> {DRIVERS.note.rest}
         </div>
-        <svg viewBox={`0 0 ${g.w} ${g.h}`} preserveAspectRatio="none" aria-hidden>
-          <line
-            x1="0"
-            x2={g.w}
-            y1={g.baseY}
-            y2={g.baseY}
-            stroke="var(--color-carbon-300)"
-            strokeWidth="1"
-            strokeDasharray="2 4"
-          />
-          <path
-            d={g.histD}
-            fill="none"
-            stroke="var(--color-brand-primary)"
-            strokeWidth="2"
-            vectorEffect="non-scaling-stroke"
-            strokeLinejoin="round"
-          />
-          <path
-            d={g.futD}
-            fill="none"
-            stroke="var(--color-brand-primary)"
-            strokeWidth="2"
-            strokeDasharray="4 5"
-            vectorEffect="non-scaling-stroke"
-          />
-          <circle
-            cx={g.dotX}
-            cy={g.dotY}
-            r="4"
-            fill="var(--card)"
-            stroke="var(--color-brand-primary)"
-            strokeWidth="2"
-          />
-        </svg>
-        <div className={styles.leg}>
-          <span>
-            <i />
-            Measured
-          </span>
-          <span>
-            <i className={styles.d} />
-            Projected
-          </span>
-          <span>
-            <i className={styles.g} />
-            Baseline · declared by {p.owner}
-          </span>
-        </div>
-      </div>
+      </Rv>
     </>
   );
 }
 
-export function UnderstandView({ p }: ViewProps) {
+function Recommendations({ onRule }: { onRule: () => void }) {
+  const on = useRevealed();
+
   return (
     <>
-      <div className={styles.expl}>
-        <span className="eyebrow">{p.why}</span>
-        <p>{p.expl}</p>
-        <div className={styles.ev}>
-          {p.ev.map((e) => (
-            <span key={e} className="chip">
-              {e}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className={styles.recs}>
-        {p.recs.map(([kind, title, metric, pick]) => (
-          <div key={title} className={cn(styles.rec, pick && styles.pick)}>
-            <span className={cn(styles.tag, styles[kind])}>{REC_LABEL[kind]}</span>
-            <b>{title}</b>
-            <span>{metric}</span>
-            <span className={styles.go}>{pick ? "Turn into a rule →" : "Keep watching →"}</span>
-          </div>
+      <Head eyebrow={RECOMMENDATIONS.eyebrow} title={RECOMMENDATIONS.title} />
+      <div className={styles.rcs}>
+        {RECOMMENDATIONS.cards.map((c, k) => (
+          <Rv key={c.body} on={on} i={k}>
+            <div className={styles.rc}>
+              <span className={styles.tag}>{c.tag}</span>
+              <span className={styles.fx}>{c.fx}</span>
+              <b>{c.body}</b>
+              <div className={styles.ef}>
+                <span>Expected</span>
+                <strong>{c.effect}</strong>
+              </div>
+            </div>
+          </Rv>
         ))}
       </div>
+      <Rv on={on} i={2}>
+        <div className={styles.res}>
+          <span>
+            {RECOMMENDATIONS.resultLead} <b>{RECOMMENDATIONS.resultValue}</b>
+            {RECOMMENDATIONS.resultRest}
+          </span>
+          <button className="btn btn-primary" type="button" onClick={onRule}>
+            {RECOMMENDATIONS.cta}
+          </button>
+        </div>
+      </Rv>
     </>
   );
 }
 
-export function GovernView({ p }: ViewProps) {
+function Governance() {
+  const on = useRevealed();
+  const reduced = useReducedMotion();
+
   return (
     <>
-      <div className={styles.rule}>
-        <div className={styles.rh}>
-          <b>{p.rule}</b>
-          <span className="chip mono">{p.rid}</span>
-          <span className={cn(styles.st, "chip good")}>Active</span>
+      <Head eyebrow={GOVERNANCE.eyebrow} title={GOVERNANCE.title} />
+      <Rv on={on} i={0}>
+        <div className={styles.rule}>
+          <span className="eyebrow">{GOVERNANCE.ruleEyebrow}</span>
+          <p>{GOVERNANCE.rule}</p>
         </div>
-        <div className={styles.rrow}>
-          <span className={styles.k}>When</span>
-          <span className={styles.v} dangerouslySetInnerHTML={{ __html: p.when }} />
-          <span className={cn(styles.tog, styles.on)}>
-            <i />
-            Watch
-          </span>
-        </div>
-        <div className={styles.rrow}>
-          <span className={styles.k}>Alert</span>
-          <span className={styles.v}>
-            <span className={styles.who}>
+      </Rv>
+      <ol className={styles.tl}>
+        {GOVERNANCE.timeline.map((t, k) => (
+          <li
+            key={t.k}
+            className={cn(on && styles.in)}
+            style={{ transitionDelay: reduced ? "0ms" : `${350 + k * 320}ms` }}
+          >
+            <span className={styles.k}>
               <i />
-              {p.owner}
-            </span>{" "}
-            in Slack · advisory, with the evidence attached
-          </span>
-          <span className={cn(styles.tog, styles.on)}>
-            <i />
-            On
-          </span>
+              {t.k}
+              <em>{t.when}</em>
+            </span>
+            <p>{t.text}</p>
+          </li>
+        ))}
+      </ol>
+      <Rv on={on} i={2}>
+        <div className={styles.adv}>
+          <span className={styles.lock}>{GOVERNANCE.advancedLabel}</span>
+          {GOVERNANCE.advanced}
         </div>
-        <div className={cn(styles.rrow, styles.adv)}>
-          <span className={styles.k}>Enforce</span>
-          <span className={styles.v}>
-            {p.enforce} — the advanced step, mandated per scope, revocable
-          </span>
-          <span className={styles.lock}>Advanced</span>
+      </Rv>
+      <Rv on={on} i={3}>
+        <div className={styles.back}>
+          <Icon paths={REFRESH} />
+          {GOVERNANCE.back}
         </div>
-      </div>
-      <div className={styles.mandate}>
-        <span className="chip">Named owner</span>
-        <span className="chip">Evidence attached</span>
-        <span className="chip">Every alert logged</span>
-      </div>
-      <p className={styles.quote}>
-        <b>A budget that warns is a notification. A budget that acts is a layer.</b>
-      </p>
+      </Rv>
     </>
   );
 }
 
-export function LoopView({ p }: ViewProps) {
-  return (
-    <>
-      <div className={styles.loopv}>
-        <div className={styles.lbox}>
-          <span className="eyebrow">What happened</span>
-          {p.loop.map(([k, v]) => (
-            <div key={k} className={styles.row}>
-              <span>{k}</span>
-              <span className="mono">{v}</span>
-            </div>
-          ))}
-        </div>
-        <div className={styles.larr}>
-          <Icon paths={ARROW_RIGHT} />
-        </div>
-        <div className={styles.lbox}>
-          <span className="eyebrow">Re-entered as</span>
-          {p.re.map(([k, v]) => (
-            <div key={k} className={styles.row}>
-              <span>{k}</span>
-              <span className="mono" dangerouslySetInnerHTML={{ __html: v }} />
-            </div>
-          ))}
-        </div>
-      </div>
-      <p className={styles.lnote}>
-        The next time anyone asks the same question, the answer is measured against the new baseline
-        — and it says so.
-      </p>
-    </>
-  );
-}
-
-export function ProcessView({ step, p }: { step: ProcessStepKey } & ViewProps) {
-  switch (step) {
-    case "ask":
-      return <AskView p={p} />;
-    case "see":
-      return <SeeView p={p} />;
-    case "understand":
-      return <UnderstandView p={p} />;
-    case "govern":
-      return <GovernView p={p} />;
-    case "loop":
-      return <LoopView p={p} />;
-  }
+export function ProcessView({ step, onRule }: { step: ProcessStepKey; onRule: () => void }) {
+  if (step === "econ") return <Economics />;
+  if (step === "drv") return <Drivers />;
+  if (step === "rec") return <Recommendations onRule={onRule} />;
+  return <Governance />;
 }

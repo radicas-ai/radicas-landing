@@ -5,8 +5,7 @@
   text-align: center;
   justify-items: center;
   max-width: 820px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 40px;
 }
 
 .head > div {
@@ -56,4 +55,24 @@
 }
 .info .kicker::before {
   background: var(--info);
+}
+
+/* One motion language: every head rises in gently as it enters. */
+.rvh {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.8s var(--ease-out);
+}
+.rvh.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rvh {
+    opacity: 1;
+    transform: none;
+  }
 }

@@ -1,122 +1,93 @@
-import type { FunctionData } from "@/data/functions";
-
-export type BasisKey = "billed" | "rebuilt" | "modelled" | "count";
-
-export type ExampleKey = "spend" | "cost" | "drivers" | "trust" | "next" | "value";
-
-export type PillarMetric = [name: string, basis: BasisKey];
+// Six questions behind every answer in Radicas. Metric names only — no figures.
 
 export interface Pillar {
-  L: string;
   name: string;
   q: string;
   why: string;
-  m: PillarMetric[];
-  ex: ExampleKey;
+  colour: string;
+  metrics: string[];
 }
 
 export const PILLARS: Pillar[] = [
   {
-    L: "L",
     name: "Landed cost",
-    q: "What did AI actually cost this month?",
-    why: "The billed total across every supplier, in one currency, against the budget you approved.",
-    m: [
-      ["Total AI spend", "billed"],
-      ["Budget variance", "billed"],
-      ["Spend by supplier", "billed"],
+    q: "What does AI really cost us?",
+    why:
+      "AI spend hides in seats, API bills, commitments and credits spread across teams. Landed cost brings it into one figure, in one currency, that matches what you were actually billed.",
+    colour: "#7571EB",
+    metrics: [
+      "Total AI spend, every supplier, one currency.",
+      "Spend by supplier, and how it is moving.",
+      "Actual spend against the approved budget.",
     ],
-    ex: "spend",
   },
   {
-    L: "E",
     name: "Economics",
-    q: "What does AI cost per unit of work?",
-    why: "Cost per shipped task, resolved ticket or answered query, including the attempts that failed.",
-    m: [
-      ["AI cost per work item", "rebuilt"],
-      ["Retry cost per work item", "rebuilt"],
-      ["Human and AI rounds per item", "count"],
+    q: "What does a unit of work cost?",
+    why:
+      "A monthly bill says nothing about whether AI is worth it. Economics prices the work itself: a task, a ticket, a deal, with the failed attempts counted.",
+    colour: "#4F4BC4",
+    metrics: [
+      "AI cost per unit of work.",
+      "Cost of failed attempts and retries.",
+      "How that cost splits across AI systems.",
     ],
-    ex: "cost",
   },
   {
-    L: "D",
     name: "Drivers",
-    q: "What is driving our AI spend?",
-    why: "Spend traced to the systems, models, teams and projects that caused it.",
-    m: [
-      ["Cost by AI system", "rebuilt"],
-      ["Cost by team", "rebuilt"],
-      ["Cost by model", "rebuilt"],
+    q: "What is driving the spend?",
+    why:
+      "When the number moves, someone has to explain why. Drivers traces every change to the model, system, team or project behind it.",
+    colour: "#00B8CC",
+    metrics: [
+      "Cost by model.",
+      "Cost by AI system and agent.",
+      "Cost by team, cost centre or project.",
     ],
-    ex: "drivers",
   },
   {
-    L: "G",
-    name: "Governance",
-    q: "Can we trust, attribute and control it?",
-    why: "Measured cost reconciled to the invoice, and every system with a named owner.",
-    m: [
-      ["Measured vs billed", "billed"],
-      ["Unattributed cost", "rebuilt"],
-      ["Systems with an owner", "count"],
+    name: "Trust",
+    q: "Can we trust and control it?",
+    why:
+      "A figure nobody trusts changes nothing. Trust checks that usage matches the bill, every cost has a home and every AI system has an owner.",
+    colour: "#D69520",
+    metrics: [
+      "Measured cost against the bill.",
+      "Cost that cannot be attributed yet.",
+      "AI systems with a named owner.",
     ],
-    ex: "trust",
   },
   {
-    L: "E",
-    name: "Estimates",
-    q: "What will AI cost next, even before we build?",
-    why: "The forecast against budget, and the cost of a new system before it ships.",
-    m: [
-      ["Forecast vs budget", "rebuilt"],
-      ["Scenario spend", "modelled"],
-      ["Cost of a proposed system", "modelled"],
+    name: "Forecast",
+    q: "What will AI cost next?",
+    why:
+      "Usage grows faster than budgets are set. Forecast projects the months ahead, runs what-if scenarios and prices a system before anyone builds it.",
+    colour: "#E05610",
+    metrics: [
+      "Expected spend for the coming months.",
+      "Forecast against budget.",
+      "Cost of a proposed AI system, before it is built.",
     ],
-    ex: "next",
   },
   {
-    L: "R",
     name: "Return",
-    q: "What value are we getting from AI spend?",
-    why: "Work that lands right first time, comes back less often and frees up people.",
-    m: [
-      ["First-pass rate", "count"],
-      ["Rework rate", "count"],
-      ["Human time saved", "count"],
+    q: "What are we getting back?",
+    why:
+      "Spend only makes sense next to what it returns. Return compares AI-assisted work with the work around it: faster, better, right the first time.",
+    colour: "#00A378",
+    metrics: [
+      "Work done right the first time.",
+      "Work that comes back.",
+      "Cycle time, with and without AI.",
     ],
-    ex: "value",
   },
 ];
 
-export const BASIS_LABEL: Record<BasisKey, string> = {
-  billed: "Billed",
-  rebuilt: "Rebuilt from usage",
-  modelled: "Modelled",
-  count: "Count",
-};
-
-export const FUNCTION_SHORT: string[] = ["Engineering", "Customer service", "Sales", "HR"];
-
-const fmt = (n: number): string => Number(n).toLocaleString("en");
-const plural = (n: number, a: string, b: string): string => (n === 1 ? a : b);
-
-export const EXAMPLE: Record<ExampleKey, (f: FunctionData) => [string, string, string]> = {
-  spend: (f) => [f.spend, "AI spend this month", f.spendDelta + " on last month · billed"],
-  cost: (f) => [f.cost, "AI cost per " + f.unit, f.costDelta],
-  drivers: (f) => [
-    String(f.agents),
-    "agents with spend attributed",
-    "across " + f.teams + " teams · " + f.systems.slice(0, 3).join(" · "),
-  ],
-  trust: (f) => [
-    f.coverage,
-    "of AI spend attributed",
-    f.unowned === 0
-      ? "every system has an owner"
-      : f.unowned + " " + plural(f.unowned, "system", "systems") + " without an owner",
-  ],
-  next: (f) => [f.budget + "%", "of the monthly budget used", f.budgetLabel],
-  value: (f) => [f.fp, "right first time", fmt(f.completed) + " " + f.units + " completed · " + f.completedDelta],
+export const FRAMEWORK_COPY = {
+  kicker: "Radicas Framework",
+  headingLead: "A compass for",
+  headingEmphasis: "better outcomes.",
+  lede: "Six questions behind every answer in Radicas. The same six, in every function.",
+  metricsLabel: "Critical metrics",
+  ask: "More metrics in the full framework. Ask for it →",
 };

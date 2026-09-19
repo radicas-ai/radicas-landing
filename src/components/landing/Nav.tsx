@@ -9,10 +9,11 @@ import styles from "./Nav.module.css";
 
 const SECTIONS = [
   { id: "process", label: "Process" },
-  { id: "ai", label: "Radicas AI" },
+  { id: "functions", label: "Functions" },
   { id: "platform", label: "Platform" },
+  { id: "ai", label: "Copilot" },
   { id: "framework", label: "Framework" },
-  { id: "how", label: "How it works" },
+  { id: "integrations", label: "Integrations" },
 ];
 
 export function Nav() {
@@ -85,7 +86,7 @@ export function Nav() {
             Contact us
           </a>
           <a className="btn btn-primary" href="#contact" onClick={book}>
-            Book a call
+            Book a demo
           </a>
           <button
             className={styles.burger}
