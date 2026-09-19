@@ -33,6 +33,10 @@ function Rv({ on, i, children }: { on: boolean; i: number; children: ReactNode }
   );
 }
 
+function CountUp({ target, run, duration }: { target: string; run: boolean; duration: number }) {
+  return <>{useCountUp(target, { run, duration })}</>;
+}
+
 function Head({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className={styles.ph}>
@@ -46,14 +50,15 @@ function Head({ eyebrow, title }: { eyebrow: string; title: string }) {
 
 function Economics() {
   const on = useRevealed();
-  const value = useCountUp(`€${ECONOMICS.value}`, { run: on, duration: 1000 });
 
   return (
     <>
       <Head eyebrow={ECONOMICS.eyebrow} title={ECONOMICS.title} />
       <div className={styles.econ}>
         <Rv on={on} i={0}>
-          <div className={styles.big}>{value}</div>
+          <div className={styles.big}>
+            <CountUp target={`€${ECONOMICS.value}`} run={on} duration={1000} />
+          </div>
           <p>{ECONOMICS.caption}</p>
           <span className={styles.dlt}>{ECONOMICS.delta}</span>
         </Rv>
@@ -131,7 +136,7 @@ function Drivers() {
                   className={up ? styles.pos : styles.neg}
                   style={{
                     width: on ? `${((Math.abs(r.delta) / DRIVER_MAX) * 62).toFixed(1)}%` : 0,
-                    transitionDelay: `${450 + k * 220}ms`,
+                    transitionDelay: `${320 + k * 160}ms`,
                   }}
                 />
               </span>
@@ -203,7 +208,7 @@ function Governance() {
           <li
             key={t.k}
             className={cn(on && styles.in)}
-            style={{ transitionDelay: reduced ? "0ms" : `${350 + k * 320}ms` }}
+            style={{ transitionDelay: reduced ? "0ms" : `${300 + k * 200}ms` }}
           >
             <span className={styles.k}>
               <i />
