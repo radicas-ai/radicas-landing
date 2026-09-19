@@ -12,8 +12,11 @@ body {
   margin: 0;
 }
 
-html {
-  scroll-behavior: smooth;
+/* The `animation: none` kill switch below never touched this one. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -113,116 +116,9 @@ section[id] {
 }
 
 .btn:focus-visible,
-.tab:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--color-brand-primary);
   outline-offset: 2px;
-}
-
-.tabs {
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-  margin: 0 auto;
-  width: max-content;
-}
-.tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.tab {
-  flex: none;
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 38px;
-  padding: 0 16px;
-  border: 0;
-  background: transparent;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  color: var(--fg-muted);
-  font-size: 14px;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  transition:
-    background var(--dur-2) var(--ease-out),
-    color var(--dur-2) var(--ease-out);
-}
-.tab:hover {
-  color: var(--fg);
-}
-.tab[aria-selected="true"] {
-  background: var(--elev);
-  color: var(--fg);
-}
-
-.tab .bar {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 4px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--border);
-  opacity: 0;
-}
-.tab .bar i {
-  display: block;
-  height: 100%;
-  width: 0;
-  background: var(--color-brand-primary);
-  border-radius: 2px;
-}
-.tab[aria-selected="true"] .bar {
-  opacity: 1;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 22px;
-  padding: 0 7px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--fg-muted);
-  background: var(--card);
-  white-space: nowrap;
-}
-.chip.good {
-  color: var(--allow);
-  border-color: rgba(0, 163, 120, 0.3);
-  background: rgba(0, 163, 120, 0.06);
-}
-.chip.warn {
-  color: var(--warning);
-  border-color: rgba(214, 149, 32, 0.35);
-  background: rgba(214, 149, 32, 0.07);
-}
-.chip.brand {
-  color: var(--color-brand-primary-deep);
-  border-color: rgba(117, 113, 235, 0.3);
-  background: rgba(117, 113, 235, 0.07);
-}
-
-.swap {
-  transition:
-    opacity var(--dur-2) var(--ease-out),
-    transform var(--dur-2) var(--ease-out);
-}
-.swapping .swap {
-  opacity: 0;
-  transform: translateY(4px);
 }
 
 .sr {
@@ -232,12 +128,6 @@ a:focus-visible {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
