@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { HERO_ICONS, Icon } from "@/components/landing/icons";
+import { useInView } from "@/hooks/useInView";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { cn } from "@/lib/cn";
@@ -20,21 +21,26 @@ export function Hero() {
   const [index, setIndex] = useState(0);
   const style = WORDS[index];
 
+  const heroRef = useRef<HTMLElement>(null);
+  const inView = useInView(heroRef, { threshold: 0.35 });
   const pillRef = useRef<HTMLSpanElement>(null);
   const labRef = useRef<HTMLSpanElement>(null);
   const measRef = useRef<HTMLSpanElement>(null);
 
   // The first word ships fully typed so the h1 is never empty for LCP and crawlers.
   const [typing, setTyping] = useState(false);
-  if (!typing && index !== 0) setTyping(true);
 
   const { shown, done } = useTypewriter(style.word, { speed: 55, run: typing });
 
+  // A timeout per word, not an interval: an interval cannot be gated without drifting.
   useEffect(() => {
-    if (reduced) return;
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % WORDS.length), DWELL_MS);
-    return () => window.clearInterval(id);
-  }, [reduced]);
+    if (reduced || !inView) return;
+    const id = window.setTimeout(() => {
+      setIndex((i) => (i + 1) % WORDS.length);
+      setTyping(true);
+    }, DWELL_MS);
+    return () => window.clearTimeout(id);
+  }, [index, inView, reduced]);
 
   const fit = useCallback(() => {
     const pill = pillRef.current;
@@ -46,10 +52,12 @@ export function Hero() {
     meas.style.fontSize = from.fontSize;
     meas.style.fontWeight = from.fontWeight;
     meas.style.letterSpacing = from.letterSpacing;
-    pill.style.setProperty("--w", `${Math.ceil(meas.getBoundingClientRect().width + 2)}px`);
+    // Floored, so the first empty frame of a new word does not collapse the pill.
+    const w = Math.ceil(meas.getBoundingClientRect().width + 2);
+    pill.style.setProperty("--w", `${Math.max(w, 18)}px`);
   }, []);
 
-  useLayoutEffect(fit, [fit, style.word]);
+  useLayoutEffect(fit, [fit, shown]);
 
   useEffect(() => {
     window.addEventListener("resize", fit);
@@ -58,7 +66,7 @@ export function Hero() {
   }, [fit]);
 
   return (
-    <section id="top" className={styles.hero} aria-labelledby="hero-title">
+    <section ref={heroRef} id="top" className={styles.hero} aria-labelledby="hero-title">
       <div className="wrap">
         <h1 id="hero-title" className={styles.title}>
           <span className={styles.ln}>Humans and AI, one workforce.</span>
@@ -82,7 +90,7 @@ export function Hero() {
           </span>
         </h1>
         <span ref={measRef} className={styles.meas} aria-hidden>
-          {style.word}
+          {shown}
         </span>
         <p className={styles.unit} style={{ "--pc": style.c } as CSSProperties}>
           Radicas · <b>the layer underneath</b>

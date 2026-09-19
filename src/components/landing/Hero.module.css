@@ -78,7 +78,7 @@
   text-align: left;
   min-width: var(--w, 4ch);
   width: var(--w, 4ch);
-  transition: width 0.35s var(--ease-out);
+  transition: width var(--dur-1) linear;
   font-weight: 600;
   letter-spacing: -0.035em;
 }
@@ -103,6 +103,16 @@
 @keyframes blink {
   50% {
     opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab {
+    transition: none;
+  }
+  .lab::after {
+    opacity: 0;
+    animation: none;
   }
 }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { RadicasLogo } from "@/components/landing/Brand";
 import { BURGER, Icon } from "@/components/landing/icons";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import styles from "./Nav.module.css";
@@ -17,25 +18,30 @@ const SECTIONS = [
 ];
 
 export function Nav() {
+  const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
 
+  // A band, not a ratio: an intersection ratio is a function of section height, so any
+  // height change anywhere flipped the active link. Membership of a band is not.
   useEffect(() => {
-    const ratios = new Map<string, number>();
+    const inBand = new Set<string>();
     const io = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) ratios.set(entry.target.id, entry.intersectionRatio);
+        for (const entry of entries) {
+          if (entry.isIntersecting) inBand.add(entry.target.id);
+          else inBand.delete(entry.target.id);
+        }
         let best: string | null = null;
-        let top = 0;
-        for (const [id, ratio] of ratios) {
-          if (ratio > top) {
-            top = ratio;
-            best = id;
+        for (let i = SECTIONS.length - 1; i >= 0; i -= 1) {
+          if (inBand.has(SECTIONS[i].id)) {
+            best = SECTIONS[i].id;
+            break;
           }
         }
-        setActive(top > 0.15 ? best : null);
+        setActive(best);
       },
-      { threshold: [0, 0.15, 0.3, 0.5, 0.7] },
+      { threshold: 0, rootMargin: "-60px 0px -55% 0px" },
     );
     for (const { id } of SECTIONS) {
       const section = document.getElementById(id);
@@ -47,8 +53,8 @@ export function Nav() {
   function book() {
     setOpen(false);
     track("cta_book_demo", { location: "nav" });
-    // The contact form is rendered further down the page; wait for the anchor scroll to land.
-    window.setTimeout(() => document.getElementById("bk-email")?.focus({ preventScroll: true }), 500);
+    // `preventScroll` does not interrupt the anchor scroll, so there is nothing to wait for.
+    requestAnimationFrame(() => document.getElementById("bk-email")?.focus({ preventScroll: true }));
   }
 
   function contact(event: MouseEvent<HTMLAnchorElement>) {
@@ -56,7 +62,7 @@ export function Nav() {
     const direct = document.getElementById("contact-direct");
     if (!direct) return;
     event.preventDefault();
-    direct.scrollIntoView({ behavior: "smooth", block: "center" });
+    direct.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
     direct.focus({ preventScroll: true });
   }
 
@@ -72,6 +78,7 @@ export function Nav() {
               key={id}
               href={`#${id}`}
               className={cn(active === id && styles.on)}
+              aria-current={active === id ? "true" : undefined}
               onClick={() => setOpen(false)}
             >
               {label}

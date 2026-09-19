@@ -106,8 +106,14 @@
     position: relative;
   }
   .links {
-    display: none;
     position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition:
+      opacity var(--dur-2) var(--ease-out),
+      transform var(--dur-2) var(--ease-out),
+      visibility 0s linear var(--dur-2);
     top: 60px;
     left: 0;
     right: 0;
@@ -119,7 +125,10 @@
     box-shadow: 0 18px 40px rgba(15, 20, 36, 0.1);
   }
   .nav.open .links {
-    display: flex;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s;
   }
   .links .mOnly {
     display: block;

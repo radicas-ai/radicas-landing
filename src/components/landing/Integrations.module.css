@@ -25,8 +25,14 @@
   animation-direction: reverse;
   animation-duration: 80s;
 }
-.rows:hover .trk {
+/* Per row: hovering one marquee must not freeze its neighbour. */
+.mq:hover .trk {
   animation-play-state: paused;
+}
+@media (hover: none) {
+  .mq:hover .trk {
+    animation-play-state: running;
+  }
 }
 
 /* Local copy: CSS Modules scopes animation names. */
@@ -55,9 +61,8 @@
   display: grid;
   place-items: center;
   transition:
-    border-color 0.3s,
-    box-shadow 0.3s,
-    transform 0.3s var(--ease-out);
+    border-color var(--dur-3),
+    box-shadow var(--dur-3);
 }
 .tile .c img {
   position: absolute;
@@ -78,7 +83,6 @@
   white-space: nowrap;
 }
 .tile:hover .c {
-  transform: translateY(-3px);
   border-color: rgba(117, 113, 235, 0.4);
   box-shadow: 0 12px 28px rgba(117, 113, 235, 0.16);
 }
