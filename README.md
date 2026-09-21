@@ -19,41 +19,37 @@ pnpm dev                     # http://localhost:3000
 | Variable                  | Required | Purpose                                                        |
 | ------------------------- | -------- | -------------------------------------------------------------- |
 | `NOTION_TOKEN`            | yes\*    | Notion internal-integration secret (server-only).             |
-| `NOTION_ORGS_DB_ID`       | yes\*    | Id of the "🏢 Organizations" database.                        |
-| `NOTION_PEOPLE_DB_ID`     | yes\*    | Id of the "👥 People" database.                               |
-| `NOTION_ACTIVITY_DB_ID`   | yes\*    | Id of the "⚙️ Activity log" database.                         |
+| `NOTION_LEADS_DB_ID`      | yes\*    | Id of the "🌐 Website leads" database.                        |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | no | Cloudflare Turnstile site key. Omit to skip the captcha. |
 | `TURNSTILE_SECRET_KEY`    | no       | Cloudflare Turnstile secret (server-only). Omit to skip the captcha. |
-| `NEXT_PUBLIC_BOOKING_URL` | no       | Cal.com link the booking form opens with the email prefilled. Falls back to the link in `src/lib/site.ts`. |
 | `NEXT_PUBLIC_GA_ID`       | no       | GA4 measurement id (`G-XXXXXXXXXX`). Omit to disable analytics. |
 
-\* Without all three Notion db vars the contact form still validates input but returns a clear
+\* Without both Notion vars the contact form still validates input but returns a clear
 "not connected" message instead of storing the lead.
 
-## Notion CRM setup
+## Website leads
 
-The form writes into the relational **CRM** (`🏢 Organizations` ← `👥 People` → `⚙️ Activity log`).
-Each submit upserts the Organization (deduped by email domain), upserts the Person, and appends a
-touchpoint to the Activity log — mirroring the "Notion Org Capture" browser extension. To let the
-live site write to it:
+The form writes into **🌐 Website leads** (Business & Strategy → Go-to-Market → CRM), a
+quarantine queue for contacts submitted by strangers. **Nothing is written to the CRM
+itself** — 🏢 Organizations, 👥 People and ⚙️ Activity log are only ever written by a human
+promoting a lead, which keeps unverified form input out of the registry.
+
+To let the live site write to it:
 
 1. Create an internal integration at <https://www.notion.so/my-integrations> (or reuse the CRM
    integration) and copy its secret into `NOTION_TOKEN`.
-2. Share **all three** databases with the integration: open each → **•••** → **Connections** → add
-   your integration. Put their ids (the 32-char hash in each URL) into `NOTION_ORGS_DB_ID`,
-   `NOTION_PEOPLE_DB_ID`, `NOTION_ACTIVITY_DB_ID`.
-3. In the Activity log, add a **`Web form`** option to the **`Channel`** select (the code writes
-   this exact value).
+2. Share the database with the integration: open it → **•••** → **Connections** → add your
+   integration. Put its id (the 32-char hash in the URL) into `NOTION_LEADS_DB_ID`.
 
-What each submit writes:
+What each submit writes — one row per submission, never merged:
 
-- **People**: `Name`, `Email`, `Title` (job title), `Role = Prospect`, `Source = Inbound`,
-  `Connection Status = Engaged`, and a relation to the Organization. An existing person (matched by
-  email) is never overwritten — only empty `Organization`/`Title` are backfilled.
-- **Organizations**: created only for corporate domains (free/consumer email hosts are skipped),
-  with `Name` (from the Company field or the domain), `Domain`, and `Type = Prospect`.
-- **Activity log**: `Channel = Web form`, `Outcome = Follow-up needed`, a `Next Step`, dated today,
-  linked to the person.
+`Name` (first + surname, or the email when both are blank), `First name`, `Surname`, `Email`
+(lowercased), `Phone`, `Company`, `Domain` (from the email), `Consumer email` (ticked for gmail,
+outlook and friends), `Submitted` (server timestamp) and `Status = New`. `Notes` is left for
+whoever triages the queue.
+
+A repeat submission from the same address is a new row on purpose: two submissions are something
+triage should see, not something to silently merge.
 
 The form has a hidden honeypot field (`website`); submissions that fill it are silently dropped.
 When both Turnstile keys are set the submitted token is verified server-side; without them the
@@ -62,7 +58,7 @@ captcha is skipped.
 ## Analytics
 
 GA4 loads via `@next/third-parties` only when `NEXT_PUBLIC_GA_ID` is set. Custom events:
-`cta_book_demo` (nav / hero / contact) and `lead_submit`.
+`cta_book_demo` (nav) and `lead_submit` (contact).
 
 ## Deploy
 

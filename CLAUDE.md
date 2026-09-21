@@ -10,7 +10,8 @@ tokens in `src/styles/theme.css`. Note a CSS Module cannot reach a global
 
 Run with `pnpm dev` (copy `.env.example` → `.env.local` first);
 verify with `pnpm build` and `pnpm typecheck`. The contact form writes to the
-Notion CRM (see README for env vars); never commit secrets.
+Notion "Website leads" quarantine, never to the CRM itself (see README for env
+vars); never commit secrets.
 
 ## Design source (ADR-023 in radicas-nursery)
 

@@ -54,7 +54,7 @@ export function Nav() {
     setOpen(false);
     track("cta_book_demo", { location: "nav" });
     // `preventScroll` does not interrupt the anchor scroll, so there is nothing to wait for.
-    requestAnimationFrame(() => document.getElementById("bk-email")?.focus({ preventScroll: true }));
+    requestAnimationFrame(() => document.getElementById("bk-first")?.focus({ preventScroll: true }));
   }
 
   function contact(event: MouseEvent<HTMLAnchorElement>) {
