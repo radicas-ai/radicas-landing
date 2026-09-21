@@ -27,6 +27,11 @@ pnpm dev                     # http://localhost:3000
 \* Without both Notion vars the contact form still validates input but returns a clear
 "not connected" message instead of storing the lead.
 
+`NOTION_TOKEN` lives on Vercel as a **Sensitive** variable for Production and Preview only —
+sensitive values cannot be read back, which is the point. There is deliberately no Development
+copy: for local work, copy the secret from the integration's page in Notion into `.env.local`.
+Notion is the source of truth for it, so no readable duplicate needs to exist anywhere else.
+
 ## Website leads
 
 The form writes into **🌐 Website leads** (Business & Strategy → Go-to-Market → CRM), a
