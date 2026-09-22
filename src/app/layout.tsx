@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { cn } from "@/lib/cn";
 import { GA_ID } from "@/lib/analytics";
-import { siteUrl } from "@/lib/site";
+import { siteDescription, siteTitle, siteUrl } from "@/lib/site";
 import { organizationSchema, websiteSchema } from "@/lib/structured-data";
 import "./globals.css";
 
@@ -14,25 +14,22 @@ const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono"
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Radicas — AI cost management & FinOps for the AI era",
-    template: "%s | Radicas",
+    default: siteTitle,
+    template: "Radicas · %s",
   },
-  description:
-    "Take control of your AI spend. See what's running, what it costs, and what it returns.",
+  description: siteDescription,
   alternates: { canonical: siteUrl },
   openGraph: {
-    title: "Radicas — AI cost management & FinOps for the AI era",
-    description:
-      "Take control of your AI spend. See what's running, what it costs, and what it returns.",
+    title: siteTitle,
+    description: siteDescription,
     url: siteUrl,
     siteName: "Radicas",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Radicas — AI cost management & FinOps for the AI era",
-    description:
-      "Take control of your AI spend. See what's running, what it costs, and what it returns.",
+    title: siteTitle,
+    description: siteDescription,
   },
 };
 
