@@ -1,0 +1,83 @@
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  text-align: center;
+  justify-items: center;
+  max-width: 820px;
+  margin: 0 auto 40px;
+}
+
+/* For a section whose body reads as a continuation of the lede rather than a new block. */
+.tight {
+  margin-bottom: 20px;
+}
+
+.head > div {
+  width: 100%;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  color: var(--color-brand-primary-deep);
+}
+.kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--color-brand-primary);
+}
+
+.title {
+  margin: 0 auto;
+  font-weight: 600;
+  font-size: clamp(34px, 4.4vw, 52px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.title em {
+  font-style: normal;
+  color: var(--color-brand-primary);
+}
+
+.lede {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+.info .kicker,
+.info .title em {
+  color: var(--info);
+}
+.info .kicker::before {
+  background: var(--info);
+}
+
+/* One motion language: every head rises in gently as it enters. */
+.rvh {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.8s var(--ease-out);
+}
+.rvh.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rvh {
+    opacity: 1;
+    transform: none;
+  }
+}

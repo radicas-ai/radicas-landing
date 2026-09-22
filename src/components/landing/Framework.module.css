@@ -1,0 +1,301 @@
+.section {
+  padding-block: 96px;
+  background: #fff;
+  overflow-x: clip;
+  --pc: var(--color-brand-primary);
+}
+
+/* ── Pillar rail ───────────────────────────────────────────────────────── */
+.word {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.rail {
+  display: block;
+}
+
+.lt {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 6px;
+  padding: 26px 10px 24px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  color: var(--fg-subtle);
+  transition: background var(--dur-3) var(--ease-out);
+}
+.lt + .lt {
+  border-left: 1px solid var(--border);
+}
+.lt:hover {
+  background: color-mix(in srgb, var(--pc) 4%, transparent);
+}
+.lt.on {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pc) 9%, transparent), transparent 85%);
+}
+
+.lt .pi {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 4px;
+  color: var(--pc);
+  background: color-mix(in srgb, var(--pc) 10%, #fff);
+  border: 1px solid color-mix(in srgb, var(--pc) 22%, #fff);
+  transition:
+    background var(--dur-4) var(--ease-out),
+    color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out);
+}
+.lt .pi :global(.ico) {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+.lt.on .pi {
+  background: var(--pc);
+  color: #fff;
+  border-color: var(--pc);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--pc) 35%, transparent);
+}
+
+.lt .nm {
+  font-size: clamp(17px, 1.7vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  transition: color var(--dur-4) var(--ease-out);
+}
+.lt.on .nm {
+  color: var(--pc);
+}
+.lt .qq {
+  font-size: 13px;
+  color: var(--fg-subtle);
+  line-height: 1.35;
+  text-align: center;
+  transition: color var(--dur-4) var(--ease-out);
+}
+.lt.on .qq {
+  color: var(--fg-muted);
+}
+
+.lt .pg {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.lt.on .pg {
+  opacity: 1;
+}
+.lt .pg i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  background: var(--pc);
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+/* Frozen, not "about to advance": a full bar may only ever mean the rail is running. */
+.paused .pg i {
+  opacity: 0.35;
+}
+
+/* ── Pane ──────────────────────────────────────────────────────────────── */
+.pane {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  background: var(--card);
+  border: 1px solid color-mix(in srgb, var(--pc) 28%, #e0e2e8);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 1px 2px rgba(15, 20, 36, 0.04),
+    0 22px 60px color-mix(in srgb, var(--pc) 14%, transparent);
+  overflow: hidden;
+  transition:
+    border-color var(--dur-4) var(--ease-out),
+    box-shadow var(--dur-4) var(--ease-out);
+}
+.pane > div {
+  padding: 28px;
+  min-width: 0;
+}
+.pane > div + div {
+  border-left: 1px solid color-mix(in srgb, var(--pc) 18%, #e0e2e8);
+}
+
+.fade {
+  transition:
+    opacity var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out);
+}
+/* Out equals the JS hold by construction — see lib/motion.ts. */
+.pane.swapping .fade {
+  opacity: 0;
+  transform: translateY(6px);
+  transition-duration: calc(var(--swap) * 0.7);
+  transition-timing-function: var(--ease-in);
+}
+
+.lft {
+  position: relative;
+  background: radial-gradient(
+    120% 90% at 0% 0%,
+    color-mix(in srgb, var(--pc) 16%, #fff) 0%,
+    color-mix(in srgb, var(--pc) 5%, #fff) 55%,
+    #fff 100%
+  );
+}
+.lft::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--pc);
+}
+
+.badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  background: var(--pc);
+  color: #fff;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--pc) 35%, transparent);
+}
+.badge :global(.ico) {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.8;
+}
+
+.pane :global(.eyebrow) {
+  display: block;
+  margin-bottom: 14px;
+}
+.tint {
+  color: color-mix(in srgb, var(--pc) 80%, #0f1424);
+}
+
+.q {
+  margin: 0;
+  font-size: clamp(22px, 2.3vw, 28px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.why {
+  margin: 14px 0 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+.mets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.mets li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--pc) 14%, #e0e2e8);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fg);
+}
+.mets li:last-child {
+  border-bottom: 0;
+}
+.mets li i {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: var(--pc);
+  background: color-mix(in srgb, var(--pc) 12%, #fff);
+}
+.mets li i :global(.ico) {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2;
+}
+
+.ask {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--pc) 85%, #0f1424);
+}
+.ask:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1040px) {
+  .pane {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding-block: 64px;
+  }
+  .word {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .lt {
+    padding: 16px 6px;
+  }
+  .lt:nth-child(4) {
+    border-left: 0;
+  }
+  .lt:nth-child(n + 4) {
+    border-top: 1px solid var(--border);
+  }
+  .lt .nm {
+    font-size: 16px;
+  }
+  .lt .qq {
+    display: none;
+  }
+  .pane {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pane > div {
+    padding: 20px;
+  }
+  .pane > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+}

@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
-import { createLeadInCrm, notionConfigured } from "@/lib/notion";
+import { createLead, notionConfigured } from "@/lib/notion";
 
 export const runtime = "nodejs";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Same shape the form enforces — loose on purpose, a phone number is not worth rejecting a lead over.
+const PHONE_RE = /^[+\d][\d\s().-]{5,}$/;
 
 interface LeadBody {
+  email?: unknown;
   firstName?: unknown;
   lastName?: unknown;
-  email?: unknown;
-  company?: unknown; // real field — the Organization name
-  jobTitle?: unknown; // real field — the Person's Title
+  company?: unknown;
+  phone?: unknown; // optional on the form
   website?: unknown; // honeypot
   captchaToken?: unknown; // Cloudflare Turnstile
 }
@@ -65,14 +67,18 @@ export async function POST(req: Request) {
   const lastName = typeof body.lastName === "string" ? body.lastName.trim() : "";
   const email = typeof body.email === "string" ? body.email.trim() : "";
   const company = typeof body.company === "string" ? body.company.trim() : "";
-  const jobTitle = typeof body.jobTitle === "string" ? body.jobTitle.trim() : "";
+  const phone = typeof body.phone === "string" ? body.phone.trim() : "";
 
-  if (!firstName || !lastName) {
-    return NextResponse.json({ ok: false, error: "Please enter your name." }, { status: 400 });
-  }
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json(
       { ok: false, error: "Please enter a valid email address." },
+      { status: 400 },
+    );
+  }
+
+  if (phone !== "" && !PHONE_RE.test(phone)) {
+    return NextResponse.json(
+      { ok: false, error: "Please enter a valid phone number, or leave it blank." },
       { status: 400 },
     );
   }
@@ -81,32 +87,17 @@ export async function POST(req: Request) {
     // Don't lose the lead silently in dev/preview — log it and surface a clear server error.
     console.warn("[lead] Notion not configured — lead not stored:", { firstName, lastName, email });
     return NextResponse.json(
-      { ok: false, error: "Submissions aren't connected yet. Please email us or book a demo." },
+      { ok: false, error: "Submissions aren't connected yet. Please email us at info@radicas.ai." },
       { status: 503 },
     );
   }
 
   try {
-    const result = await createLeadInCrm({ firstName, lastName, email, company, jobTitle });
-    if (!result.ok) {
-      // Person wasn't persisted — the lead is not saved. Log the full lead so it's recoverable
-      // from the server logs, and surface an error so the user can retry.
-      console.error("[lead] Lead not persisted to CRM:", { firstName, lastName, email, company });
-      return NextResponse.json(
-        { ok: false, error: "We couldn't save that just now. Please try again shortly." },
-        { status: 502 },
-      );
-    }
-    if (result.degraded.length > 0) {
-      // Person saved, but Organization and/or Activity failed. The lead is recoverable; note it.
-      console.warn("[lead] Lead saved with degraded steps:", {
-        email,
-        degraded: result.degraded,
-      });
-    }
+    await createLead({ firstName, lastName, email, company, phone });
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("[lead] Failed to write to Notion:", err);
+    // Log the full lead so it stays recoverable from the server logs, then let the user retry.
+    console.error("[lead] Failed to write to Notion:", { firstName, lastName, email, company }, err);
     return NextResponse.json(
       { ok: false, error: "We couldn't save that just now. Please try again shortly." },
       { status: 502 },

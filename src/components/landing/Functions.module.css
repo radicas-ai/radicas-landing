@@ -1,0 +1,405 @@
+.section {
+  padding-block: 96px;
+  background: #fff;
+  --fc: var(--color-brand-primary);
+}
+
+.rail {
+  display: block;
+}
+
+/* ── Function rail ─────────────────────────────────────────────────────── */
+.fns {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+.fns li {
+  display: grid;
+  min-width: 0;
+}
+
+.fn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    background var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+.fn .fi {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: var(--fc);
+  background: color-mix(in srgb, var(--fc) 12%, transparent);
+  transition:
+    background var(--dur-3),
+    color var(--dur-3);
+  flex: none;
+}
+.fn .fi :global(.ico) {
+  width: 16px;
+  height: 16px;
+}
+.fn:hover {
+  color: var(--fg);
+  background: var(--card);
+}
+.fn.on {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--fc) 9%, #fff);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fc) 35%, transparent);
+}
+.fn.on .fi {
+  background: var(--fc);
+  color: #fff;
+}
+.fn .pg {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  overflow: hidden;
+  opacity: 0;
+}
+.fn.on .pg {
+  opacity: 1;
+}
+.fn .pg i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  background: var(--fc);
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+/* Frozen, not "about to advance": a full bar may only ever mean the rail is running. */
+.paused .pg i {
+  opacity: 0.35;
+}
+
+/* ── Connector ─────────────────────────────────────────────────────────── */
+.link {
+  position: relative;
+  height: 52px;
+}
+.link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 6px;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(180deg, var(--fc) 0 5px, transparent 5px 11px);
+  background-size: 2px 22px;
+  animation: flow9 1.6s linear infinite;
+  transition: background 0.4s;
+}
+.link::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--fc);
+  border-bottom: 2px solid var(--fc);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* Local copy: CSS Modules scopes animation names. */
+@keyframes flow9 {
+  to {
+    background-position: 0 22px;
+  }
+}
+
+/* ── Shared intelligence band ──────────────────────────────────────────── */
+.intel {
+  border-radius: var(--radius-xl);
+  padding: 22px 24px;
+  background: linear-gradient(135deg, rgba(117, 113, 235, 0.1), rgba(0, 229, 255, 0.06));
+  border: 1px solid rgba(117, 113, 235, 0.25);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 4fr);
+  gap: 24px;
+  align-items: center;
+}
+.ttl :global(.eyebrow) {
+  color: var(--color-brand-primary-deep);
+}
+.ttl b {
+  display: block;
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.blocks {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.blk {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(117, 113, 235, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  min-height: 64px;
+  transition:
+    background 0.5s var(--ease-out),
+    border-color 0.5s var(--ease-out);
+}
+.blk b {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  transition: color 0.5s var(--ease-out);
+}
+.blk.hi {
+  background: var(--fc);
+  border-color: var(--fc);
+}
+.blk.hi b {
+  color: #fff;
+}
+
+/* ── Function card ─────────────────────────────────────────────────────── */
+.card {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: center;
+  padding: 14px;
+  background: var(--card);
+  border: 1px solid color-mix(in srgb, var(--fc) 35%, var(--border));
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 1px 2px rgba(15, 20, 36, 0.04),
+    0 18px 50px color-mix(in srgb, var(--fc) 14%, transparent);
+  transition:
+    border-color var(--dur-4),
+    box-shadow var(--dur-4);
+}
+.card > * {
+  min-width: 0;
+  transition:
+    opacity var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out);
+}
+/* Out equals the JS hold by construction — see lib/motion.ts. */
+.card.out > * {
+  opacity: 0;
+  transform: translateY(5px);
+  transition-duration: calc(var(--swap) * 0.7);
+  transition-timing-function: var(--ease-in);
+}
+
+.who {
+  grid-column: 1 / span 3;
+  grid-row: 1;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 6px 18px 6px 6px;
+}
+.who .bx {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--fc);
+  color: #fff;
+  flex: none;
+  transition: background var(--dur-3);
+}
+.who .bx :global(.ico) {
+  width: 26px;
+  height: 26px;
+  stroke-width: 1.75;
+}
+.who b {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.who span span {
+  display: block;
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.qt {
+  grid-column: 4 / span 3;
+  grid-row: 1;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--fc) 9%, #fff);
+}
+.qt .qm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--fc) 18%, #fff);
+  color: var(--fc);
+  display: grid;
+  place-items: center;
+  flex: none;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  padding-top: 8px;
+}
+.qt small {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fc);
+}
+.qt p {
+  margin: 4px 0 0;
+  font-size: 14.5px;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.at {
+  grid-row: 2;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 16px 18px 4px;
+  border-top: 1px solid var(--border);
+}
+.at1 {
+  grid-column: 1 / span 2;
+}
+.at2 {
+  grid-column: 3 / span 2;
+  border-left: 1px solid var(--border);
+}
+.at3 {
+  grid-column: 5 / span 2;
+  border-left: 1px solid var(--border);
+}
+.at > :global(.ico) {
+  width: 24px;
+  height: 24px;
+  color: var(--fc);
+  stroke-width: 1.5;
+}
+.at b {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.at span span {
+  display: block;
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+@media (max-width: 1100px) {
+  .intel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding-block: 64px;
+  }
+  .fns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fns li:first-child {
+    grid-column: 1 / -1;
+  }
+  .fn {
+    justify-content: flex-start;
+    height: 44px;
+    font-size: 14px;
+  }
+  .blocks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .blocks .blk:last-child {
+    grid-column: 1 / -1;
+  }
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .who,
+  .qt,
+  .at1,
+  .at2,
+  .at3 {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .qt {
+    margin-top: 12px;
+  }
+  .at {
+    margin-top: 12px;
+    padding: 12px 6px 0;
+    border-left: 0;
+  }
+  .at2,
+  .at3 {
+    border-left: 0;
+  }
+  .link {
+    height: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link::before {
+    animation: none;
+  }
+}

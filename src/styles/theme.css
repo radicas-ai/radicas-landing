@@ -1,7 +1,7 @@
 /**
  * Radicas Design System tokens — the Claude Design hand-off, ported verbatim into Tailwind v4
- * CSS-first `@theme`. Dark is the primary theme; `.light` remaps the role tokens onto the paper
- * palette. This marketing surface ships dark-only, but the light mapping is kept for parity.
+ * CSS-first `@theme`. Light is the primary theme; `.dark` keeps the carbon role mapping so a
+ * dark theme can be switched back on without re-deriving it.
  */
 
 @theme {
@@ -31,6 +31,7 @@
   --color-brand-primary-hover: #8d89ef;
   --color-brand-primary-light: #a5a2f3;
   --color-brand-primary-tint: #c3c1f8;
+  --color-brand-primary-deep: #4f4bc4;
 
   /* ── Accents ───────────────────────────────────────────────────────────── */
   --color-accent-cyan: #00e5ff;
@@ -38,12 +39,17 @@
   --color-accent-orange: #ff6a1a;
   --color-accent-red: #ff3b5c;
 
-  /* ── Semantic (dark) + light variants ──────────────────────────────────── */
-  --color-semantic-allow: #00c896;
-  --color-semantic-deny: #ff3b5c;
-  --color-semantic-warning: #ffb020;
-  --color-semantic-review: #ff6a1a;
-  --color-semantic-info: #00e5ff;
+  /* ── Mode (AI / mixed / human work) ────────────────────────────────────── */
+  --color-mode-ai: #4f4bc4;
+  --color-mode-mix: #7571eb;
+  --color-mode-human: #c5c9da;
+
+  /* ── Semantic (follow the active role mapping) ─────────────────────────── */
+  --color-semantic-allow: var(--allow);
+  --color-semantic-deny: var(--deny);
+  --color-semantic-warning: var(--warning);
+  --color-semantic-review: var(--review);
+  --color-semantic-info: var(--info);
   --color-semantic-neutral: #6b7390;
 
   /* ── Role tokens (Tailwind utility colors map to these CSS vars) ────────── */
@@ -51,6 +57,8 @@
   --color-bg-elevated: var(--bg-elevated);
   --color-bg-overlay: var(--bg-overlay);
   --color-surface-mute: var(--surface-mute);
+  --color-card: var(--card);
+  --color-elev: var(--elev);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-fg: var(--fg);
@@ -61,8 +69,6 @@
   /* ── Fonts (wired to next/font CSS variables in layout.tsx) ─────────────── */
   --font-sans: var(--font-geist), "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
-  --font-display: var(--font-geist), "Inter", system-ui, sans-serif;
-  --font-brand: var(--font-archivo-black), var(--font-geist), system-ui, sans-serif;
 
   /* ── Type scale ────────────────────────────────────────────────────────── */
   --text-2xs: 10px;
@@ -95,8 +101,8 @@
   --radius-xs: 2px;
   --radius-sm: 4px;
   --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
   --radius-pill: 999px;
 
   /* ── Shadows ───────────────────────────────────────────────────────────── */
@@ -112,10 +118,43 @@
   --ease-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
 }
 
-/* ── Role mapping — DARK (primary) ───────────────────────────────────────── */
-:root,
+/* ── Role mapping — LIGHT (primary) ──────────────────────────────────────── */
+:root {
+  --bg: var(--color-paper);
+  --card: var(--color-paper-card);
+  --elev: var(--color-paper-elevated);
+  --bg-elevated: var(--color-paper-card);
+  --bg-overlay: var(--color-paper-elevated);
+  --surface-mute: var(--color-paper-elevated);
+  --border: var(--color-paper-border);
+  --border-strong: var(--color-paper-border-strong);
+  --fg: var(--color-carbon-900);
+  --fg-muted: var(--color-carbon-500);
+  --fg-subtle: var(--color-carbon-400);
+  --accent: var(--color-brand-primary);
+  --brand-glow: rgba(117, 113, 235, 0.25);
+
+  --allow: #00a378;
+  --deny: #d6284a;
+  --warning: #d69520;
+  --review: #e05610;
+  --info: #00b8cc;
+
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 480ms;
+  --dur-5: 800ms;
+  --grad-signal: linear-gradient(135deg, #7571eb 0%, #00e5ff 100%);
+
+  color-scheme: light;
+}
+
+/* ── Role mapping — DARK (kept for a later theme switch) ─────────────────── */
 .dark {
   --bg: var(--color-carbon-900);
+  --card: var(--color-carbon-850);
+  --elev: var(--color-carbon-800);
   --bg-elevated: var(--color-carbon-850);
   --bg-overlay: var(--color-carbon-800);
   --surface-mute: var(--color-carbon-850);
@@ -126,21 +165,12 @@
   --fg-subtle: var(--color-carbon-400);
   --accent: var(--color-brand-primary);
   --brand-glow: rgba(117, 113, 235, 0.35);
-  color-scheme: dark;
-}
 
-/* ── Role mapping — LIGHT ─────────────────────────────────────────────────── */
-.light {
-  --bg: var(--color-paper);
-  --bg-elevated: var(--color-paper-card);
-  --bg-overlay: var(--color-paper-elevated);
-  --surface-mute: var(--color-paper-elevated);
-  --border: var(--color-paper-border);
-  --border-strong: var(--color-paper-border-strong);
-  --fg: var(--color-carbon-950);
-  --fg-muted: var(--color-carbon-500);
-  --fg-subtle: var(--color-carbon-400);
-  --accent: var(--color-brand-primary);
-  --brand-glow: rgba(117, 113, 235, 0.25);
-  color-scheme: light;
+  --allow: #00c896;
+  --deny: #ff3b5c;
+  --warning: #ffb020;
+  --review: #ff6a1a;
+  --info: #00e5ff;
+
+  color-scheme: dark;
 }

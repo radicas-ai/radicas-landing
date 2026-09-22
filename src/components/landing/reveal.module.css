@@ -1,0 +1,20 @@
+/* Shared by every section that has no entrance of its own. */
+.rv {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--dur-5) var(--ease-out),
+    transform var(--dur-5) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rv {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,532 @@
+.section {
+  /* Every row hangs this far into the wrap's gutter, so the three surfaces — two dividers and
+     the governance card — share one edge while their content stays on the page grid. */
+  --inset: 25px;
+  padding-block: 96px;
+  background: linear-gradient(180deg, #fafafb 0%, #f4f5f7 100%);
+  overflow-x: clip;
+}
+
+/* ── Row ───────────────────────────────────────────────────────────────── */
+.row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 4fr) minmax(0, 7fr);
+  gap: 24px 32px;
+  align-items: center;
+  padding-block: 36px;
+  margin-inline: calc(-1 * var(--inset));
+  padding-inline: var(--inset);
+  border-top: 1px solid var(--border);
+  position: relative;
+  transition:
+    padding var(--dur-5) var(--ease-out),
+    background var(--dur-3) var(--ease-out);
+}
+.row .n {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-brand-primary);
+  align-self: start;
+  padding-top: 6px;
+}
+.row .tx {
+  align-self: start;
+}
+.row h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+/* A closed row is one target: the button's hit area covers it, so the row stays a single
+   interactive element rather than a div with a click handler wrapped around a button. */
+.row:not(.open) .trigger::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.row.open .trigger {
+  cursor: default;
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+.chev {
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--fg-subtle);
+  flex: none;
+  transition:
+    transform var(--dur-5) var(--ease-out),
+    color var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out);
+}
+.chev :global(.ico) {
+  width: 14px;
+  height: 14px;
+}
+.row.open .chev {
+  transform: rotate(180deg);
+  color: var(--color-brand-primary);
+  border-color: rgba(117, 113, 235, 0.4);
+}
+.row h3 .badge {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-pill);
+  display: grid;
+  place-items: center;
+  background: rgba(117, 113, 235, 0.1);
+  color: var(--color-brand-primary);
+  flex: none;
+}
+.row h3 .badge :global(.ico) {
+  width: 17px;
+  height: 17px;
+}
+.row .tx p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  max-width: 40ch;
+}
+
+/* Hover is a tint and nothing else: only a click may change the height of the page. */
+.row:not(.open):hover {
+  background: rgba(117, 113, 235, 0.03);
+}
+
+/* Pieces light up in sequence behind the panel as it opens. */
+.rv {
+  opacity: 0.22;
+  transition: opacity var(--dur-5) var(--ease-out);
+}
+.row.in .rv {
+  opacity: 1;
+  transition-delay: calc(160ms + var(--i, 0) * 110ms);
+}
+.lk {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-5) var(--ease-out) 450ms;
+}
+.row.in .lk {
+  opacity: 1;
+}
+.lk path {
+  fill: none;
+  stroke: var(--color-brand-primary-light);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+  vector-effect: non-scaling-stroke;
+}
+/* Three passes as the row arrives, then still: an always-open row must not animate forever. */
+.row.in .lk path {
+  animation: flow5 1.8s linear 3 both;
+}
+
+/* Local copy: CSS Modules scopes animation names. */
+@keyframes flow5 {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+/* ── Accordion ────────────────────────────────────────────────────────────
+   One row open at a time, opened by click or keyboard only. The panel collapses
+   with `grid-template-rows`, so the open height is the content's own and no
+   breakpoint has to guess a `max-height`. */
+.art {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--dur-5) var(--ease-out),
+    opacity var(--dur-3) var(--ease-out);
+}
+.art > * {
+  min-height: 0;
+  overflow: hidden;
+}
+.row.open .art {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.row:not(.open) {
+  padding-block: 26px;
+}
+/* ── 01 / 02 art ───────────────────────────────────────────────────────── */
+.est {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) 72px minmax(0, 1fr);
+  align-items: center;
+}
+.src {
+  display: grid;
+  gap: 10px;
+}
+.grp {
+  height: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+}
+.grp :global(.eyebrow) {
+  font-size: 10px;
+  color: var(--fg-subtle);
+}
+.cs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.cs span {
+  font-size: 12.5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--elev);
+  white-space: nowrap;
+}
+.cs .more {
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  color: var(--fg-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.etc {
+  height: 34px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.pe {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+.pe b {
+  font-size: 15px;
+  font-weight: 600;
+}
+.ic2 {
+  display: flex;
+}
+.ic2 :global(.ico) {
+  width: 30px;
+  height: 30px;
+  padding: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--elev);
+  color: var(--fg-muted);
+  box-shadow: 0 0 0 2px var(--card);
+}
+.ic2 :global(.ico) + :global(.ico) {
+  margin-left: -8px;
+}
+.ic2.agents :global(.ico) {
+  background: rgba(117, 113, 235, 0.14);
+  color: var(--color-brand-primary);
+}
+
+.mid {
+  position: relative;
+  height: 300px;
+}
+.mid.short {
+  height: 136px;
+}
+
+.inv {
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(117, 113, 235, 0.12), rgba(0, 229, 255, 0.06));
+  border: 1px solid rgba(117, 113, 235, 0.3);
+}
+.inv :global(.eyebrow) {
+  color: var(--color-brand-primary-deep);
+}
+.inv b {
+  display: block;
+  margin: 6px 0 14px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.inv ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.inv li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.inv li :global(.ico) {
+  width: 16px;
+  height: 16px;
+  color: var(--allow);
+  stroke-width: 2.2;
+}
+.big5 {
+  margin-top: 8px;
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.sub5 {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+/* ── 03 governance ─────────────────────────────────────────────────────── */
+.gov {
+  grid-template-columns: 48px minmax(0, 4fr) minmax(0, 7fr);
+  align-items: start;
+  margin-top: 8px;
+  /* Its own border takes the place of one pixel of the inset. */
+  padding-inline: calc(var(--inset) - 1px);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(117, 113, 235, 0.07), rgba(117, 113, 235, 0.02));
+  border: 1px solid rgba(117, 113, 235, 0.18);
+}
+.gov:not(.open) {
+  padding-block: 26px;
+}
+.gov:not(.open):hover {
+  background: linear-gradient(180deg, rgba(117, 113, 235, 0.11), rgba(117, 113, 235, 0.05));
+}
+
+.gctl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.ctl {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+.ctl .av {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(117, 113, 235, 0.1);
+  color: var(--color-brand-primary);
+}
+.ctl .av :global(.ico) {
+  width: 17px;
+  height: 17px;
+}
+.ctl b {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.ctl span span {
+  display: block;
+  margin-top: 3px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--fg-muted);
+}
+.ctl.advanced {
+  border-style: dashed;
+  border-color: var(--border-strong);
+  background: transparent;
+}
+.lock {
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 3px 8px;
+}
+
+.sup {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 1px solid transparent;
+  transition:
+    grid-template-rows var(--dur-5) var(--ease-out),
+    opacity var(--dur-3) var(--ease-out),
+    margin var(--dur-5) var(--ease-out),
+    padding var(--dur-5) var(--ease-out),
+    border-color var(--dur-5) var(--ease-out);
+}
+.sup > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.row.open .sup {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top-color: rgba(117, 113, 235, 0.18);
+}
+.sup :global(.eyebrow) {
+  color: var(--color-brand-primary-deep);
+}
+.sup ul {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.sup li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.sup li :global(.ico) {
+  width: 16px;
+  height: 16px;
+  color: var(--color-brand-primary);
+}
+.sup li.advanced {
+  color: var(--fg-muted);
+  font-weight: 400;
+}
+.sup li.advanced :global(.ico) {
+  color: var(--fg-subtle);
+}
+
+/* The observer still fires under reduced motion; this is the belt-and-braces. */
+@media (prefers-reduced-motion: reduce) {
+  .rv,
+  .lk {
+    opacity: 1;
+  }
+  .row,
+  .art,
+  .sup,
+  .chev {
+    transition: none;
+  }
+}
+
+@media (max-width: 1040px) {
+  .row,
+  .gov {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  .art {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding-block: 64px;
+  }
+  .section {
+    --inset: 13px;
+  }
+  .row,
+  .gov {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding-block: 28px;
+  }
+  .art {
+    grid-column: 1;
+  }
+  .row .n {
+    padding-top: 0;
+  }
+  .row h3 {
+    font-size: 19px;
+  }
+  .est {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mid {
+    display: none;
+  }
+  .inv {
+    margin-top: 12px;
+  }
+  .cs {
+    flex-wrap: wrap;
+  }
+  .grp {
+    height: auto;
+    padding: 10px 12px;
+  }
+  .gctl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
