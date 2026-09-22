@@ -46,10 +46,10 @@ export const PILLARS: Pillar[] = [
     ],
   },
   {
-    name: "Trust",
+    name: "Governance",
     q: "Can we trust and control it?",
     why:
-      "A figure nobody trusts changes nothing. Trust checks that usage matches the bill, every cost has a home and every AI system has an owner.",
+      "A figure nobody trusts changes nothing. Governance checks that usage matches the bill, every cost has a home and every AI system has an owner.",
     colour: "#D69520",
     metrics: [
       "Measured cost against the bill.",
