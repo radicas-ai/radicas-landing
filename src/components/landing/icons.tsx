@@ -59,6 +59,7 @@ export const PILLAR_ICONS: readonly string[] = [
 
 export const CHECK = '<path d="m5 12 5 5 9-10"/>';
 export const ARROW_RIGHT = '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>';
+export const CHEVRON_DOWN = '<path d="m6 9 6 6 6-6"/>';
 export const ARROW_UP = '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>';
 export const BURGER = '<path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/>';
 export const REFRESH = '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>';

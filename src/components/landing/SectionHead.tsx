@@ -8,18 +8,25 @@ import styles from "./SectionHead.module.css";
 type SectionHeadProps = {
   kicker: string;
   tone?: "brand" | "info";
+  tight?: boolean;
   children: ReactNode;
   lede: ReactNode;
 };
 
-export function SectionHead({ kicker, tone = "brand", children, lede }: SectionHeadProps) {
+export function SectionHead({ kicker, tone = "brand", tight, children, lede }: SectionHeadProps) {
   const ref = useRef<HTMLDivElement>(null);
   const seen = useInView(ref, { threshold: 0.2, once: true });
 
   return (
     <div
       ref={ref}
-      className={cn(styles.head, tone === "info" && styles.info, styles.rvh, seen && styles.in)}
+      className={cn(
+        styles.head,
+        tone === "info" && styles.info,
+        tight && styles.tight,
+        styles.rvh,
+        seen && styles.in,
+      )}
     >
       <div>
         <p className={cn("eyebrow", styles.kicker)}>{kicker}</p>

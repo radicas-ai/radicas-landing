@@ -1,4 +1,7 @@
 .section {
+  /* Every row hangs this far into the wrap's gutter, so the three surfaces — two dividers and
+     the governance card — share one edge while their content stays on the page grid. */
+  --inset: 25px;
   padding-block: 96px;
   background: linear-gradient(180deg, #fafafb 0%, #f4f5f7 100%);
   overflow-x: clip;
@@ -10,9 +13,14 @@
   grid-template-columns: 48px minmax(0, 4fr) minmax(0, 7fr);
   gap: 24px 32px;
   align-items: center;
-  padding: 36px 0;
+  padding-block: 36px;
+  margin-inline: calc(-1 * var(--inset));
+  padding-inline: var(--inset);
   border-top: 1px solid var(--border);
-  transition: background var(--dur-3) var(--ease-out);
+  position: relative;
+  transition:
+    padding var(--dur-5) var(--ease-out),
+    background var(--dur-3) var(--ease-out);
 }
 .row .n {
   font-family: var(--font-mono);
@@ -26,14 +34,63 @@
   align-self: start;
 }
 .row h3 {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   margin: 0 0 10px;
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.25;
+}
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+/* A closed row is one target: the button's hit area covers it, so the row stays a single
+   interactive element rather than a div with a click handler wrapped around a button. */
+.row:not(.open) .trigger::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.row.open .trigger {
+  cursor: default;
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+.chev {
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--fg-subtle);
+  flex: none;
+  transition:
+    transform var(--dur-5) var(--ease-out),
+    color var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out);
+}
+.chev :global(.ico) {
+  width: 14px;
+  height: 14px;
+}
+.row.open .chev {
+  transform: rotate(180deg);
+  color: var(--color-brand-primary);
+  border-color: rgba(117, 113, 235, 0.4);
 }
 .row h3 .badge {
   width: 34px;
@@ -57,19 +114,19 @@
   max-width: 40ch;
 }
 
-/* Hover is a tint and nothing else. No row may change the height of the page. */
-.row:hover {
+/* Hover is a tint and nothing else: only a click may change the height of the page. */
+.row:not(.open):hover {
   background: rgba(117, 113, 235, 0.03);
 }
 
-/* Pieces light up in sequence when their row reaches the viewport. */
+/* Pieces light up in sequence behind the panel as it opens. */
 .rv {
   opacity: 0.22;
   transition: opacity var(--dur-5) var(--ease-out);
-  transition-delay: calc(var(--i, 0) * 70ms);
 }
 .row.in .rv {
   opacity: 1;
+  transition-delay: calc(160ms + var(--i, 0) * 110ms);
 }
 .lk {
   position: absolute;
@@ -103,118 +160,29 @@
   }
 }
 
-/* ── Scroll-scrubbed stack ─────────────────────────────────────────────────
-   The track is the scroll distance; the stage is what stays on screen. Rows are
-   stacked and cross-faded by scroll position, never by the pointer, so nothing here
-   can change the height of the page. `--pinned` is what the component reads to know
-   which mode CSS has chosen. */
-.track {
-  --pinned: 0;
-  --slot: 85svh;
+/* ── Accordion ────────────────────────────────────────────────────────────
+   One row open at a time, opened by click or keyboard only. The panel collapses
+   with `grid-template-rows`, so the open height is the content's own and no
+   breakpoint has to guess a `max-height`. */
+.art {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--dur-5) var(--ease-out),
+    opacity var(--dur-3) var(--ease-out);
 }
-.ticks {
-  display: none;
+.art > * {
+  min-height: 0;
+  overflow: hidden;
 }
-
-@supports (height: 100svh) {
-  @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
-    .track {
-      --pinned: 1;
-      height: calc(var(--steps) * var(--slot));
-    }
-    .stage {
-      position: sticky;
-      top: 0;
-      height: 100svh;
-      min-height: 600px;
-      display: grid;
-      align-content: center;
-    }
-    .inner {
-      /* `.wrap` carries `margin: 0 auto`, and an auto margin cancels a grid item's
-         stretch — without this the stage sizes itself to its content. */
-      width: 100%;
-      display: grid;
-      gap: 30px;
-    }
-
-    .ticks {
-      display: flex;
-      gap: 30px;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: var(--tracking-caps);
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-    }
-    .ticks li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: color var(--dur-3) var(--ease-out);
-    }
-    .ticks li::before {
-      content: "";
-      width: 44px;
-      height: 2px;
-      border-radius: 2px;
-      background: var(--border-strong);
-      transform: scaleX(0.45);
-      transform-origin: left;
-      transition:
-        background var(--dur-3) var(--ease-out),
-        transform var(--dur-3) var(--ease-out);
-    }
-    .ticks li b {
-      font-weight: 500;
-      color: inherit;
-    }
-    .ticks li.on {
-      color: var(--color-brand-primary-deep);
-    }
-    .ticks li.on::before {
-      background: var(--color-brand-primary);
-      transform: scaleX(1);
-    }
-
-    .rows {
-      position: relative;
-      /* Just past the tallest row, so the stack sits centred rather than top-heavy. */
-      min-height: 340px;
-    }
-    .rows .row {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      align-content: center;
-      border-top: 0;
-      padding-block: 0;
-      opacity: var(--o, 0);
-      transform: translateY(calc(-50% + var(--y, 0px)));
-      pointer-events: none;
-      /* Three nodes that genuinely change on every scroll frame. */
-      will-change: opacity, transform;
-    }
-    /* Before hydration the first row is the one on screen. */
-    .rows .row:first-child {
-      --o: 1;
-    }
-    .rows .row.on {
-      pointer-events: auto;
-    }
-    .rows .row:hover {
-      background: transparent;
-    }
-    .rows .gov {
-      margin-top: 0;
-    }
-  }
+.row.open .art {
+  grid-template-rows: 1fr;
+  opacity: 1;
 }
-
+.row:not(.open) {
+  padding-block: 26px;
+}
 /* ── 01 / 02 art ───────────────────────────────────────────────────────── */
 .est {
   display: grid;
@@ -366,13 +334,17 @@
   grid-template-columns: 48px minmax(0, 4fr) minmax(0, 7fr);
   align-items: start;
   margin-top: 8px;
-  padding: 36px 32px 36px 0;
+  /* Its own border takes the place of one pixel of the inset. */
+  padding-inline: calc(var(--inset) - 1px);
   border-radius: var(--radius-xl);
   background: linear-gradient(180deg, rgba(117, 113, 235, 0.07), rgba(117, 113, 235, 0.02));
   border: 1px solid rgba(117, 113, 235, 0.18);
 }
-.gov .n {
-  padding-left: 24px;
+.gov:not(.open) {
+  padding-block: 26px;
+}
+.gov:not(.open):hover {
+  background: linear-gradient(180deg, rgba(117, 113, 235, 0.11), rgba(117, 113, 235, 0.05));
 }
 
 .gctl {
@@ -438,9 +410,29 @@
 }
 
 .sup {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 1px solid transparent;
+  transition:
+    grid-template-rows var(--dur-5) var(--ease-out),
+    opacity var(--dur-3) var(--ease-out),
+    margin var(--dur-5) var(--ease-out),
+    padding var(--dur-5) var(--ease-out),
+    border-color var(--dur-5) var(--ease-out);
+}
+.sup > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.row.open .sup {
+  grid-template-rows: 1fr;
+  opacity: 1;
   margin-top: 22px;
   padding-top: 18px;
-  border-top: 1px solid rgba(117, 113, 235, 0.18);
+  border-top-color: rgba(117, 113, 235, 0.18);
 }
 .sup :global(.eyebrow) {
   color: var(--color-brand-primary-deep);
@@ -478,6 +470,12 @@
   .lk {
     opacity: 1;
   }
+  .row,
+  .art,
+  .sup,
+  .chev {
+    transition: none;
+  }
 }
 
 @media (max-width: 1040px) {
@@ -488,29 +486,26 @@
   .art {
     grid-column: 2;
   }
-  .gov {
-    padding-right: 24px;
-  }
 }
 
 @media (max-width: 720px) {
   .section {
     padding-block: 64px;
   }
+  .section {
+    --inset: 13px;
+  }
   .row,
   .gov {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
-    padding: 28px 0;
+    padding-block: 28px;
   }
   .art {
     grid-column: 1;
   }
   .row .n {
     padding-top: 0;
-  }
-  .gov .n {
-    padding-left: 0;
   }
   .row h3 {
     font-size: 19px;
@@ -530,9 +525,6 @@
   .grp {
     height: auto;
     padding: 10px 12px;
-  }
-  .gov {
-    padding: 24px 16px;
   }
   .gctl {
     grid-template-columns: minmax(0, 1fr);

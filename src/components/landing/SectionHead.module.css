@@ -8,6 +8,11 @@
   margin: 0 auto 40px;
 }
 
+/* For a section whose body reads as a continuation of the lede rather than a new block. */
+.tight {
+  margin-bottom: 20px;
+}
+
 .head > div {
   width: 100%;
 }
