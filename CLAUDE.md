@@ -13,11 +13,11 @@ verify with `pnpm build` and `pnpm typecheck`. The contact form writes to the
 Notion "Website leads" quarantine, never to the CRM itself (see README for env
 vars); never commit secrets.
 
-## Design source (ADR-023 in radicas-nursery)
+## Design source (radicas-nursery)
 
-Canonical product decisions live in Notion; `../radicas-nursery` is the local
-mirror + design workshop: platform invariants in `docs/invariants/big-picture.md`
-(read-only mirror of Notion) and ADRs in `docs/architecture/ADR-*.md`. Marketing
-claims about the product must not contradict those invariants — check before
-writing product copy. Design and decide there; implement here. Pointers only —
-never copy invariant text into this repo.
+`../radicas-nursery` is canonical for what the product is and must not break:
+`docs/product/big-picture.md` (what Radicas is today) and
+`docs/invariants/invariants.md` (the rules). Marketing claims about the product
+must not contradict either — check before writing product copy. Design and
+decide there; implement here. Pointers only — never copy invariant text into
+this repo.
